@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Dashboard</title>
+</head>
+<body>
+    {% if user.is_authenticated %}
+        <h1>Welcome, {{ user.username }}!</h1>
+        <!-- Your content here -->
+    {% else %}  
+        <h1>You are not logged in!</h1>
+        <p>Please <a href="{% url 'login' %}">log in</a>.</p>
+    {% endif %}
+
+    {% block content %}
+    <div style="display: flex;">
+        <div style="flex: 6;">
+            <form action="{% url 'upload_report' %}" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <label for="reporterName">Reported by:</label>
+                <input type="text" id="reporterName" name="reporterName" value={{user.username}} readonly><br><br>
+        
+                <label for="description">Description:</label><br>
+                <textarea id="description" name="description" rows="4" cols="50" required></textarea><br><br>
+        
+                <label for="lineNumber">Line Number:</label>
+                <select id="lineNumber" name="lineNumber" required>
+                    <option value="1">MC-1</option>
+                    <option value="2">MC-2</option>
+                    <option value="3">MC-3</option>
+                    <option value="4">MC-4</option>
+                    <option value="5">MC-5</option>
+                </select><br><br>
+        
+                <label for="problemCategory">Problem Category:</label>
+                <select id="problemCategory" name="problemCategory" required>
+                    <option value="Safety">Safety</option>
+                    <option value="Maintainance">Maintainance</option>
+                    <option value="QA">QA</option>
+                    <option value="Engineering">Engineering</option>
+                    <option value="5S">5S</option>
+                </select><br><br>
+        
+        
+                <label for="images">Select images:</label><br>
+                <input type="file" id="images" name="images" accept="images" multiple required><br><br>
+        
+                <input type="submit" value="Upload" name="submit">
+            </form>
+        </div>
+        <div style="flex: 6;">
+            
+        </div>
+    </div>
+    
+    {% endblock %}
+</body>
+</html>

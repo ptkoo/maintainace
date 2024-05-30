@@ -1,0 +1,35 @@
+<!-- chief.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chief Reports</title>
+</head>
+<body>
+    <h1>Chief Reports</h1>
+    <ul>
+        {% if reports %}
+            {% for report in reports %}
+                <li>Reporter ID: {{ report.reportID }}</li>
+                <li>Reporter Name: {{ report.reporterName }} </li>
+                <li>Operation Line :{{ report.operationLineNumber }}</li>
+                <li>Problem Category: {{ report.problemCategory }} </li>
+                <li>Description: {{ report.problemDescription }} </li>
+                <li >
+                    {% for image in report.images.all %}
+                        <p><img src="{{ image.imageData.url }}" alt="Report Image" width="200"></p>
+                    {% endfor %}
+                </li>
+                <form method="post" action="{% url 'chief' %}">
+                    {% csrf_token %}
+                    <button type="submit" name="confirm" value="{{ report.reportID }}">Confirm</button>
+                    <button type="submit" name="cancel" value="{{ report.reportID }}">Cancel</button>
+                </form>
+            {% endfor %}
+        {% else %}
+            <li>No reports to display.</li>
+        {% endif %}
+    </ul>
+</body>
+</html>

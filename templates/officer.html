@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Officer Reports</title>
+</head>
+<body>
+    <h1>Officer Reports</h1>
+    <ul>
+        {% if reports %}
+            {% for report in reports %}
+                <li>Reporter ID: {{ report.reportID }}</li>
+                <li>Reporter Name: {{ report.reporterName }}</li>
+                <li>Operation Line: {{ report.operationLineNumber }}</li>
+                <li>Problem Category: {{ report.problemCategory }}</li>
+                <li>Description: {{ report.problemDescription }}</li>
+                <li>
+                    {% for image in report.images.all %}
+                        <p><img src="{{ image.imageData.url }}" alt="{{ image.imageData.url }}" width="200"></p>
+                    {% endfor %}
+                </li>
+                <form method="post" action="{% url 'officer' %}">
+                    {% csrf_token %}
+                    <label for="email-dropdown-{{ report.reportID }}">Select User Email:</label>
+                    <select id="email-dropdown-{{ report.reportID }}" name="selected_email">
+                        {% for email in emails %}
+                            <option value="{{ email }}">{{ email }}</option>
+                        {% endfor %}
+                    </select>
+                    <input type="hidden" name="report_id" value="{{ report.reportID }}">
+                    <button type="submit" name="send_mail" value="Send">Send Mail</button>
+                </form>
+            {% endfor %}
+        {% else %}
+            <li>No reports to display.</li>
+        {% endif %}
+    </ul>
+</body>
+</html>

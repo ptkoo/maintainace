@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report Details</title>
+</head>
+<body>
+    <h2>Report Details</h2>
+    <p><strong>Reporter ID:</strong> {{ report.reportID }}</p>
+    <p><strong>Reporter Name:</strong> {{ report.reporterName }}</p>
+    <p><strong>Operation Line:</strong> {{ report.operationLineNumber }}</p>
+    <p><strong>Problem Category:</strong> {{ report.problemCategory }}</p>
+    <p><strong>Description:</strong> {{ report.problemDescription }}</p>
+    <ul>
+        <li><a href="http://example.com/some-link/">Click here to report the details status of report</a></li>
+    </ul>
+    <!-- <ul>
+        {% for image in report.images.all %}
+        <li><img src="{{ image.imageData.url }}" alt="{{ image.imageData.url }}" width="200"></li>
+    {% endfor %}
+    </ul> -->
+</body>
+</html>
