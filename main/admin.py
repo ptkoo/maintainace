@@ -16,57 +16,7 @@ class ReportAdmin(admin.ModelAdmin):
 
 admin.site.register(Report, ReportAdmin)
 
-
-# adding more options in the admin panel
-
-# class ProfileInline(admin.StackedInline):
-#     model = Profile
-#     can_delete = False
-#     verbose_name_plural = 'Profile'
-
-# class CustomUserAdmin(UserAdmin):
-#     inlines = (ProfileInline,)
-#     list_display = ('username', 'email', 'first_name', 'last_name', 'is_staff', 'get_operation_line_no', 'get_profession')
-
-#     def get_operation_line_no(self, instance):
-#         return instance.profile.operation_line_no if hasattr(instance, 'profile') else None
-
-#     get_operation_line_no.short_description = 'Operation Line No'
-
-#     def get_profession(self, instance):
-#         return instance.profile.profession if hasattr(instance, 'profile') else None
-    
-#     get_profession.short_description = 'Profession'
-
-# admin.site.unregister(User)
-# admin.site.register(User, CustomUserAdmin)
-
-# class ProfileInline(admin.StackedInline):
-#     model = Profile
-#     can_delete = False
-#     verbose_name_plural = 'Profile'
-
-# class CustomUserAdmin(UserAdmin):
-#     inlines = (ProfileInline,)
-#     list_display = ('username', 'email', 'first_name', 'last_name', 'is_staff', 'get_operation_line_no', 'get_profession')
-
-#     def get_operation_line_no(self, instance):
-#         return instance.profile.operation_line_no.line_no if hasattr(instance, 'profile') and instance.profile.operation_line_no else None
-
-#     get_operation_line_no.short_description = 'Operation Line No'
-
-#     def get_profession(self, instance):
-#         return instance.profile.profession.profession_name if hasattr(instance, 'profile') and instance.profile.profession else None
-    
-#     get_profession.short_description = 'Profession'
-
-# admin.site.unregister(User)
-# admin.site.register(User, CustomUserAdmin)
-# admin.site.register(OperationLine)
-# admin.site.register(Profession)
-
-
-
+# Adding more options for Operation Line No and profession
 class ProfileAdminForm(forms.ModelForm):
     operation_line_no = forms.ModelMultipleChoiceField(
         queryset=OperationLine.objects.all(),

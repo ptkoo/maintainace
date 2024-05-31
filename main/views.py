@@ -8,11 +8,14 @@ from django.conf import settings
 from django.contrib.auth.models import User, Group
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
-from .models import Report, Profile, Image
+from .models import Report, Profile, Image,Profession, OperationLine
+from django.core.paginator import Paginator
+from django.shortcuts import get_object_or_404, redirect
+from .forms import ReportForm
 import datetime
 import os 
 import mimetypes
-
+from datetime import datetime as dateTime
 # Create your views here.
 def handle_login(request):
     if( request.method == 'POST'):
@@ -49,7 +52,45 @@ def handle_login(request):
 
 @login_required(login_url='/main/error')
 def user(request):
-    return render(request, 'user.html')
+    # Assuming reports_per_page is the number of reports you want to show per page
+    reports_per_page = 1
+    reports = Report.objects.filter(reporterName=request.user.username).order_by('-datetime')
+    paginator = Paginator(reports, reports_per_page)
+
+    # Get all the professions and operations Line number
+    professions = Profession.objects.all()
+    operation_lines = OperationLine.objects.all()
+
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
+    context = {
+        'page_obj': page_obj,
+        'professions': professions,
+        'operation_lines': operation_lines,
+    }
+
+    if request.method == 'POST':
+        report_id = request.POST.get('report_id')
+        report = Report.objects.get(reportID = report_id)
+        print(report)
+
+        if request.POST.get('cancel') == 'Cancel':
+            context = {
+        'page_obj': page_obj,
+        'professions': professions,
+        'operation_lines': operation_lines,
+        } 
+        else: 
+            context = {
+            'page_obj': page_obj,
+            'professions': professions,
+            'operation_lines': operation_lines,
+            'editReport' : report
+        }
+
+
+    return render(request, 'user.html', context)
 
 @login_required(login_url='/main/error')
 def chief(request):
@@ -59,10 +100,18 @@ def chief(request):
     operation_line_nos = [line.line_no for line in operation_lines]
     print("OperationLineNo", operation_line_nos)
     # reports = Report.objects.filter(status='0',operationLineNumber__in=operation_line_nos)  # Filter reports with status = '0'
-    reports = Report.objects.filter(status='0')  # Filter reports with status = '0'
-    context = {
-        'reports': reports,
-    }
+    reports = Report.objects.filter(status='0', operationLineNumber__in= operation_line_nos)  # Filter reports with status = '0'
+
+    # Pagination
+    reports_per_page = 1
+    paginator = Paginator(reports, reports_per_page)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    # print("page_obj ",page_obj)
+    
+    # context = {
+    #     'reports': reports,
+    # }
     if request.method == 'POST':
         if 'confirm' in request.POST:
             report_id = request.POST.get('confirm')
@@ -77,20 +126,52 @@ def chief(request):
             report.delete()
             print("Delete report")
         return redirect('/main/chief')
+    
+    context = {
+        'page_obj': page_obj,
+    }
 
     return render(request, 'chief.html', context)
 
 @login_required(login_url='/main/error')
 def officer(request):
+
+    # for officer profession
+    user = User.objects.get(username=request.user)
+    profile = Profile.objects.get(user=user)
+    professions = profile.profession.all()
+    profession = [profession.profession_name for profession in professions]
+    # print("Profession", profession)
+
+    # For user group General and retriving their emails 
+    general_group = Group.objects.get(name='General')
+    users_in_general = User.objects.filter(groups=general_group)
+    emails = [user.email for user in users_in_general if user.email]
+
+    reports = Report.objects.filter(status ='1',problemCategory__in = profession )
+    print(reports)
+     # Pagination
+    reports_per_page = 1
+    paginator = Paginator(reports, reports_per_page)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
+    context = {
+        'page_obj': page_obj,
+        'emails' : emails,
+    }
+
     # For send email
     if request.method == 'POST':
-        print("After sending", request.POST)
+        # print("After sending", request.POST)
         selected_email = request.POST.get('selected_email')
         report_ID = request.POST.get('report_id')
         report = Report.objects.get(reportID = report_ID)
         report.status = '2'
         report.sentBy = request.user.username
         report.sentTo = selected_email
+        report.emailNotifyDate = datetime.datetime.now()
+        report.dueDate = datetime.datetime.now() + datetime.timedelta(days=3)
         report.save()
 
         html_content = render_to_string('email.html', {'report': report})
@@ -124,30 +205,7 @@ def officer(request):
         # Send email
         email.send()
 
-    # for officer profession
-    user = User.objects.get(username=request.user)
-    profile = Profile.objects.get(user=user)
-    professions = profile.profession.all()
-    profession = [profession.profession_name for profession in professions]
-    # print("Profession", profession)
-
-    # For user group General and retriving their emails 
-    general_group = Group.objects.get(name='General')
-    users_in_general = User.objects.filter(groups=general_group)
-    emails = [user.email for user in users_in_general if user.email]
-
-    reports = Report.objects.filter(status ='1',problemCategory__in = profession )
-    context = {
-        'reports' : reports,
-        'emails' : emails,
-    }
-    # print(reports)
-
     return render(request, 'officer.html', context)
-
-@login_required(login_url='/main/error')
-def repair(request):
-    return render(request, 'user.html')
 
 def upload_report(request):
     if request.method == 'POST':
@@ -186,15 +244,37 @@ def upload_report(request):
 def error(request):
     return render(request, 'registration/error.html')
 
-def sendMail(request):
-    if request.method == 'POST':
-        print(request.POST.get('confirm'))
-    # subject = "Testing email"
-    # message = "HI I am from SNSS"
-    # email_from = settings.EMAIL_HOST_USER
-    # recipeint_list = ['paingthetko2000@gmail.com',]
-    # send_mail(subject, message, email_from, recipeint_list)
-    return redirect("/main/error")
 
+def delete_report(request, report_id):
+    if request.POST.get('action') == 'delete':
+        report = get_object_or_404(Report, reportID=report_id)
+        report.delete()
+    return redirect('user')
 
+def update_report(request, report_id):
     
+    report = Report.objects.get(reportID = report_id)
+    
+    if request.method == 'POST':
+        description = request.POST.get('description')
+        line_number = request.POST.get('lineNumber')
+        problemCategory = request.POST.get('problemCategory')
+        images = request.FILES.getlist('images')  # Use getlist to get multiple files
+        dt_now = datetime.datetime.now()
+
+        # Update existing report
+        report.operationLineNumber = line_number
+        report.problemDescription = description
+        report.datetime = dt_now
+        report.problemCategory = problemCategory
+        report.save()
+        # Clear existing images associated with the report
+        report.images.all().delete()
+        for image in images:
+            print(image)
+            Image.objects.create(report=report, imageData=image)
+
+        return redirect('user')
+    else:
+        return redirect('error')
+

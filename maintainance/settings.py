@@ -43,7 +43,7 @@ EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
 # Media 
 MEDIA_URL = ''
 MEDIA_ROOT = os.path.join(BASE_DIR, '')
-# MEDIA_ROOT1 = 'C:\Users\N764521\Desktop\maintainance'
+# MEDIA_ROOT1 = 'C:\Users\N764521\Desktop\maintainance's
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/

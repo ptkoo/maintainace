@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -15,10 +15,75 @@
     <ul>
         <li><a href="http://example.com/some-link/">Click here to report the details status of report</a></li>
     </ul>
-    <!-- <ul>
-        {% for image in report.images.all %}
-        <li><img src="{{ image.imageData.url }}" alt="{{ image.imageData.url }}" width="200"></li>
-    {% endfor %}
-    </ul> -->
+</body>
+</html> -->
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report Details</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            color: #333333;
+        }
+        p {
+            color: #555555;
+            line-height: 1.5;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            margin-bottom: 10px;
+        }
+        a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 16px;
+            color: #ffffff;
+            background-color: #007bff;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Report Details</h2>
+        <p><strong>Reporter Name:</strong> {{ report.reporterName }}</p>
+        <p><strong>Operation Line:</strong> {{ report.operationLineNumber }}</p>
+        <p><strong>Problem Category:</strong> {{ report.problemCategory }}</p>
+        <p><strong>Description:</strong> {{ report.problemDescription }}</p>
+        <p><a href="http://example.com/some-link/" class="btn">Click here to report back the details of issues</a></p>
+    </div>
 </body>
 </html>
+

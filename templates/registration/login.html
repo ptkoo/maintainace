@@ -1,4 +1,4 @@
-{% block content %}
+<!-- {% block content %}
     {% if messages %}
         {% for message in messages %}
             <div class="alert {{ message.tags }}">
@@ -24,4 +24,86 @@
   </form>
 
 
-{% endblock %}
+{% endblock %} -->
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #F5F8FF;
+            margin: 0;
+            padding: 0;
+            align-content: center;
+            margin: 100px auto;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 300px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: left;
+        }
+
+        input[type="submit"], input[type="text"], input[type="password"]{
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        input[type="submit"] {
+            background-color: #6A64F1;
+            color: white;
+            border: none;
+            cursor: pointer;
+            height: 40px;
+            font-size: 15px;
+            font-weight: bold;
+        }
+        @media only screen and (max-width: 370px){
+            .container {
+                max-width: 200px;
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+  <h2 style="color: #393680;">Log in to Your Account! </h2>
+  <div class="container">
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert {{ message.tags }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <form method="post" action="{% url 'login' %}">
+        {% csrf_token %}
+        <div class="input-group">
+            <label for="{{ form.username.id_for_label }}">Username:</label>
+            {{ form.username }}
+        </div><br>
+        <div class="input-group">
+            <label for="{{ form.password.id_for_label }}">Password:</label>
+            {{ form.password }}
+        </div><br>
+        <input type="submit" value="Login" class="submit-button">
+        <input type="hidden" name="next" value="{{ next }}">
+    </form>
+  </div>
+</body>
+</html>
