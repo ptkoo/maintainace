@@ -430,6 +430,9 @@
                         {% endfor %}
                     </select><br>
 
+                    <label for="machineNumber">Enter machineNumber (Optional): </label>
+                    <textarea id="machineNumber" name="machineNumber" rows="1" cols="50">{{ editReport.machineNumber }}</textarea><br>
+
                     <label for="problemCategory">Choose problem category:</label>
                     <select id="problemCategory" name="problemCategory" required>
                         {% for profession in professions %}
@@ -444,7 +447,9 @@
                     <textarea id="description" name="description" rows="4" cols="50" required>{{ editReport.problemDescription }}</textarea><br>
 
                     <input type="submit" value="Update" name="update">
-                    <button onclick="window.location.href='{% url 'user' %}'" type="button" class='cancel_button'><a  href="{% url 'user' %}">Cancel</a></button>
+                    <a  href="{% url 'user' %}">
+                        <button type="button" class="cancel_button">Cancel</button>
+                    </a>
                 </form>
             </div>
         {% else %}
@@ -464,6 +469,9 @@
                         {% endfor %}
                     </select><br>
 
+                    <label for="machineNumber">Enter machineNumber  (Optional): </label>
+                    <textarea id="machineNumber" name="machineNumber" rows="1" cols="50"></textarea><br>
+
                     <label for="problemCategory">Choose problem category:</label>
                     <select id="problemCategory" name="problemCategory" required>
                         {% for profession in professions %}
@@ -482,6 +490,21 @@
             </div>
         {% endif %}
         <div class="reports-container active">
+            <form id="status-filter-form" method="get" action="{% url 'user' %}">
+                <select id="status-filter" name="status">
+                    <option value="">All</option>
+                    <option value="0" {% if status == "0" %}selected{% endif %}>Pending</option>
+                    <option value="1" {% if status == "1" %}selected{% endif %}>Approved</option>
+                    <option value="2" {% if status == "2" %}selected{% endif %}>Sent</option>
+                    <!-- Add more options for other statuses as needed -->
+                </select>
+            </form>
+            <script>
+                // JavaScript to submit the form on change
+                document.getElementById('status-filter').addEventListener('change', function() {
+                    document.getElementById('status-filter-form').submit();
+                });
+            </script>
             <div style="border-left: 5px solid #6A64F1; padding-left: 5px;">
                 <h3>Your Reports</h3>
             </div>
@@ -493,6 +516,7 @@
                             <div style="flex: 10;">
                                 <li>Reporter Name: {{ report.reporterName }}</li>
                                 <li>Operation Line: {{ report.operationLineNumber }}</li>
+                                <li>Machine Number: {{ report.machineNumber }}</li>
                                 <li>Problem Category: {{ report.problemCategory }}</li>
                                 <li>Description: {{ report.problemDescription }}</li>
                                 <li>Created At: {{ report.datetime }}</li>
@@ -545,11 +569,11 @@
                 {% endif %}
                         
             </ul>
-            <div class="pagination">
+            <!-- <div class="pagination">
                 {% if page_obj.has_previous %}
                     <a href="?page=1">&laquo;</a>
                 {% endif %}
-            
+                
                 {% for num in page_obj.paginator.page_range %}
                     {% if num == page_obj.number %}
                         <a href="#" class="active">{{ num }}</a>
@@ -560,6 +584,24 @@
             
                 {% if page_obj.has_next %}
                     <a href="?page={{ page_obj.paginator.num_pages }}">&raquo;</a>
+                {% endif %}
+            </div> -->
+            <!-- Pagination -->
+            <div class="pagination">
+                {% if page_obj.has_previous %}
+                    <a href="?status={{ status }}&page=1">&laquo;</a>
+                {% endif %}
+
+                {% for num in page_obj.paginator.page_range %}
+                    {% if num == page_obj.number %}
+                        <a href="#" class="active">{{ num }}</a>
+                    {% else %}
+                        <a href="?status={{ status }}&page={{ num }}">{{ num }}</a>
+                    {% endif %}
+                {% endfor %}
+
+                {% if page_obj.has_next %}
+                    <a href="?status={{ status }}&page={{ page_obj.paginator.num_pages }}">&raquo;</a>
                 {% endif %}
             </div>
             

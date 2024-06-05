@@ -6,4 +6,4 @@ from .models import Report
 class ReportForm(forms.ModelForm):
     class Meta:
         model = Report
-        fields = ['reporterName', 'operationLineNumber', 'problemDescription', 'problemCategory', 'status']
+        fields = ['reporterName', 'operationLineNumber', 'problemDescription', 'problemCategory', 'status', 'machineNumber']

@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chief Dashboard</title>
+    <title>Solution Dashboard</title>
     <style>
+
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -17,7 +18,8 @@
         }
 
         .container {
-            width: 80%;
+            display: flex;
+            width: 90%;
             margin:  auto;
             background-color: #fff;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -25,14 +27,22 @@
             overflow: hidden;
         }
 
-        .reports-container {
+        .form-container, .reports-container {
             padding: 0px 20px;
-            background-color: #FFFFFF;
+            width: 50%;
+        }
 
+        .form-container {
+            background-color: #FFFFFF;
+            border-right: 1px solid #33333331;
+        }
+
+        .reports-container {
+            background-color: #FFFFFF;
         }
         .report-card {
             background-color: #F5F8FF;
-            padding: 5px 50px;
+            padding: 5px 20px;
             border-radius: 8px;
         }
         .report-card li{
@@ -48,6 +58,43 @@
             font-weight: bold;
             color: #555;
         }
+
+        select, input[type="file"], input[type="submit"],  input[type="text"], textarea{
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .cancel_button {
+            width: 100%;
+            background-color: #c7c5ec;
+            color: white;
+            border: none;
+            cursor: pointer;
+            height: 40px;
+            font-size: 15px;
+            font-weight: bold;
+        }
+
+        .cancel_button a {
+            text-decoration: none;
+        }
+        input[type="submit"] {
+            background-color: #6A64F1;
+            color: white;
+            border: none;
+            cursor: pointer;
+            height: 40px;
+            font-size: 15px;
+            font-weight: bold;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #6A64F1;
+        }
+
         ul {
             list-style-type: none;
             padding: 0;
@@ -74,15 +121,15 @@
             border-radius: 4px;
             cursor: pointer;
         }
-        .confirmbtn{
+        .editbtn{
             background-color: #6A64F1;
             color: white;
         }
-        .cancelbtn{
+        .deletebtn{
             background-color: #f44336;
             color: white;
         }
-        .confirmbtn:disabled, .cancelbtn:disabled {
+        .editbtn:disabled, .deletebtn:disabled {
             background-color: #6e6d6d8f; 
             cursor: not-allowed; 
         }
@@ -177,8 +224,11 @@
             cursor: pointer;
         }
         .pagination {
-            margin-top: 10px;
-            text-align: center;
+        margin-top: 20px;
+        }
+
+        .pagination {
+            display: inline-block;
         }
 
         .pagination a {
@@ -186,7 +236,7 @@
             float: left;
             padding: 8px 16px;
             text-decoration: none;
-            transition: background-color 0.3s;
+            transition: background-color .3s;
         }
 
         .pagination a.active {
@@ -196,11 +246,6 @@
 
         .pagination a:hover:not(.active) {
             background-color: #ddd;
-        }
-
-        .pagination .prev,
-        .pagination .next {
-            float: none;
         }
         .pending-tag{
             width: 100px; 
@@ -221,10 +266,10 @@
             font-weight: bold;
             color: white;
         }
-        .rejected-tag{
+        .email_sent{
             width: 100px; 
             height: 30px; 
-            background-color: #E74133;
+            background-color: #4470b1;
             align-content: center;
             text-align: center;
             border-radius: 5px;
@@ -232,14 +277,105 @@
             color: white;
         }
 
-        
-        @media only screen and (min-width: 250px) and (max-width: 768px) {
-            /* Add styles for phones */
+        /* Responsive Design */
+        @media only screen and (min-width: 1024px){
+            .display-button{
+                display: none;
+            }
+            .form-container{
+                width: 100%;
+                margin: 0 auto;
+                border-right: none;
+            }
+            .reports-container {
+                width: 100%;
+            }
+            select, input[type="file"], input[type="submit"],  input[type="text"], textarea{
+                width: 100%;
+            }
+            .carousel {
+                width: 100%;
+                max-width: 350px; /* Adjust as needed */
+            }
+        }
+
+        @media only screen and (max-width: 1024px) {
+            /* Add styles for iPad */
+            .display-button{
+                display: none;
+            }
             .container{
+                display: block;
                 width: 80%;
+            }
+            .form-container{
+                width: 90%;
+                margin: 0 auto;
+                border-right: none;
             }
             .reports-container {
                 width: 90%;
+                margin: 0 auto;
+            }
+            select, input[type="file"], input[type="submit"],  input[type="text"], textarea{
+                width: 100%;
+            }
+            .carousel {
+                width: 100%;
+                max-width: 350px; /* Adjust as needed */
+            }
+        }
+
+        @media only screen and (min-width: 250px) and (max-width: 768px) {
+            /* Add styles for phones */
+
+            /* for buttons */ 
+            .display-button{
+                    display: block;
+                }
+            /* .btn-group {
+                margin: 20px 0;
+            } */
+            .btn-group button {
+                padding: 10px 20px;
+                margin: 0 5px;
+                border: none;
+                background-color: #4a47a3;
+                color: white;
+                cursor: pointer;
+            }
+            .btn-group button.active {
+                background-color: #6A64F1;
+            }
+            .btn-group {
+                display: flex;
+                flex-direction: row;
+            }
+            .btn-group button {
+                margin: 5px 0;
+                width: 100%;
+            }
+            /* end buttons */
+            .container{
+                display: block;
+                width: 80%;
+            }
+          
+            .form-container{
+                display : none;
+                width: 90%;
+                border-right: none;
+                margin: 0 auto;
+            }
+            .reports-container {
+                display: none;
+                width: 90%;
+            }
+            .active {
+                display: block;
+            }
+            select, input[type="file"], input[type="submit"],  input[type="text"], textarea{
+                width: 100%;
             }
             .carousel {
                 width: 100%;
@@ -249,9 +385,8 @@
                 display: block;
                 width: 100%;
             }
+
             }
-
-
     </style>
 </head>
 <body>
@@ -266,13 +401,16 @@
     {% block content %}
     
     <div class="container">
-        <div class="reports-container">
+        <div class="btn-group display-button">
+            <button data-section="form-container" onclick="showSection('reports-container')">View Issue</button>
+            <button class="active"  data-section="reports-container" onclick="showSection('form-container')">Solution Report</button>
+        </div>
+        <div class="reports-container active">
             <div style="border-left: 5px solid #6A64F1; padding-left: 5px;">
-                <h3>Manage Reports</h3>
+                <h3>Issue to be resolved</h3>
             </div>
             <ul>
-                {% if page_obj %}
-                    {% for report in page_obj %}
+                {% if report %}
                     <div class="report-card" style="border-top: 4px solid #6A64F1;">
                         <div class="reportData-status">
                             <div style="flex: 10;">
@@ -287,8 +425,8 @@
                                     <div class="pending-tag">Pending</div>
                                 {% elif report.status == '1' %}  
                                     <div class="approved-tag">Approved</div>
-                                {% else %}  
-                                    <div class="rejected-tag">Rejected</div>
+                                {% elif report.status == '2' %}  
+                                    <div class="email_sent">Email Sent</div>
                                 {% endif %}
                                 
                             </div>
@@ -309,40 +447,46 @@
                                 {% endif %}
                             </div>
                         </li>
-                        <form method="post" action="{% url 'chief' %}">
-                            {% csrf_token %}
-                            <button type="submit" name="confirm" value="{{ report.reportID }}" class="confirmbtn" {% if  report.status == '1' %}disabled{% endif %}>Accept</button>
-                            <button type="submit" name="cancel" value="{{ report.reportID }}" class="cancelbtn" {% if  report.status == '1' %}disabled{% endif %}>Decline</button>
-                        </form>
                     </div>
-                    {% endfor %}
                 {% else %}
                     <li>No reports to display.</li>
                 {% endif %}
                         
             </ul>
-            <div class="pagination">
-                {% if page_obj.has_previous %}
-                    <a href="?page=1">&laquo;</a>
-                {% endif %}
-                
-                {% for num in page_obj.paginator.page_range %}
-                    {% if num == page_obj.number %}
-                        <a href="#" class="active">{{ num }}</a>
-                    {% else %}
-                        <a href="?page={{ num }}">{{ num }}</a>
-                    {% endif %}
-                {% endfor %}
-                
-                {% if page_obj.has_next %}
-                    <a href="?page={{ page_obj.paginator.num_pages }}">&raquo;</a>
-                {% endif %}
-            </div>
-
-            
-            
             
         </div>
+        <div class="form-container">
+            <div style="border-left: 5px solid #6A64F1; padding-left: 5px;">
+                <h3>Submit your solution</h3>
+            </div>
+            <form method="post" enctype="multipart/form-data" action="{% url 'upload_solution' report.reportID %}">
+                {% csrf_token %}
+                <label for="solverName">Issue Resolved by:</label>
+                <input type="text" id="solverName" name="solverName" value={{user.username}} disabled><br>
+                
+                <label for="" style="z-index: 1000; position: relative; background-color: white; margin-left: 2px; width: 136px; padding-left: 3px;">Is the issue fixed?</label><br>
+                    <div style="z-index: 0; border: 2px solid #6A64F1; border-radius: 5px; padding: 5px; top: -27px; position: relative; padding-top: 5px; font-size: 14px;">
+                        <div style="display: flex; margin: 5px 3px;">
+                            <input type="radio" id="solution-state-yes" name="solution-state" value="Yes">
+                            <label for="solution-state-yes">Yes</label><br>
+                        </div>
+                        <div style="display: flex; margin: 5px 3px;">
+                            <input type="radio" id="solution-state-no" name="solution-state" value="No">
+                            <label for="solution-state-no">No</label><br>
+                        </div>       
+                    </div>
+
+                <label for="solimages">Select images:</label>
+                <input type="file" id="solimages" name="solimages" accept="image/*" multiple required><br><br>
+                
+                <label for="soldescription">Solution description:</label>
+                <textarea id="soldescription" name="description" rows="4" cols="50" required>{{ editReport.problemDescription }}</textarea><br><br>
+
+                <input type="submit" value="Submit" name="Submit">
+            </form>
+        </div>   
+
+
     </div>
     <!-- The Modal -->
     <div id="myModal" class="modal">
@@ -403,8 +547,18 @@
             }
         }
 
+    
+    // for displaying two buttons 
+
+    function showSection(section) {
+        document.querySelector('.form-container').classList.remove('active');
+        document.querySelector('.reports-container').classList.remove('active');
+        document.querySelector(`.${section}`).classList.add('active');
+
+        document.querySelector('.btn-group .active').classList.remove('active');
+        document.querySelector(`button[data-section="${section}"]`).classList.add('active');
+    }
 
     </script>
 </body>
 </html>
-

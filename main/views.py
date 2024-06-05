@@ -1,6 +1,7 @@
 from django.core.mail import EmailMultiAlternatives
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+from .decorator import group_required
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
@@ -8,7 +9,7 @@ from django.conf import settings
 from django.contrib.auth.models import User, Group
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
-from .models import Report, Profile, Image,Profession, OperationLine
+from .models import Report, Profile, Image,Profession, OperationLine, Solution
 from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404, redirect
 from .forms import ReportForm
@@ -16,6 +17,7 @@ import datetime
 import os 
 import mimetypes
 from datetime import datetime as dateTime
+from django.http import HttpResponseRedirect
 # Create your views here.
 def handle_login(request):
     if( request.method == 'POST'):
@@ -27,6 +29,11 @@ def handle_login(request):
             # print(user)
             if user is not None:
                 login(request, user)  # Log the user in
+                # Check for 'next' parameter
+                next_url = request.GET.get('next')
+                if next_url:
+                    return HttpResponseRedirect(next_url)
+
                 if user.groups.filter(name='User').exists():
                     redirect_url = '/main/user'
                 elif user.groups.filter(name='Chief').exists():
@@ -51,23 +58,37 @@ def handle_login(request):
 
 
 @login_required(login_url='/main/error')
+@group_required('User')
 def user(request):
     # Assuming reports_per_page is the number of reports you want to show per page
     reports_per_page = 1
     reports = Report.objects.filter(reporterName=request.user.username).order_by('-datetime')
-    paginator = Paginator(reports, reports_per_page)
+    # For filtering 
+    status = request.GET.get('status')
+
+    
+    
+    
+    if status in ['0', '1', '2']:  # Assuming '0', '1', '2' are your status values
+        reports = reports.filter(status=status)
+        paginator = Paginator(reports, reports_per_page)
+    else: 
+        paginator = Paginator(reports, reports_per_page)
 
     # Get all the professions and operations Line number
     professions = Profession.objects.all()
     operation_lines = OperationLine.objects.all()
 
+   
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
+
     
     context = {
         'page_obj': page_obj,
         'professions': professions,
         'operation_lines': operation_lines,
+        'status': status
     }
 
     if request.method == 'POST':
@@ -80,19 +101,22 @@ def user(request):
         'page_obj': page_obj,
         'professions': professions,
         'operation_lines': operation_lines,
+        'status': status
         } 
         else: 
             context = {
             'page_obj': page_obj,
             'professions': professions,
             'operation_lines': operation_lines,
-            'editReport' : report
+            'editReport' : report,
+            'status': status
         }
 
 
     return render(request, 'user.html', context)
 
 @login_required(login_url='/main/error')
+@group_required('Chief')
 def chief(request):
     user = User.objects.get(username=request.user)
     profile = Profile.objects.get(user=user)
@@ -134,6 +158,7 @@ def chief(request):
     return render(request, 'chief.html', context)
 
 @login_required(login_url='/main/error')
+@group_required('Officer')
 def officer(request):
 
     # for officer profession
@@ -213,10 +238,10 @@ def upload_report(request):
         description = request.POST.get('description')
         line_number = request.POST.get('lineNumber')
         problemCategory = request.POST.get('problemCategory')
+        machineNumber = request.POST.get('machineNumber')
         images = request.FILES.getlist('images')  # Use getlist to get multiple files
 
-        dt_now = datetime.datetime.now()
-
+        dt_now = datetime.datetime.now().replace(second=0, microsecond=0)
         latest_report = Report.objects.order_by('-reportID').first()
         if latest_report:
             next_reportID = latest_report.reportID + 1
@@ -229,7 +254,8 @@ def upload_report(request):
             operationLineNumber=line_number,
             problemDescription=description,
             datetime=dt_now,
-            problemCategory=problemCategory
+            problemCategory=problemCategory,
+            machineNumber=machineNumber,
         )
         report.save()
 
@@ -259,6 +285,7 @@ def update_report(request, report_id):
         description = request.POST.get('description')
         line_number = request.POST.get('lineNumber')
         problemCategory = request.POST.get('problemCategory')
+        machineNumber = request.POST.get('machineNumber')
         images = request.FILES.getlist('images')  # Use getlist to get multiple files
         dt_now = datetime.datetime.now()
 
@@ -267,9 +294,10 @@ def update_report(request, report_id):
         report.problemDescription = description
         report.datetime = dt_now
         report.problemCategory = problemCategory
+        report.machineNumber = machineNumber
         report.save()
         # Clear existing images associated with the report
-        report.images.all().delete()
+        # report.images.all().delete()
         for image in images:
             print(image)
             Image.objects.create(report=report, imageData=image)
@@ -278,3 +306,47 @@ def update_report(request, report_id):
     else:
         return redirect('error')
 
+@login_required(login_url='/main/error')
+# @group_required('General')
+def solution(request, report_id):
+    report = Report.objects.get(reportID = report_id)
+    print("report here is ",report.problemDescription)
+
+    return render(request, 'solution.html', {'report': report})
+
+def index(request):
+    return render(request, 'registration/index.html')
+
+def upload_solution(request, report_id):
+    report = Report.objects.get(reportID = report_id)
+    print("report ",report)
+    if request.method == 'POST':
+        solver_name = request.user.username
+        solution_state = request.POST.get('solution-state')
+        soldescription = request.POST.get('soldescription')
+        images = request.FILES.getlist('solimages')
+
+        dt_now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+        latest_solution = Solution.objects.order_by('-solutionID').first()
+        if latest_solution:
+            next_solutionID = latest_solution.solutionID + 1
+        else:
+            next_solutionID  = 1
+
+        solution = Solution(
+            report=report,
+            solutionID=next_solutionID, 
+            solverName=solver_name,
+            solutionState=solution_state,
+            description=soldescription,
+            datetime=dt_now,
+        )
+        solution.save()
+
+        for image in images:
+            Image.objects.create(solution=solution, imageData=image)
+
+        return redirect('/main/solution')
+
+    return render(request,  'solution.html', {'report': report})
