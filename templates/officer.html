@@ -206,13 +206,33 @@
         .pending-tag{
             width: 100px; 
             height: 30px; 
-            background-color: #FCE408;
+            background-color: yellow;
             align-content: center;
             text-align: center;
             border-radius: 5px;
             font-weight: bold;
         }
         .approved-tag{
+            width: 100px; 
+            height: 30px; 
+            background-color: orange;
+            align-content: center;
+            text-align: center;
+            border-radius: 5px;
+            font-weight: bold;
+            color: white;
+        }
+        .email_sent{
+            width: 100px; 
+            height: 30px; 
+            background-color: #4470b1;
+            align-content: center;
+            text-align: center;
+            border-radius: 5px;
+            font-weight: bold;
+            color: white;
+        }
+        .solved{
             width: 100px; 
             height: 30px; 
             background-color: #17BF0B;
@@ -222,7 +242,7 @@
             font-weight: bold;
             color: white;
         }
-        .rejected-tag{
+        .rejected{
             width: 100px; 
             height: 30px; 
             background-color: #E74133;
@@ -293,8 +313,20 @@
 </head>
 <body>
     {% if user.is_authenticated %}
-        <h2 style="color: #393680;">Welcome, {{ user.username }}!</h2>
-        <!-- Your content here -->
+    <div style="display: flex; width: 100%;">
+        <div style="flex: 2; ">
+            <a href="{% url 'login' %}">&#10094;Back</a>
+        </div>
+        <div style="flex: 8; text-align: center;">
+            <h2 style="color: #393680;">Welcome, {{ user.username }}!</h2>
+        </div>
+        <div style="flex: 2;">
+            <div style="display: flex; justify-content: flex-end;">
+                <div style="width: 10px; height: 10px; border-radius: 50%; background-color: #17BF0B; margin: 20px 5px;"></div>
+                <p>Officer</p>
+            </div>
+        </div>
+    </div>
     {% else %}  
         <h1>You are not logged in!</h1>
         <p>Please <a href="{% url 'login' %}">log in</a>.</p>
@@ -307,6 +339,7 @@
             <div style="border-left: 5px solid #6A64F1; padding-left: 5px;">
                 <h3>Manage Reports</h3>
             </div>
+            
             <ul>
                 {% if page_obj %}
                     {% for report in page_obj %}
@@ -315,6 +348,7 @@
                             <div style="flex: 10;">
                                 <li>Reporter Name: {{ report.reporterName }}</li>
                                 <li>Operation Line: {{ report.operationLineNumber }}</li>
+                                <li>Machine Number: {{ report.machineNumber }}</li>
                                 <li>Problem Category: {{ report.problemCategory }}</li>
                                 <li>Description: {{ report.problemDescription }}</li>
                                 <li>Created At: {{ report.datetime }}</li>
@@ -324,8 +358,13 @@
                                     <div class="pending-tag">Pending</div>
                                 {% elif report.status == '1' %}  
                                     <div class="approved-tag">Approved</div>
-                                {% else %}  
-                                    <div class="rejected-tag">Rejected</div>
+                                {% elif report.status == '2' %}  
+                                    <div class="email_sent">Email Sent</div>
+                                {% elif report.status == '3' %}  
+                                    <div class="solved">Solved</div>
+                                    <a style="font-size: 14px; margin: 10px 0px 0px 5px;" href="{% url 'solutionForReport' report.reportID %}">View Solution</a>
+                                {% elif report.status == '4' %}  
+                                    <div class="rejected">Rejected</div>
                                 {% endif %}
                                 
                             </div>

@@ -250,7 +250,7 @@
         .pending-tag{
             width: 100px; 
             height: 30px; 
-            background-color: #FCE408;
+            background-color: yellow;
             align-content: center;
             text-align: center;
             border-radius: 5px;
@@ -259,7 +259,7 @@
         .approved-tag{
             width: 100px; 
             height: 30px; 
-            background-color: #17BF0B;
+            background-color: orange;
             align-content: center;
             text-align: center;
             border-radius: 5px;
@@ -270,6 +270,26 @@
             width: 100px; 
             height: 30px; 
             background-color: #4470b1;
+            align-content: center;
+            text-align: center;
+            border-radius: 5px;
+            font-weight: bold;
+            color: white;
+        }
+        .solved{
+            width: 100px; 
+            height: 30px; 
+            background-color: #17BF0B;
+            align-content: center;
+            text-align: center;
+            border-radius: 5px;
+            font-weight: bold;
+            color: white;
+        }
+        .rejected{
+            width: 100px; 
+            height: 30px; 
+            background-color: #E74133;
             align-content: center;
             text-align: center;
             border-radius: 5px;
@@ -391,8 +411,16 @@
 </head>
 <body>
     {% if user.is_authenticated %}
-        <h2 style="color: #393680;">Welcome, {{ user.username }}!</h2>
-        <!-- Your content here -->
+    <div style="display: flex; width: 100%;">
+        <div style="flex: 2; ">
+            <a href="{% url 'login' %}">&#10094;Back</a>
+        </div>
+        <div style="flex: 8; text-align: center;">
+            <h2 style="color: #393680;">Welcome, {{ user.username }}!</h2>
+        </div>
+        <div style="flex: 2;">
+        </div>
+    </div>
     {% else %}  
         <h1>You are not logged in!</h1>
         <p>Please <a href="{% url 'login' %}">log in</a>.</p>
@@ -416,6 +444,7 @@
                             <div style="flex: 10;">
                                 <li>Reporter Name: {{ report.reporterName }}</li>
                                 <li>Operation Line: {{ report.operationLineNumber }}</li>
+                                <li>Machine Number: {{ report.machineNumber }}</li>
                                 <li>Problem Category: {{ report.problemCategory }}</li>
                                 <li>Description: {{ report.problemDescription }}</li>
                                 <li>Created At: {{ report.datetime }}</li>
@@ -427,6 +456,11 @@
                                     <div class="approved-tag">Approved</div>
                                 {% elif report.status == '2' %}  
                                     <div class="email_sent">Email Sent</div>
+                                {% elif report.status == '3' %}  
+                                    <div class="solved">Solved</div>
+                                    <a style="font-size: 14px; margin: 10px 0px 0px 5px;" href="{% url 'solutionForReport' report.reportID %}">View Solution</a>
+                                {% elif report.status == '4' %}  
+                                    <div class="rejected">Rejected</div>
                                 {% endif %}
                                 
                             </div>
@@ -463,24 +497,12 @@
                 {% csrf_token %}
                 <label for="solverName">Issue Resolved by:</label>
                 <input type="text" id="solverName" name="solverName" value={{user.username}} disabled><br>
-                
-                <label for="" style="z-index: 1000; position: relative; background-color: white; margin-left: 2px; width: 136px; padding-left: 3px;">Is the issue fixed?</label><br>
-                    <div style="z-index: 0; border: 2px solid #6A64F1; border-radius: 5px; padding: 5px; top: -27px; position: relative; padding-top: 5px; font-size: 14px;">
-                        <div style="display: flex; margin: 5px 3px;">
-                            <input type="radio" id="solution-state-yes" name="solution-state" value="Yes">
-                            <label for="solution-state-yes">Yes</label><br>
-                        </div>
-                        <div style="display: flex; margin: 5px 3px;">
-                            <input type="radio" id="solution-state-no" name="solution-state" value="No">
-                            <label for="solution-state-no">No</label><br>
-                        </div>       
-                    </div>
 
                 <label for="solimages">Select images:</label>
                 <input type="file" id="solimages" name="solimages" accept="image/*" multiple required><br><br>
                 
                 <label for="soldescription">Solution description:</label>
-                <textarea id="soldescription" name="description" rows="4" cols="50" required>{{ editReport.problemDescription }}</textarea><br><br>
+                <textarea id="soldescription" name="description" rows="6" cols="50" required>{{ editReport.problemDescription }}</textarea><br><br>
 
                 <input type="submit" value="Submit" name="Submit">
             </form>

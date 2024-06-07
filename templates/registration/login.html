@@ -1,31 +1,3 @@
-<!-- {% block content %}
-    {% if messages %}
-        {% for message in messages %}
-            <div class="alert {{ message.tags }}">
-                {{ message }}
-            </div>
-        {% endfor %}
-    {% endif %}
-
-  <form method="post" action="{% url 'login' %}">
-    {% csrf_token %}
-    <table>
-      <tr>
-        <td>{{ form.username.label_tag }}</td>
-        <td>{{ form.username }}</td>
-      </tr>
-      <tr>
-        <td>{{ form.password.label_tag }}</td>
-        <td>{{ form.password }}</td>
-      </tr>
-    </table>
-    <input type="submit" value="login">
-    <input type="hidden" name="next" value="{{ next }}">
-  </form>
-
-
-{% endblock %} -->
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -40,7 +12,7 @@
             margin: 0;
             padding: 0;
             align-content: center;
-            margin: 100px auto;
+            margin: 20px auto;
             text-align: center;
         }
 
@@ -72,38 +44,66 @@
             font-size: 15px;
             font-weight: bold;
         }
+        .header{
+            color: red; 
+            font-size: 50px;
+        }
+        .sub-header{
+            color: #393680; 
+            font-size: 20px;
+            text-align: center;
+            font-weight: bold;
+            margin-top: 10px;
+            padding-bottom: 10px;
+        }
+        label{
+            font-size: 15px;
+            font-weight: bold;
+            color: #555;
+        }
         @media only screen and (max-width: 370px){
             .container {
                 max-width: 200px;
                 padding: 10px;
             }
+            .header{
+                font-size: 40px;
+            }
+            .sub-header{
+                font-size: 16px;
+            }
         }
     </style>
 </head>
 <body>
-  <h2 style="color: #393680;">Log in to Your Account! </h2>
-  <div class="container">
-    {% if messages %}
-        {% for message in messages %}
-            <div class="alert {{ message.tags }}">
-                {{ message }}
-            </div>
-        {% endfor %}
-    {% endif %}
+    <h1 class="header">SNSS</h1>  
+    <div class="container">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert {{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
 
-    <form method="post" action="{% url 'login' %}">
-        {% csrf_token %}
-        <div class="input-group">
-            <label for="{{ form.username.id_for_label }}">Username:</label>
-            {{ form.username }}
-        </div><br>
-        <div class="input-group">
-            <label for="{{ form.password.id_for_label }}">Password:</label>
-            {{ form.password }}
-        </div><br>
-        <input type="submit" value="Login" class="submit-button">
-        <input type="hidden" name="next" value="{{ next }}">
-    </form>
-  </div>
+        <form method="post" action="{% url 'login' %}">
+            <h2 class="sub-header">Maintainance Report System</h2>
+            {% csrf_token %}
+            <div class="input-group">
+            <label for="id_username">Username:</label>
+            <input type="text" name="username" id="id_username">
+            </div><br>
+            <div class="input-group">
+                <label for="id_password">Password:</label>
+                <input type="password" name="password" id="id_password">
+            </div><br>
+            <input type="submit" value="Login" class="submit-button">
+            <input type="hidden" name="next" value="{{ next }}">
+            <div style="text-align: center; margin: 10px;">
+                <a href="/admin/" style="margin:auto; color: #555; font-size: 15px;">Admin Login</a>
+            </div>
+            
+        </form>
+    </div>
 </body>
 </html>

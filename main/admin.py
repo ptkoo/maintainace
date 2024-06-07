@@ -35,20 +35,65 @@ class OperationLineFilter(admin.SimpleListFilter):
         return queryset
     
 # End of custom filters
-
-# Images for report
-from .models import Report, Image
+from django.contrib import admin
+from .models import Report, Image, Solution, ImageSolution
+from django.utils.html import format_html
 
 class ImageInline(admin.TabularInline):
     model = Image
     extra = 0
+    readonly_fields = ('image_thumbnail',)
 
+    def image_thumbnail(self, obj):
+        return format_html('<img src="{}" width="100" height="100" />'.format(obj.imageData.url))
+    image_thumbnail.short_description = 'Thumbnail'
+
+class ImageForSolutionInline(admin.TabularInline):
+    model = ImageSolution
+    extra = 0
+    readonly_fields = ('image_thumbnail',)
+
+    def image_thumbnail(self, obj):
+        return format_html('<img src="{}" width="100" height="100" />'.format(obj.imageData.url))
+    image_thumbnail.short_description = 'Thumbnail'
+    
+# # Inline for images associated with a solution
+# class ImageForSolutionInline(admin.TabularInline):
+#     model = ImageSolution
+#     extra = 0
+
+# Inline for Solution, including the ImageForSolutionInline
+class SolutionInline(admin.StackedInline):
+    model = Solution
+    extra = 0
+    readonly_fields = ('solverName',  'description', 'datetime')
+    can_delete = False
+    show_change_link = True  # Allows navigating to the solution's change form
+    inlines = [ImageForSolutionInline]
+
+# Inline for images associated with a report
+# class ImageInline(admin.TabularInline):
+#     model = Image
+#     extra = 0
+
+# Admin for Report, including the SolutionInline and ImageInline
 class ReportAdmin(admin.ModelAdmin):
-    inlines = [ImageInline]
+    inlines = [ImageInline,SolutionInline]
     list_filter = ('status',)
     list_display = ('reportID', 'reporterName', 'operationLineNumber', 'problemCategory', 'status', 'datetime')
 
 admin.site.register(Report, ReportAdmin)
+
+# Separate admin for Solution to display on its own
+class SolutionAdmin(admin.ModelAdmin):
+    inlines = [ImageForSolutionInline]
+    list_display = ('solutionID', 'report', 'solverName', 'datetime')
+    readonly_fields = ('report',)
+
+admin.site.register(Solution, SolutionAdmin)
+
+
+
 
 # Adding more options for Operation Line No and profession
 class ProfileAdminForm(forms.ModelForm):
@@ -109,6 +154,5 @@ admin.site.unregister(User)
 admin.site.register(User, CustomUserAdmin)
 admin.site.register(OperationLine)
 admin.site.register(Profession)
-admin.site.register(Solution)
 
 

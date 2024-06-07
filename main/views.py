@@ -9,7 +9,7 @@ from django.conf import settings
 from django.contrib.auth.models import User, Group
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
-from .models import Report, Profile, Image,Profession, OperationLine, Solution
+from .models import Report, Profile, Image,Profession, OperationLine, Solution, ImageSolution
 from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404, redirect
 from .forms import ReportForm
@@ -18,6 +18,8 @@ import os
 import mimetypes
 from datetime import datetime as dateTime
 from django.http import HttpResponseRedirect
+from django.urls import reverse
+from django.http import JsonResponse
 # Create your views here.
 def handle_login(request):
     if( request.method == 'POST'):
@@ -29,19 +31,16 @@ def handle_login(request):
             # print(user)
             if user is not None:
                 login(request, user)  # Log the user in
-                # Check for 'next' parameter
-                next_url = request.GET.get('next')
-                if next_url:
-                    return HttpResponseRedirect(next_url)
 
-                if user.groups.filter(name='User').exists():
+                next_param = request.GET.get('next')
+                if next_param:
+                    return redirect(next_param)
+                elif user.groups.filter(name='User').exists():
                     redirect_url = '/main/user'
                 elif user.groups.filter(name='Chief').exists():
                     redirect_url = '/main/chief'
                 elif user.groups.filter(name='Officer').exists():
                     redirect_url = '/main/officer'
-                elif user.groups.filter(name = "Repair").exists():
-                    redirect_url = '/main/repair'
                 else:
                     messages.error(request, "No group found for the user.")
                     return redirect('/main/accounts/login/')
@@ -67,9 +66,7 @@ def user(request):
     status = request.GET.get('status')
 
     
-    
-    
-    if status in ['0', '1', '2']:  # Assuming '0', '1', '2' are your status values
+    if status in ['0', '1', '2','3']:  # Assuming '0', '1', '2' are your status values
         reports = reports.filter(status=status)
         paginator = Paginator(reports, reports_per_page)
     else: 
@@ -125,12 +122,18 @@ def chief(request):
     print("OperationLineNo", operation_line_nos)
     # reports = Report.objects.filter(status='0',operationLineNumber__in=operation_line_nos)  # Filter reports with status = '0'
     reports = Report.objects.filter(status='0', operationLineNumber__in= operation_line_nos)  # Filter reports with status = '0'
-
+   # Filter for status '0', '1', and '4' separately and combine the results
+    reportHistorys = Report.objects.filter(status='0', operationLineNumber__in=operation_line_nos) | \
+            Report.objects.filter(status='1', operationLineNumber__in=operation_line_nos) | \
+            Report.objects.filter(status='4', operationLineNumber__in=operation_line_nos)
     # Pagination
     reports_per_page = 1
     paginator = Paginator(reports, reports_per_page)
+    paginatorHistory = Paginator(reportHistorys, reports_per_page)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
+    page_obj_history = paginatorHistory.get_page(page_number)
+   
     # print("page_obj ",page_obj)
     
     # context = {
@@ -147,12 +150,13 @@ def chief(request):
         elif 'cancel' in request.POST:
             report_id = request.POST.get('cancel')
             report = Report.objects.get(reportID = report_id)
-            report.delete()
-            print("Delete report")
+            report.status = '4'
+            report.save()
         return redirect('/main/chief')
     
     context = {
         'page_obj': page_obj,
+        'page_obj_history': page_obj_history,
     }
 
     return render(request, 'chief.html', context)
@@ -175,7 +179,7 @@ def officer(request):
 
     reports = Report.objects.filter(status ='1',problemCategory__in = profession )
     print(reports)
-     # Pagination
+    # Pagination
     reports_per_page = 1
     paginator = Paginator(reports, reports_per_page)
     page_number = request.GET.get('page')
@@ -199,6 +203,7 @@ def officer(request):
         report.dueDate = datetime.datetime.now() + datetime.timedelta(days=3)
         report.save()
 
+        # link = request.build_absolute_uri(reverse('login'))
         html_content = render_to_string('email.html', {'report': report})
         text_content = strip_tags(html_content)  # Plain text version for email clients that don't support HTML
         subject = "Report Details"
@@ -232,6 +237,8 @@ def officer(request):
 
     return render(request, 'officer.html', context)
 
+@login_required(login_url='/main/error')
+@group_required('User')
 def upload_report(request):
     if request.method == 'POST':
         reporter_name = request.POST.get('reporterName')
@@ -267,16 +274,18 @@ def upload_report(request):
 
     return render(request, 'registration/user.html')
 
-def error(request):
-    return render(request, 'registration/error.html')
 
 
+@login_required(login_url='/main/error')
+@group_required('User')
 def delete_report(request, report_id):
     if request.POST.get('action') == 'delete':
         report = get_object_or_404(Report, reportID=report_id)
         report.delete()
     return redirect('user')
 
+@login_required(login_url='/main/error')
+@group_required('User')
 def update_report(request, report_id):
     
     report = Report.objects.get(reportID = report_id)
@@ -306,23 +315,26 @@ def update_report(request, report_id):
     else:
         return redirect('error')
 
-@login_required(login_url='/main/error')
+# @login_required(login_url='/main/error')
 # @group_required('General')
+# After loggin in the user from "General group" can report their solution
 def solution(request, report_id):
     report = Report.objects.get(reportID = report_id)
-    print("report here is ",report.problemDescription)
-
     return render(request, 'solution.html', {'report': report})
 
-def index(request):
-    return render(request, 'registration/index.html')
+# This one is for view the solution for report by the user. 
+def solutionForReport(request, report_id):
+    report = Report.objects.get(reportID = report_id)
+    solution = Solution.objects.get(report = report)
+    return render(request, 'solutionForReport.html', {'report': report, 'solution': solution})
 
+# @login_required(login_url='/main/error')
+# @group_required('General')
 def upload_solution(request, report_id):
     report = Report.objects.get(reportID = report_id)
     print("report ",report)
     if request.method == 'POST':
         solver_name = request.user.username
-        solution_state = request.POST.get('solution-state')
         soldescription = request.POST.get('soldescription')
         images = request.FILES.getlist('solimages')
 
@@ -345,8 +357,47 @@ def upload_solution(request, report_id):
         solution.save()
 
         for image in images:
-            Image.objects.create(solution=solution, imageData=image)
+            ImageSolution.objects.create(solution=solution, imageData=image)
 
-        return redirect('/main/solution')
+        # Updating Report Status 
 
-    return render(request,  'solution.html', {'report': report})
+        report.status = '3'
+        report.solvedBy = solver_name
+
+        report.save()
+
+        return redirect('/main/success')
+
+    return redirect('/main/error')
+
+
+def dashboard(request):
+    # Get all the professions and operations Line number
+    professions = Profession.objects.all()
+    return render( request, 'dashborad.html', {'professions': professions})
+
+def get_reports_by_status_and_profession(request, operation_line):
+    status = request.GET.get('status')
+    profession = request.GET.get('profession')
+    
+    if operation_line == 'recent':
+        reports = Report.objects.all().order_by('-datetime')[:10]  # Adjust the number of recent reports as needed
+    else:
+        reports = Report.objects.filter(operationLineNumber=operation_line)
+
+    if status in ['0', '1', '2', '3', '4']:
+        reports = reports.filter(status=status)
+
+    if profession:
+        reports = reports.filter(problemCategory=profession)
+
+    report_list = list(reports.values('reportID', 'reporterName', 'operationLineNumber', 'problemCategory', 'problemDescription', 'status', 'datetime'))
+
+    return JsonResponse(report_list, safe=False)
+
+
+def error(request):
+    return render(request, 'error.html')
+
+def success(request):
+    return render(request, 'success.html')
