@@ -135,6 +135,13 @@ class CustomUserAdmin(UserAdmin):
     inlines = (ProfileInline,)
     list_display = ('username', 'get_groups', 'get_operation_lines', 'get_profession')
     list_filter = ('groups', OperationLineFilter, ProfessionFilter)
+    exclude = ('user_permissions', 'important_dates')  # Excluded fields
+    fieldsets = (
+        (None, {'fields': ('username', 'password')}),
+        ('Personal info', {'fields': ('first_name', 'last_name', 'email')}),
+        ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups')}),
+        ('Important dates', {'fields': ('last_login', 'date_joined')}),
+    )
     def get_groups(self, obj):
         return ", ".join([group.name for group in obj.groups.all()])
     get_groups.short_description = 'Groups'

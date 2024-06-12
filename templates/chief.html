@@ -353,6 +353,12 @@
         <div class="reports-container">
             <div style="border-left: 5px solid #6A64F1; padding-left: 5px;">
                 <h3>Manage Reports</h3>
+                <script>
+                    // JavaScript to submit the form on change
+                    document.getElementById('status-filter').addEventListener('change', function() {
+                        document.getElementById('status-filter-form').submit();
+                    });
+                </script>
             </div>
             
             <ul>

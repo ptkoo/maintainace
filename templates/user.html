@@ -453,7 +453,7 @@
                 <form method="post" enctype="multipart/form-data" action="{% url 'update_report' editReport.reportID %}">
                     {% csrf_token %}
                     <label for="reporterName">Reported by:</label>
-                    <input type="text" id="reporterName" name="reporterName" value={{user.username}} disabled><br>
+                    <input type="text" id="reporterName" name="reporterName" value={{user.username}} disabled readonly><br>
             
                     <label for="lineNumber">Line number occurred:</label>
                     <select id="lineNumber" name="lineNumber" required>

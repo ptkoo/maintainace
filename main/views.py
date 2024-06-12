@@ -16,10 +16,14 @@ from .forms import ReportForm
 import datetime
 import os 
 import mimetypes
+from datetime import timedelta,  date
 from datetime import datetime as dateTime
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.http import JsonResponse
+from django.db.models.functions import TruncDay, TruncWeek, TruncMonth
+from django.db.models import Count
+from django.utils import timezone
 # Create your views here.
 def handle_login(request):
     if( request.method == 'POST'):
@@ -121,11 +125,11 @@ def chief(request):
     operation_line_nos = [line.line_no for line in operation_lines]
     print("OperationLineNo", operation_line_nos)
     # reports = Report.objects.filter(status='0',operationLineNumber__in=operation_line_nos)  # Filter reports with status = '0'
-    reports = Report.objects.filter(status='0', operationLineNumber__in= operation_line_nos)  # Filter reports with status = '0'
-   # Filter for status '0', '1', and '4' separately and combine the results
+    reports = Report.objects.filter(status='0', operationLineNumber__in= operation_line_nos).order_by('-datetime')  # Filter reports with status = '0'
+    # Filter for status '0', '1', and '4' separately and combine the results
     reportHistorys = Report.objects.filter(status='0', operationLineNumber__in=operation_line_nos) | \
             Report.objects.filter(status='1', operationLineNumber__in=operation_line_nos) | \
-            Report.objects.filter(status='4', operationLineNumber__in=operation_line_nos)
+            Report.objects.filter(status='4', operationLineNumber__in=operation_line_nos).order_by('-datetime')
     # Pagination
     reports_per_page = 1
     paginator = Paginator(reports, reports_per_page)
@@ -177,7 +181,7 @@ def officer(request):
     users_in_general = User.objects.filter(groups=general_group)
     emails = [user.email for user in users_in_general if user.email]
 
-    reports = Report.objects.filter(status ='1',problemCategory__in = profession )
+    reports = Report.objects.filter(status ='1',problemCategory__in = profession ).order_by('-datetime')
     print(reports)
     # Pagination
     reports_per_page = 1
@@ -269,12 +273,13 @@ def upload_report(request):
         for image in images:
             print(image)
             Image.objects.create(report=report, imageData=image)
+        
+        # Send SSE update to notify chief about new report
+        send_sse_update_to_chief()
 
         return redirect('/main/user')
 
     return render(request, 'registration/user.html')
-
-
 
 @login_required(login_url='/main/error')
 @group_required('User')
@@ -350,7 +355,7 @@ def upload_solution(request, report_id):
             report=report,
             solutionID=next_solutionID, 
             solverName=solver_name,
-            solutionState=solution_state,
+            # solutionState=solution_state,
             description=soldescription,
             datetime=dt_now,
         )
@@ -374,7 +379,7 @@ def upload_solution(request, report_id):
 def dashboard(request):
     # Get all the professions and operations Line number
     professions = Profession.objects.all()
-    return render( request, 'dashborad.html', {'professions': professions})
+    return render( request, 'dashboard.html', {'professions': professions})
 
 def get_reports_by_status_and_profession(request, operation_line):
     status = request.GET.get('status')
@@ -396,8 +401,355 @@ def get_reports_by_status_and_profession(request, operation_line):
     return JsonResponse(report_list, safe=False)
 
 
+# For analysis dashboard
+
+# This is for line and bar chart
+def reports_daily(request, year, month):
+    # Fetch all reports and convert the datetime string to a datetime object
+    reports = Report.objects.all()
+    report_list = []
+    
+    for report in reports:
+        try:
+            report_datetime = datetime.datetime.strptime(report.datetime, '%Y-%m-%d %H:%M:%S')
+        except ValueError:
+            continue  # Skip if datetime format is incorrect
+            
+        report_list.append({
+            'report': report,
+            'datetime': report_datetime,
+        })
+    
+    # Sort the reports by the datetime object in descending order
+    sorted_reports = sorted(report_list, key=lambda x: x['datetime'], reverse=True)
+    
+    # Filter reports based on the chosen year and month, default to current month and year if not specified
+    if year and month:
+        try:
+            year = int(year)
+            month = int(month)
+        except ValueError:
+            year = date.today().year
+            month = date.today().month
+    else:
+        year = date.today().year
+        month = date.today().month
+
+    reports_for_month = [item for item in sorted_reports if item['datetime'].year == year and item['datetime'].month == month]
+    
+    # Group and count reports by day
+    data = {}
+    for item in reports_for_month:
+        day = item['datetime'].date()
+        if day not in data:
+            data[day] = 0
+        data[day] += 1
+    
+    sorted_data = sorted(data.items())
+    sorted_data = [{'day': str(day), 'count': count} for day, count in sorted_data]
+    
+    return JsonResponse(sorted_data, safe=False)
+
+
+# This is for line and bar chart
+def reports_monthly(request, year=None):
+    # Fetch all reports and convert the datetime string to a datetime object
+    reports = Report.objects.all()
+    report_list = []
+    
+    for report in reports:
+        try:
+            report_datetime = datetime.datetime.strptime(report.datetime, '%Y-%m-%d %H:%M:%S')
+        except ValueError:
+            continue  # Skip if datetime format is incorrect
+            
+        report_list.append({
+            'report': report,
+            'datetime': report_datetime,
+        })
+    
+    # Sort the reports by the datetime object in descending order
+    sorted_reports = sorted(report_list, key=lambda x: x['datetime'], reverse=True)
+    
+    # Filter reports for the chosen year or default to current year
+    if year:
+        try:
+            year = int(year)
+        except ValueError:
+            year = date.today().year
+    else:
+        year = date.today().year
+        
+    reports_for_year = [item for item in sorted_reports if item['datetime'].year == year]
+    
+    # Group and count reports by month
+    data = {}
+    for item in reports_for_year:
+        month = (item['datetime'].year, item['datetime'].month)
+        if month not in data:
+            data[month] = 0
+        data[month] += 1
+    
+    sorted_data = sorted(data.items())
+    sorted_data = [{'month': f'{year}-{month:02}', 'count': count} for (year, month), count in sorted_data]
+    
+    return JsonResponse(sorted_data, safe=False)
+
+
+# def reports_today(request):
+#     # Get current date
+#     current_date = date.today()
+    
+#     # Fetch all reports (assuming datetime is a char field)
+#     reports = Report.objects.all()
+    
+#     # Filter reports for the current day
+#     reports_today = [report for report in reports if report.datetime.startswith(str(current_date))]
+    
+#     # Group and count reports by problem category
+#     categories_data = {}
+#     for report in reports_today:
+#         if report.problemCategory in categories_data:
+#             categories_data[report.problemCategory] += 1
+#         else:
+#             categories_data[report.problemCategory] = 1
+    
+#     # Convert categories_data into the format required by Chart.js
+#     categories_labels = list(categories_data.keys())
+#     categories_counts = list(categories_data.values())
+    
+#     # Group and count reports by status
+#     statuses_data = {}
+#     for report in reports_today:
+#         if report.status in statuses_data:
+#             statuses_data[report.status] += 1
+#         else:
+#             statuses_data[report.status] = 1
+    
+#     # Convert statuses_data into the format required by Chart.js
+#     statuses_labels = list(statuses_data.keys())
+#     statuses_counts = list(statuses_data.values())
+    
+#     data = {
+#         'categories_labels': categories_labels,
+#         'categories_counts': categories_counts,
+#         'statuses_labels': statuses_labels,
+#         'statuses_counts': statuses_counts,
+#     }
+    
+#     return JsonResponse(data)
+
+# def reports_currentMonth(request):
+#     today = date.today()
+#     first_day_of_month = today.replace(day=1)
+#     last_day_of_month = today.replace(day=1, month=today.month % 12 + 1) - datetime.timedelta(days= 1)
+    
+#     # Fetch all reports (assuming datetime is a char field)
+#     reports = Report.objects.all()
+    
+#     # Fetch reports for the current month
+#     reports_currentMonth = Report.objects.filter(
+#         datetime__gte=first_day_of_month,
+#         datetime__lte=last_day_of_month
+#     )
+    
+#     # Group and count reports by problem category
+#     categories_data = {}
+#     for report in reports_currentMonth:
+#         if report.problemCategory in categories_data:
+#             categories_data[report.problemCategory] += 1
+#         else:
+#             categories_data[report.problemCategory] = 1
+    
+#     # Convert categories_data into the format required by Chart.js
+#     categories_labels = list(categories_data.keys())
+#     categories_counts = list(categories_data.values())
+    
+#     # Group and count reports by status
+#     statuses_data = {}
+#     for report in reports_currentMonth:
+#         if report.status in statuses_data:
+#             statuses_data[report.status] += 1
+#         else:
+#             statuses_data[report.status] = 1
+    
+#     # Convert statuses_data into the format required by Chart.js
+#     statuses_labels = list(statuses_data.keys())
+#     statuses_counts = list(statuses_data.values())
+    
+#     data = {
+#         'categories_labels': categories_labels,
+#         'categories_counts': categories_counts,
+#         'statuses_labels': statuses_labels,
+#         'statuses_counts': statuses_counts,
+#     }
+    
+#     return JsonResponse(data)
+
+
+def reports_currentMonth(request, year, month):
+    # Get current date
+    current_date = date.today()
+    
+    # Fetch all reports (assuming datetime is a char field)
+    reports = Report.objects.all()
+    
+    # Determine the target year and month based on input parameters
+    if year and month:
+        try:
+            year = int(year)
+            month = int(month)
+        except ValueError:
+            return JsonResponse({'error': 'Invalid year or month format'}, status=400)
+    elif year:
+        try:
+            year = int(year)
+            month = 1  # Default to January if only year is specified
+        except ValueError:
+            return JsonResponse({'error': 'Invalid year format'}, status=400)
+    else:
+        year = current_date.year
+        month = current_date.month
+    # Filter reports for the specified month and year
+    reports_filtered = [
+        report for report in reports
+        if report.datetime.startswith(f"{year}-{month:02}")
+    ]
+    
+    # Group and count reports by problem category
+    categories_data = {}
+    for report in reports_filtered:
+        if report.problemCategory in categories_data:
+            categories_data[report.problemCategory] += 1
+        else:
+            categories_data[report.problemCategory] = 1
+    
+    # Convert categories_data into the format required by Chart.js
+    categories_labels = list(categories_data.keys())
+    categories_counts = list(categories_data.values())
+    
+    # Group and count reports by status
+    statuses_data = {}
+    for report in reports_filtered:
+        if report.status in statuses_data:
+            statuses_data[report.status] += 1
+        else:
+            statuses_data[report.status] = 1
+    
+    # Convert statuses_data into the format required by Chart.js
+    statuses_labels = list(statuses_data.keys())
+    statuses_counts = list(statuses_data.values())
+    
+    data = {
+        'categories_labels': categories_labels,
+        'categories_counts': categories_counts,
+        'statuses_labels': statuses_labels,
+        'statuses_counts': statuses_counts,
+    }
+    
+    return JsonResponse(data)
+
+
+def reports_today(request, year=None, month=None, day=None):
+    # Get current date
+    current_date = date.today()
+    
+    # Fetch all reports (assuming datetime is a char field)
+    reports = Report.objects.all()
+
+    # Determine the target date based on input parameters
+    if year and month and day:
+        try:
+            target_date = datetime.datetime.strptime(f'{year}-{month}-{day}', '%Y-%m-%d').date()
+        except ValueError:
+            return JsonResponse({'error': 'Invalid year, month, or day format'}, status=400)
+    elif year and month:
+        try:
+            target_date = datetime.datetime.strptime(f'{year}-{month}-01', '%Y-%m-%d').date()
+        except ValueError:
+            return JsonResponse({'error': 'Invalid year or month format'}, status=400)
+    else:
+        target_date = current_date
+
+    # Filter reports for the target date
+    reports_filtered = [report for report in reports if report.datetime.startswith(str(target_date))]
+
+    # Group and count reports by problem category
+    categories_data = {}
+    for report in reports_filtered:
+        if report.problemCategory in categories_data:
+            categories_data[report.problemCategory] += 1
+        else:
+            categories_data[report.problemCategory] = 1
+    
+    # Convert categories_data into the format required by Chart.js
+    categories_labels = list(categories_data.keys())
+    categories_counts = list(categories_data.values())
+    
+    # Group and count reports by status
+    statuses_data = {}
+    for report in reports_filtered:
+        if report.status in statuses_data:
+            statuses_data[report.status] += 1
+        else:
+            statuses_data[report.status] = 1
+    
+    # Convert statuses_data into the format required by Chart.js
+    statuses_labels = list(statuses_data.keys())
+    statuses_counts = list(statuses_data.values())
+    
+    data = {
+        'categories_labels': categories_labels,
+        'categories_counts': categories_counts,
+        'statuses_labels': statuses_labels,
+        'statuses_counts': statuses_counts,
+    }
+    
+    return JsonResponse(data)
+
+
+# for display years for selection
+def get_years(request):
+    reports = Report.objects.all()
+    years = set()
+    
+    for report in reports:
+        try:
+            report_date = datetime.datetime.strptime(report.datetime, '%Y-%m-%d %H:%M:%S')
+            years.add(report_date.year)
+        except ValueError:
+            continue
+    
+    sorted_years = sorted(years, reverse=True)
+    return JsonResponse({'years': sorted_years})
+
+
+# for displaying report counts
+def reports_by_year(request, year):
+    reports = Report.objects.filter(datetime__startswith=str(year))
+    total_reports = reports.count()
+    return JsonResponse({'year': year, 'total_reports': total_reports})
+
+def reports_by_year_month(request, year, month):
+    month_str = f"{month:02d}"  # Ensure month is two digits
+    date_prefix = f"{year}-{month_str}"
+    reports = Report.objects.filter(datetime__startswith=date_prefix)
+    total_reports = reports.count()
+    return JsonResponse({'year': year, 'month': month, 'total_reports': total_reports})
+
+def reports_by_year_month_date(request, year, month, day):
+    month_str = f"{month:02d}"  # Ensure month is two digits
+    day_str = f"{day:02d}"      # Ensure day is two digits
+    date_prefix = f"{year}-{month_str}-{day_str}"
+    reports = Report.objects.filter(datetime__startswith=date_prefix)
+    total_reports = reports.count()
+    return JsonResponse({'year': year, 'month': month, 'day': day, 'total_reports': total_reports})
+
+
 def error(request):
     return render(request, 'error.html')
 
 def success(request):
     return render(request, 'success.html')
+
+
