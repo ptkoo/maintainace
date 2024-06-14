@@ -29,6 +29,7 @@
             width: 100%;
             display: flex;
             height: 3em;
+            margin-top: -5px;
         }
 
 
@@ -233,48 +234,75 @@
         .pagination .next {
             float: none;
         }
-        .pending-tag{
+        .pending-tag {
             width: 100px; 
-            height: 30px; 
+            height: 25px; 
+            font-size: 14px;
+            background-color: orange ;
+            align-content: center;
+            text-align: center;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .approved-tag {
+            width: 100px; 
+            height: 25px; 
             background-color: yellow;
             align-content: center;
             text-align: center;
             border-radius: 5px;
             font-weight: bold;
+            font-size: 14px;
         }
-        .approved-tag{
+        .validated {
             width: 100px; 
-            height: 30px; 
-            background-color: orange;
+            height: 25px; 
+            background-color: #2A9D8F;
             align-content: center;
             text-align: center;
             border-radius: 5px;
             font-weight: bold;
             color: white;
+            font-size: 14px;
         }
-        .email_sent{
+        .email_sent {
             width: 100px; 
-            height: 30px; 
+            height: 25px; 
             background-color: #4470b1;
             align-content: center;
             text-align: center;
             border-radius: 5px;
             font-weight: bold;
             color: white;
+            font-size: 14px;
         }
-        .solved{
+        .solved {
             width: 100px; 
-            height: 30px; 
+            height: 25px; 
+            font-size: 14px;
             background-color: #17BF0B;
             align-content: center;
             text-align: center;
             border-radius: 5px;
             font-weight: bold;
             color: white;
+            font-size: 14px;
         }
-        .rejected{
+        .finished {
             width: 100px; 
-            height: 30px; 
+            height: 25px; 
+            background-color: #F7007C;
+            align-content: center;
+            text-align: center;
+            border-radius: 5px;
+            font-weight: bold;
+            color: white;
+            font-size: 14px;
+        }
+        .rejected {
+            width: 100px; 
+            height: 25px; 
+            font-size: 14px;
             background-color: #E74133;
             align-content: center;
             text-align: center;
@@ -286,12 +314,30 @@
         .active {
             display: block;
         }
+        .back{
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        .user-level{
+            width: 12px; 
+            height: 12px; 
+            border-radius: 50%; 
+            background-color: yellow; 
+            margin: 18px 5px;
+        }
+        .user-level-p{
+            padding-right: 10px; 
+            font-weight: bold; 
+            color: #393680;   
+        }
 
         
         @media only screen and (min-width: 250px) and (max-width: 768px) {
             /* Add styles for phones */
             .container{
-                width: 80%;
+                width: 100%;
+                font-size: 12px;
             }
             .reports-container {
                 width: 90%;
@@ -304,6 +350,25 @@
                 display: block;
                 width: 100%;
             }
+            .user-level{
+                width: 10px; 
+                height: 10px; 
+                margin: 10px 5px;
+            }
+            .user-level-p{
+               margin-top: 6px;
+               padding-right: 2px;
+            }
+            .welcome-title{
+                font-size: 16px;
+            }
+            .back{
+                font-size: 14px;
+            }
+            .nav-bar{
+                height: 45px;
+            }
+
             }
 
 
@@ -312,16 +377,16 @@
 <body>
     {% if user.is_authenticated %}
     <div style="display: flex; width: 100%;">
-        <div style="flex: 2; ">
-            <a href="{% url 'login' %}">&#10094;Back</a>
+        <div style="flex: 2; margin-top: 5px;">
+            <a href="{% url 'login' %}" class="back">&#10094; Back</a>
         </div>
         <div style="flex: 8; text-align: center;">
-            <h2 style="color: #393680;">Welcome, {{ user.username }}!</h2>
+            <h2 style="color: #393680;" class="welcome-title">Welcome, {{ user.username }}!</h2>
         </div>
         <div style="flex: 2;">
             <div style="display: flex; justify-content: flex-end;">
-                <div style="width: 10px; height: 10px; border-radius: 50%; background-color: red; margin: 20px 5px;"></div>
-                <p>Chief</p>
+                <div class="user-level"></div>
+                <p class="user-level-p">Chief</p>
             </div>
         </div>
     </div>
@@ -361,7 +426,7 @@
                 </script>
             </div>
             
-            <ul>
+            <ul id="reports-ul">
                 {% if page_obj %}
                     {% for report in page_obj %}
                     <div class="report-card" style="border-top: 4px solid #6A64F1;">
@@ -380,11 +445,15 @@
                                 {% elif report.status == '1' %}  
                                     <div class="approved-tag">Approved</div>
                                 {% elif report.status == '2' %}  
+                                    <div class="validated">Validated</div>
+                                {% elif report.status == '3' %}  
                                     <div class="email_sent">Email Sent</div>
                                 {% elif report.status == '3' %}  
                                     <div class="solved">Solved</div>
                                     <a style="font-size: 14px; margin: 10px 0px 0px 5px;" href="{% url 'solutionForReport' report.reportID %}">View Solution</a>
-                                {% elif report.status == '4' %}  
+                                {% elif report.status == '5' %}  
+                                    <div class="finished">Finished</div>
+                                {% elif report.status == '6' %}  
                                     <div class="rejected">Rejected</div>
                                 {% endif %}
                                 
@@ -573,6 +642,17 @@
  
 
     </script>
+    <script>
+        function reloadPage() {
+            setInterval(() => {
+                location.reload();
+            }, 10000); // 10000 milliseconds = 10 seconds
+        }
+
+        // Call the function to start reloading the page
+        reloadPage();
+    </script>
+    
 </body>
 </html>
 

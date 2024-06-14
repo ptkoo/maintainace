@@ -22,6 +22,7 @@
             width: 75%;
             display: flex;
             height: 100%;
+
             
         }
         
@@ -61,6 +62,7 @@
 
         }
         .factory-1, .factory-2 {
+            margin-top: -5px;
             height: calc(100vh - 250px); /* Adjust the 150px to fit your needs */
         }
 
@@ -281,13 +283,13 @@
         }
 
         .general{
-            background-color: rgba(173, 216, 230, 0.438);
+            background-color: rgba(173, 216, 230, 0.329);
         }
         .factory{
-            background-color: rgba(250, 250, 113, 0.63);
+            background-color: rgba(250, 250, 113, 0.171);
         }
         .office{
-            background-color: rgba(255, 182, 193, 0.493);
+            background-color: rgba(255, 182, 193, 0.281);
         }
 
         .navbar {
@@ -363,6 +365,7 @@
             padding: 15px;
             border-radius: 8px;
             width: fit-content;
+            margin-top: -45px;
         }
 
         .legend-item {
@@ -386,7 +389,7 @@
         }
 
         .color3 {
-            background-color: rgba(250, 250, 113, 0.63); /* factory */
+            background-color: rgba(250, 250, 113, 0.233);
         }
 
         .description {
@@ -398,40 +401,151 @@
             font-size: 14px;
             font-weight: bold;
         }
+
+        .category-title{
+            padding-left: 5px; 
+            background-color: #cddbfa83;
+            color: #6A64F1;
+            height: 38px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 3px;
+
+            font-weight: bold;
+        }
         #reports-container {
             display: block;
             position: relative;
             overflow: hidden;
             width: 100%;
             margin: 0 auto;
+            height: 75vh;
 
+        }
+        #reports-container h3 {
+            padding-left: 5px; 
+            background-color: #cddbfa83;
+            color: #6A64F1;
+            height: 38px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 3px;
+            font-weight: bold;
+            margin-top: 0px;
         }
         .report {
             border: 1px solid #ccc;
-            border-left-width: 10px;
+            border-left-width: 3px;
+            border-left-color: #6A64F1;
             padding: 10px;
-   
             margin-bottom: 10px;
-            border-radius: 8px;
-            background-color: #fff;
+            border-radius: 0px 8px 8px 0px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-        .report {
             display: none;
             box-sizing: border-box;
-            height: 120px;
+            height: 100px;
         }
         .report h4{
             margin-top: 0px;
             margin-bottom: 5px;
+            color: #555;
         }
         .report p{
-            margin: 2px;
+            margin: 3px;
             font-size: 14px;
         }
         .report.active {
             display: block;
         }
+
+        .report-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .pending-tag {
+            width: 100px; 
+            height: 25px; 
+            font-size: 14px;
+            background-color: orange ;
+            align-content: center;
+            text-align: center;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .approved-tag {
+            width: 100px; 
+            height: 25px; 
+            background-color: yellow;
+            align-content: center;
+            text-align: center;
+            border-radius: 5px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .validated {
+            width: 100px; 
+            height: 25px; 
+            background-color: #2A9D8F;
+            align-content: center;
+            text-align: center;
+            border-radius: 5px;
+            font-weight: bold;
+            color: white;
+            font-size: 14px;
+        }
+        .email_sent {
+            width: 100px; 
+            height: 25px; 
+            background-color: #4470b1;
+            align-content: center;
+            text-align: center;
+            border-radius: 5px;
+            font-weight: bold;
+            color: white;
+            font-size: 14px;
+        }
+        .solved {
+            width: 100px; 
+            height: 25px; 
+            font-size: 14px;
+            background-color: #17BF0B;
+            align-content: center;
+            text-align: center;
+            border-radius: 5px;
+            font-weight: bold;
+            color: white;
+            font-size: 14px;
+        }
+        .finished {
+            width: 100px; 
+            height: 25px; 
+            background-color: #F7007C;
+            align-content: center;
+            text-align: center;
+            border-radius: 5px;
+            font-weight: bold;
+            color: white;
+            font-size: 14px;
+        }
+        .rejected {
+            width: 100px; 
+            height: 25px; 
+            font-size: 14px;
+            background-color: #E74133;
+            align-content: center;
+            text-align: center;
+            border-radius: 5px;
+            font-weight: bold;
+            color: white;
+        }
+
+
         .slideshow-controls {
             display: flex;
             justify-content: space-between;
@@ -454,12 +568,159 @@
         .slideshow-controls button:focus {
             outline: none;
         }
-        .status-0 { border-left-color: orange; }
-        .status-1 { border-left-color: green; }
-        .status-2 { border-left-color: blue; }
-        .status-3 { border-left-color: purple; }
-        .status-4 { border-left-color: red; }
-  
+
+        /* CSS for status circles */
+        .status-circle {
+            width: 25px; /* Adjusted to accommodate text */
+            height: 25px; /* Adjusted to accommodate text */
+            border-radius: 50%;
+            position: absolute;
+            top: 0; /* Adjust as needed */
+            right: 0; /* Adjust as needed */
+            margin: 2px; /* Adjust as needed */
+            z-index: 10; /* Ensure it's above other elements */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white; /* Text color */
+            font-weight: bold;
+            font-size: 12px; /* Adjust as needed */
+        }
+
+        .status-circle.blink {
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            50% {
+                opacity: 0;
+            }
+        }
+
+        /* Modal CSS */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 11;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 10% auto;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            max-width: 800px;
+        }
+
+        .close {
+            position: absolute;
+            top: 15px;
+            right: 35px;
+            color: #aaa;
+            font-size: 30px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #333;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .modal-problem, .modal-solution {
+            width: 50%;
+            display: inline-block;
+            vertical-align: top;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        .modal-problem {
+            border-right: 1px solid #ccc;
+        }
+
+        .modal-solution {
+            padding-left: 20px;
+        }
+        .modal-content{
+            display: flex;
+        }
+
+        .modal-content h3 {
+            margin-top: 0;
+            margin-bottom: 10px;
+            color: #6A64F1;
+        }
+
+        .modal-content ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .modal-content ul li {
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .modal-content ul li:last-child {
+            margin-bottom: 0;
+        }
+
+        .modal-content ul li strong {
+            color: #555;
+        }
+
+        .carousel {
+            position: relative;
+            width: 100%;
+            max-width: 600px; /* Adjust as needed */
+            margin: auto;
+            overflow: hidden;
+            border-radius: 8px;
+        }
+
+        .carousel-images {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .carousel-images img {
+            width: 100%;
+            border-radius: 8px;
+        }
+
+        .carousel-buttons {
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            transform: translateY(-50%);
+        }
+
+        .carousel-buttons button {
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            padding: 5px;
+            cursor: pointer;
+            outline: none;
+        }
+
+        .carousel-buttons button:hover {
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+
+
         .container-chart {
             width: 100%;
             margin: auto 0;
@@ -540,6 +801,11 @@
             position: absolute;
         }
 
+
+
+
+
+
         @media (max-width: 768px) {
             .container {
                 display: block;
@@ -548,7 +814,7 @@
             .factory-container {
                 width: 100%;
                 display: block;
-                
+                margin-right: 0px;
             }
             .factories-wrapper {
                 width: 100%;
@@ -559,7 +825,8 @@
             .details {
                 width: 100%;
                 border-left: none;
-
+                margin-left: 0px;
+                padding: 3px;
             }
             .factory-1, .factory-2 {
                 height: calc(100vh - 50px);
@@ -570,16 +837,14 @@
             }
             .factory-1{
                 padding-left: 0;
-
-  
             }
             .grid-item{
-                font-size: 10px;
+                font-size: 8px;
 
             }
             .navbar {
                 width: 100%;
-                padding: 4px 8px;
+                margin-right: 0px;
             }
 
             .navbar .back-button, .navbar .toggle-button {
@@ -601,6 +866,14 @@
             }
             #legend{
                 display: none;
+
+            }
+            #reports-container {
+                height: 85vh;
+
+            }
+            .custom-input label {
+                padding: 2px 4px;
             }
 
         }
@@ -609,7 +882,7 @@
 </head>
 <body>
     <div class="navbar">
-        <a href="{% url 'login' %}" style="color: white;" class="back">&#10094; Back</a>
+        <a href="{% url 'login' %}" style="color: white;" class="back">Login</a>
         <div style="display: flex;">
             <div class="snss-title">SNSS</div>
             <div class="title">Dashboard</div>
@@ -631,60 +904,60 @@
                 <div class="factories-wrapper">
                     <h3 class="factory-title">Factory 2</h3>
                     <div class="factories factory-2">
-                        <div class="grid-item entrance-2 general" id="entrance-2-1">Entrance 2</div>
-                        <div class="grid-item guard-house-2 general" id="guard-house-2-1">Guard House 2</div>
-                        <div class="grid-item car-park-1 general" id="car-park-1-1">Car Park</div>
-                        <div class="grid-item general" id="general-1"></div>
-                        <div class="grid-item meeting-1 office" id="meeting-1-1">Meeting Room 1</div>
-                        <div class="grid-item meeting-2 office" id="meeting-2-1">Meeting Room 2</div>
-                        <div class="grid-item meeting-3 office" id="meeting-3-1">Meeting Room 3</div>
-                        <div class="grid-item meeting-4 office" id="meeting-4-1">Meeting Room 4</div>
-                        <div class="grid-item meeting-5 office" id="meeting-5-1">Meeting Room 5</div>
-                        <div class="grid-item meeting-6 office" id="meeting-6-1">Meeting Room 6</div>
-                        <div class="grid-item cctv office" id="cctv-1">CCTV Room</div>
-                        <div class="grid-item motorcycle-park general" id="motorcycle-park-1">Motorcycle Park</div>
-                        <div class="grid-item office" id="office-1"></div>
-                        <div class="grid-item factory-hall office" id="factory-hall-1">Factory Hall</div>
-                        <div class="grid-item meeting-7 office" id="meeting-7-1">Meeting Room 7</div>
-                        <div class="grid-item AC office" id="AC-1">AC</div>
-                        <div class="grid-item Adm office" id="Adm-1">Adm</div>
-                        <div class="grid-item factory" id="factory-1"></div>
-                        <div class="grid-item crane factory" id="crane-1">Crane</div>
-                        <div class="grid-item end-mode factory" id="end-mode-1">End Mode</div>
-                        <div class="grid-item rest-area factory" id="rest-area-1">Rest Area</div>
-                        <div class="grid-item MC-12 factory" id="MC-12-1">MC-12</div>
-                        <div class="grid-item car-park-2 general" id="car-park-2-1">Car Park</div>
-                        <div class="grid-item APTC factory" id="APTC-1">APTC</div>
-                        <div class="grid-item MC-17 factory" id="MC-17-1">MC-17</div>
-                        <div class="grid-item MC-12-2 factory" id="MC-12-2-1">MC-12</div>
-                        <div class="grid-item MC-11 factory" id="MC-11-1">MC-11</div>
-                        <div class="grid-item CA-7 factory" id="CA-7-1">CA-7</div>
-                        <div class="grid-item MC-15 factory" id="MC-15-1">MC-15</div>
-                        <div class="grid-item electric factory" id="electric-1">Electric</div>
-                        <div class="grid-item empty factory" id="empty-1"></div>
-                        <div class="grid-item JA-7-2 factory" id="JA-7-2-1">JA-7</div>
-                        <div class="grid-item MC-10 factory" id="MC-10-1">MC-10</div>
-                        <div class="grid-item EAs factory" id="EAs-1">
-                            <div class="portion portion-1" id="portion-1">EA-7</div>
-                            <div class="portion portion-2" id="portion-2">EA-2, EA-6</div>
-                            <div class="portion portion-3" id="portion-3">EA-3</div>
+                        <div class="grid-item entrance-2 general" id="entrance-2">Entrance 2</div>
+                        <div class="grid-item guard-house-2 general" id="guard-house-2">Guard House 2</div>
+                        <div class="grid-item car-park-1 general" id="car-park-1">Car Park</div>
+                        <div class="grid-item general" id="general"></div>
+                        <div class="grid-item meeting-1 office" id="meeting-1">Meeting Room 1</div>
+                        <div class="grid-item meeting-2 office" id="meeting-2">Meeting Room 2</div>
+                        <div class="grid-item meeting-3 office" id="meeting-3">Meeting Room 3</div>
+                        <div class="grid-item meeting-4 office" id="meeting-4">Meeting Room 4</div>
+                        <div class="grid-item meeting-5 office" id="meeting-5">Meeting Room 5</div>
+                        <div class="grid-item meeting-6 office" id="meeting-6">Meeting Room 6</div>
+                        <div class="grid-item cctv office" id="cctv">CCTV Room</div>
+                        <div class="grid-item motorcycle-park general" id="motorcycle-park">Motorcycle Park</div>
+                        <div class="grid-item office" id="office"></div>
+                        <div class="grid-item factory-hall office" id="factory-hall">Factory Hall</div>
+                        <div class="grid-item meeting-7 office" id="meeting-7">Meeting Room 7</div>
+                        <div class="grid-item AC office" id="AC">AC</div>
+                        <div class="grid-item Adm office" id="Adm">Adm</div>
+                        <div class="grid-item factory" id="factory"></div>
+                        <div class="grid-item crane factory" id="crane">Crane</div>
+                        <div class="grid-item end-mode factory" id="end-mode">End Mode</div>
+                        <div class="grid-item rest-area factory" id="rest-area">Rest Area</div>
+                        <div class="grid-item MC-12 factory" id="MC-12">MC-12</div>
+                        <div class="grid-item car-park-2 general" id="car-park-2">Car Park</div>
+                        <div class="grid-item APTC factory" id="APTC">APTC</div>
+                        <div class="grid-item MC-17 factory" id="MC-17">MC-17</div>
+                        <div class="grid-item MC-12-2 factory" id="MC-12">MC-12</div>
+                        <div class="grid-item MC-11 factory" id="MC-11">MC-11</div>
+                        <div class="grid-item CA-7 factory" id="CA-7">CA-7</div>
+                        <div class="grid-item MC-15 factory" id="MC-15">MC-15</div>
+                        <div class="grid-item electric factory" id="electric">Electric</div>
+                        <div class="grid-item empty factory" id="empty"></div>
+                        <div class="grid-item JA-7-2 factory" id="JA-7-2">JA-7</div>
+                        <div class="grid-item MC-10 factory" id="MC-10">MC-10</div>
+                        <div class="grid-item EAs factory" id="EAs">
+                            <div class="portion portion-1" id="EAs-portion-1">EA-7</div>
+                            <div class="portion portion-2" id="EAs-portion-2">EA-2, EA-6</div>
+                            <div class="portion portion-3" id="EAs-portion-3">EA-3</div>
                         </div>
-                        <div class="grid-item EA-5 factory" id="EA-5-1">EA-5</div>
-                        <div class="grid-item MC-5 factory" id="MC-5-1">MC-5</div>
-                        <div class="grid-item compressor factory" id="compressor-1">Compressor</div>
-                        <div class="grid-item EA-1 factory" id="EA-1-1">EA-1</div>
-                        <div class="grid-item MC-5-2 factory" id="MC-5-2-1">MC-5</div>
-                        <div class="grid-item football-field general" id="football-field-1">Football Field</div>
-                        <div class="grid-item MC-22 factory" id="MC-22-1">MC-22</div>
-                        <div class="grid-item MC-16 factory" id="MC-16-1">MC-16</div>
-                        <div class="grid-item compressor factory" id="compressor-2">Compressor</div>
-                        <div class="grid-item warehouse factory" id="warehouse-1">Warehouse</div>
-                        <div class="grid-item store factory" id="store-1">Store</div>
-                        <div class="grid-item fire-pump-2 general" id="fire-pump-2-1">Fire Pump 2</div>
-                        <div class="grid-item oil-store general" id="oil-store-1">Oil Store</div>
-                        <div class="grid-item chemical factory" id="chemical-1">Chemical</div>
-                        <div class="grid-item wh-office factory" id="wh-office-1">WH Office</div>
-                        <div class="grid-item general-3" id="general-3-1"></div>
+                        <div class="grid-item EA-5 factory" id="EA-5">EA-5</div>
+                        <div class="grid-item MC-5 factory" id="MC-5">MC-5</div>
+                        <div class="grid-item compressor factory" id="compressor">Compressor</div>
+                        <div class="grid-item EA-1 factory" id="EA-1">EA-1</div>
+                        <div class="grid-item MC-5-2 factory" id="MC-5-2">MC-5</div>
+                        <div class="grid-item football-field general" id="football-field">Football Field</div>
+                        <div class="grid-item MC-22 factory" id="MC-22">MC-22</div>
+                        <div class="grid-item MC-16 factory" id="MC-16">MC-16</div>
+                        <div class="grid-item compressor factory" id="compressor">Compressor</div>
+                        <div class="grid-item warehouse factory" id="warehouse">Warehouse</div>
+                        <div class="grid-item store factory" id="store">Store</div>
+                        <div class="grid-item fire-pump-2 general" id="fire-pump-2">Fire Pump 2</div>
+                        <div class="grid-item oil-store general" id="oil-store">Oil Store</div>
+                        <div class="grid-item chemical factory" id="chemical">Chemical</div>
+                        <div class="grid-item wh-office factory" id="wh-office">WH Office</div>
+                        <div class="grid-item general-3" id="general-3"></div>
                     </div>
                 </div>
                 <div class="factories-wrapper">
@@ -760,40 +1033,40 @@
             </div>
             
             <div class="details">
+                <div style="border-left: 5px solid #6A64F1; padding-left: 5px; margin: -15px 0px;">
+                    <h4>Settings</h4>
+                </div>
                 <form id="filter-form" method="get" action="#">
-                    <div class="filters" style="display: flex; margin-top: 10px;">
-                        <div class="filter-item" style="flex: 8;">
-                            <label for="category-filter" style="font-weight: bold; color: #555;">Category:</label>
-                            <select id="category-filter" name="profession" onchange="fetchReports(currentOperationLine)" style=" width: 60%;">
+                    <div class="filters" style="display: flex; margin: 10px 0px;">
+                        <div class="filter-item" style="flex: 6;  margin: 0 auto;">
+                            <label for="category-filter" style=" font-size:14px; font-weight: bold; color: #555;">Category:</label>
+                            <select id="category-filter" name="profession" onchange="fetchReports(currentOperationLine)" style="width: 80px;">
                                 <option value="">All</option>
                                 {% for profession in professions %}
                                 <option value="{{ profession }}">{{ profession }}</option>
                                 {% endfor %}
                             </select>
                         </div>
-                        <!--div class="filter-item">
-                            <label for="status-filter">Status:</label>
-                            <select id="status-filter" name="status" onchange="fetchReports(currentOperationLine)">
+                        <div class="filter-item" style="flex: 6;  margin: 0 auto;">
+                            <label for="status-filter" style=" font-size:14px; font-weight: bold; color: #555;">Status:</label>
+                            <select id="status-filter" name="status" onchange="fetchReports(currentOperationLine)" style="width: 80px;">
                                 <option value="">All</option>
                                 <option value="0">Pending</option>
                                 <option value="1">Approved</option>
-                                <option value="2">Email Sent</option>
-                                <option value="3">Solved</option>
-                                <option value="4">Rejected</option>
+                                <option value="2">Validated</option>
+                                <option value="3">Email Sent</option>
+                                <option value="4">Solved</option>
+                                <option value="5">Finished</option>
+                                <option value="6">Rejected</option>
                             </select>
-                        </div-->
-                        <label style="flex: 4; font-weight: bold; color: #555;" >
-                            <input type="checkbox" name="slideOrNot" id="slideOrNot">
-                            Auto slide
-                        </label>
+                        </div>
                     </div>
+                        <label style=" font-size:14px;  color: #555;" >
+                            <input type="checkbox" name="slideOrNot" id="slideOrNot" checked onchange="onSlideToggle()">
+                            Show all problem categories automatically
+                        </label>
                 </form>
-                <br>
                 <hr>
-                <div style="border-left: 5px solid #6A64F1; padding-left: 5px; width: fit-content; height: 25px;">
-                    <h3 style="text-align: center; ">Quality Assurance</h3>
-                </div>
-                
                 <div id="reports-container">
                     <div class="slideshow-controls">
                         <button onclick="prevSlide()">&#8249;</button>
@@ -817,7 +1090,22 @@
                 <span class="description">Factory</span>
             </div>
         </div>
+
+        <!-- The Modal -->
+        <div id="myModal" class="modal">
+            <span class="close">&times;</span>
+            <div class="modal-content">
+                <div class="modal-problem">
+                </div>
+                <div class="modal-solution">
+                    <!-- Solution details will be displayed here -->
+                </div>
+            </div>
+        </div>
+
+
     </div>
+
 
     <div id="content2" style="display: none;">
         <div class="container-chart">
@@ -883,11 +1171,26 @@
             if (layoutRadioButton.checked) {
                 contentElement1.style.display = "block";
                 contentElement2.style.display = "none";
+                localStorage.setItem('selectedContent', 'content1');
             } else if (chartsRadioButton.checked) {
                 contentElement1.style.display = "none";
                 contentElement2.style.display = "block";
+                localStorage.setItem('selectedContent', 'content2');
             }
         }
+        // Call toggleContent on page load to apply the saved state
+        document.addEventListener('DOMContentLoaded', function() {
+            const selectedContent = localStorage.getItem('selectedContent') || 'content1';
+            if (selectedContent === 'content2') {
+                document.getElementById('charts').checked = true;
+                document.getElementById('content1').style.display = 'none';
+                document.getElementById('content2').style.display = 'block';
+            } else {
+                document.getElementById('layout').checked = true;
+                document.getElementById('content1').style.display = 'block';
+                document.getElementById('content2').style.display = 'none';
+            }
+        });
 
         // Initial content display setup
         document.addEventListener('DOMContentLoaded', () => {
@@ -895,13 +1198,33 @@
         });
 
         let currentOperationLine = '';
-        let currentIndex = 0;
-        const reportsPerPage = 3;
-        let reportsData = [];
+        let currentCategoryIndex = 0;
+        let currentReportIndex = 0;
+        const reportsPerPage = 4;
+        let reportsData = {};
         let autoSlideInterval;
+        let slideEnabled;
+        let previousCategory = null;
 
         document.addEventListener('DOMContentLoaded', function() {
             fetchReports('recent');
+            // Initialize slideEnabled based on the checkbox state
+            slideEnabled = document.getElementById('slideOrNot').checked;
+            console.log("slideEnable or not ", slideEnabled); 
+        });
+
+        // Add an event listener to the checkbox to toggle auto-slide
+        document.getElementById('slideOrNot').addEventListener('change', function() {
+            slideEnabled = this.checked;
+            // if (slideEnabled) {
+            //     startAutoSlide();
+            // } else {
+            //     console.log("not checkoeeee")
+            //     clearInterval(autoSlideInterval);
+            // }
+            slideEnabled = this.checked;
+    clearInterval(autoSlideInterval);
+    startAutoSlide();  // Ensure interval is reset and start auto-slide for current category
         });
 
         function fetchReports(operationLine) {
@@ -916,9 +1239,22 @@
             fetch(url)
                 .then(response => response.json())
                 .then(data => {
-                    reportsData = data;
-                    currentIndex = 0;
-                    displayReports();
+                    console.log("data ",data)
+                    // Clear all existing circles before processing new data
+                    clearAllCircles();
+
+                    // Group reports by problemCategory
+                    reportsData = data.reduce((acc, report) => {
+                        if (!acc[report.problemCategory]) {
+                            acc[report.problemCategory] = [];
+                        }
+                        acc[report.problemCategory].push(report);
+                        return acc;
+                    }, {});
+
+                    currentCategoryIndex = 0;
+                    currentReportIndex = 0;
+                    displayCategoryReports();
                     startAutoSlide();
                 })
                 .catch(error => {
@@ -926,40 +1262,139 @@
                 });
         }
 
-        function displayReports() {
+        function onFilterChange() {
+            slideEnabled = false;
+            clearInterval(autoSlideInterval);
+            fetchReports(currentOperationLine);
+        }
+
+        function onSlideToggle() {
+            slideEnabled = document.getElementById('slideOrNot').checked;
+            console.log("Slide toggle triggered. slideEnabled:", slideEnabled);
+            if (slideEnabled) {
+                startAutoSlide();
+            } else {
+                clearInterval(autoSlideInterval);
+                // Manually handle the sliding for categories with more than 4 reports
+                displayCategoryReports();
+            }
+        }
+                
+
+        function displayCategoryReports() {
+            const categories = Object.keys(reportsData);
+            if (categories.length === 0) return;
+
+            const currentCategory = categories[currentCategoryIndex];
             const reportsContainer = document.getElementById('reports-container');
-            reportsContainer.innerHTML = '';
-            const start = currentIndex * reportsPerPage;
-            const end = start + reportsPerPage;
-            const reportsToShow = reportsData.slice(start, end);
+            reportsContainer.innerHTML = `<h3>${currentCategory}</h3>`;
+
+            let reportsToShow = reportsData[currentCategory].slice(currentReportIndex, currentReportIndex + reportsPerPage);
+
+            // Clear all circles when the category changes
+            if (currentCategory !== previousCategory) {
+                clearAllCircles();
+            }
 
             reportsToShow.forEach(report => {
                 const reportElement = document.createElement('div');
                 reportElement.className = `report active status-${report.status}`;
                 reportElement.innerHTML = `
-                    <h4>Operation Line: ${report.operationLineNumber}</h4>
-                    <p>Reporter Name: ${report.reporterName}</p>
-                    <p>Problem Category: ${report.problemCategory}</p>
-                    <p>Datetime: ${report.datetime}</p>
+                    <div class="report-header">
+                        <h4>Line: ${report.operationLineNumber}</h4>
+                        <div class="${getStatusTagClass(report.status)}">${report.status_tag}</div>
+                    </div>
+                    <p><strong style="color:#828181;">Reporter Name:</strong> ${report.reporterName}</p>
+                    <p><strong style="color:#828181;">Problem Category:</strong> ${report.problemCategory}</p>
+                    <p><strong style="color:#828181;">Reported At:</strong> ${report.datetime}</p
                 `;
+
+                reportElement.addEventListener("click", function() {
+                    openModal(report);
+                });
+
                 reportsContainer.appendChild(reportElement);
+
+                const targetDiv = document.getElementById(report.operationLineNumber);
+                if (targetDiv) {
+                    highlightOperationLine(targetDiv, report.status, report.reportID, report.problemCategory);
+                } else {
+                    console.warn(`No element found with ID: ${report.operationLineNumber}`);
+                }
             });
+
+            previousCategory = currentCategory;
         }
 
-        function prevSlide() {
-            if (currentIndex > 0) {
-                currentIndex--;
-                displayReports();
+
+        function clearAllCircles() {
+            const existingCircles = document.querySelectorAll('.status-circle');
+            existingCircles.forEach(circle => circle.remove());
+        }
+
+        function highlightOperationLine(targetDiv, status, reportID, problemCategory) {
+            const selectedStatus = document.getElementById('status-filter').value;
+
+            // Show circles for the selected status or if no specific status is selected, show for ['0', '1', '2','3']
+            if (selectedStatus !== 'All' && selectedStatus !== '' && status !== selectedStatus) {
+                return; // Skip if the status does not match the selected filter
+            }
+            if (selectedStatus === '' && !['0', '1', '2','3'].includes(status)) {
+                return; // Skip if the status is not pending, approved, or email_sent
+            }
+
+            // Check if circle for this reportID already exists
+            if (targetDiv.querySelector(`.report-${reportID}`)) {
+                return; // Skip if circle already exists
+            }
+
+            // Add new circle
+            targetDiv.style.position = 'relative';
+            const statusColor = getStatusColor(status);
+            const circle = document.createElement('div');
+            circle.className = `status-circle report-${reportID}`;
+            circle.style.backgroundColor = statusColor;
+
+            // Add the initial letter of the problem category inside the circle
+            const initialLetter = document.createTextNode(problemCategory.charAt(0).toUpperCase());
+            circle.appendChild(initialLetter);
+
+            // Position the circle uniquely within the targetDiv
+            const existingCircles = targetDiv.getElementsByClassName('status-circle');
+            const offset = existingCircles.length * 12; // Adjust spacing as needed
+            circle.style.left = `${offset}px`;
+
+            // Add the circle to the target div
+            targetDiv.appendChild(circle);
+
+            setInterval(() => {
+                circle.classList.toggle('blink');
+            }, 700);
+        }
+
+        function getStatusColor(status) {
+            switch(status) {
+                case '0': return 'orange'; // pending
+                case '1': return 'yellow'; // approved
+                case '2': return '#2A9D8F'; // validated              
+                case '3': return '#4470b1'; // email_sent
+                case '4': return '#17BF0B'; // solved
+                case '5': return '#F7007C'; // finished
+                case '6': return '#E74133'; // rejected
+                default: return 'black';
             }
         }
 
-        function nextSlide() {
-            if ((currentIndex + 1) * reportsPerPage < reportsData.length) {
-                currentIndex++;
-                displayReports();
-            } else {
-                currentIndex = 0; // Reset to the first slide
-                displayReports();
+        function getStatusTagClass(status) {
+            switch(status) {
+                case '0': return 'pending-tag';
+                case '1': return 'approved-tag';
+                case '2': return 'validated';
+                case '3': return 'email_sent';
+                case '4': return 'solved';
+                case '5': return 'finished';
+                case '6': return 'rejected';
+                default: return '';
             }
         }
 
@@ -967,445 +1402,442 @@
             clearInterval(autoSlideInterval);
             autoSlideInterval = setInterval(() => {
                 nextSlide();
-            }, 8000);
+            }, 6000);
         }
+
+        function nextCategory() {
+            const categories = Object.keys(reportsData);
+            if (categories.length === 0) return;
+
+            currentCategoryIndex = (currentCategoryIndex + 1) % categories.length;
+            currentReportIndex = 0;
+            displayCategoryReports();
+        }
+
+        function nextSlide() {
+            const categories = Object.keys(reportsData);
+            if (categories.length === 0) return;
+
+            const currentCategory = categories[currentCategoryIndex];
+            const reportsToShow = reportsData[currentCategory];
+
+            if (currentReportIndex + reportsPerPage < reportsToShow.length) {
+                currentReportIndex += reportsPerPage;
+            } else {
+                currentReportIndex = 0;
+                if (slideEnabled) {
+                    if (currentCategoryIndex + 1 < categories.length) {
+                        currentCategoryIndex += 1;
+                    } else {
+                        currentCategoryIndex = 0; // Wrap back to the first category
+                    }
+                }
+            }
+            displayCategoryReports();
+        }
+
+        document.getElementById('category-filter').addEventListener('change', onFilterChange);
+        document.getElementById('status-filter').addEventListener('change', onFilterChange);
+
+        function onFilterChange() {
+            slideEnabled = false;
+            clearInterval(autoSlideInterval);
+            fetchReports(currentOperationLine);
+        }
+
+
+        function openModal(report) {
+            const modal = document.getElementById('myModal');
+            const modalProblem = document.querySelector('.modal-problem');
+            const modalSolution = document.querySelector('.modal-solution');
+
+   
+            if (!modal || !modalProblem || !modalSolution) {
+        console.error('Modal or required elements not found in the DOM.');
+        return;
+    }
+
+    modal.style.display = 'block';
+
+    modalProblem.innerHTML = `
+        <div style="border-left: 5px solid #6A64F1; padding-left: 5px;">
+            <h3>Issue to be resolved</h3>
+        </div>
+        <ul>
+            <li><strong>Reporter Name:</strong> ${report.reporterName || 'N/A'}</li>
+            <li><strong>Operation Line:</strong> ${report.operationLineNumber || 'N/A'}</li>
+            <li><strong>Machine Number:</strong> ${report.machineNumber || 'N/A'}</li>
+            <li><strong>Problem Category:</strong> ${report.problemCategory || 'N/A'}</li>
+            <li><strong>Description:</strong> ${report.problemDescription || 'N/A'}</li>
+            <li><strong>Created At:</strong> ${report.datetime || 'N/A'}</li>
+            <div class="status-tag ${getStatusTagClass(report.status)}">${report.status_tag || 'N/A'}</div>
+        </ul>
+    `;
+
+            // Display solution details if available, otherwise display "Solution in process"
+            if (report.status === '3') {
+                modalSolution.innerHTML = `
+                <div style="border-left: 5px solid #17BF0B; padding-left: 5px;">
+                    <h3 style="color: #17BF0B;">Solution of the issue</h3>
+                </div>
+                    <ul>
+                        <li><strong>Issue Resolved By:</strong> ${report.solverName}</li>
+                        <li><strong>Description:</strong> ${report.solutionDescription}</li>
+                        <li><strong>Issue Resolved Time:</strong> ${report.solutionDatetime}</li>
+                    </ul>
+                `;
+            } else if (report.status === '4') {
+                modalSolution.innerHTML = `
+                    <div style="border-left: 5px solid red; padding-left: 5px;">
+                        <h3 style="color: red;">No solution</h3>
+                    </div>
+                        <ul>
+                            <li><strong>Issue was already rejected.</strong></li>
+                        </ul>
+                `;
+            } else {
+                modalSolution.innerHTML = `
+                    <div style="border-left: 5px solid #6A64F1; padding-left: 5px;">
+                        <h3>Solution in process ...</h3>
+                    </div>
+                `;
+            }
+
+            // Close the modal when clicking on the close button
+            const closeButton = document.querySelector('.close');
+            closeButton.onclick = function() {
+                modal.style.display = 'none';
+            };
+
+            // Close the modal when clicking anywhere outside of it
+            window.onclick = function(event) {
+                if (event.target == modal) {
+                    modal.style.display = 'none';
+                }
+            };
+        }
+
+
+        // Function to save filter values to local storage
+        function saveFiltersToLocalStorage() {
+            const statusFilter = document.getElementById('status-filter').value;
+            const categoryFilter = document.getElementById('category-filter').value;
+
+            // Save filter values to local storage
+            localStorage.setItem('statusFilter', statusFilter);
+            localStorage.setItem('categoryFilter', categoryFilter);
+        }
+
+        // Function to apply saved filter values from local storage
+        function applyFiltersFromLocalStorage() {
+            const statusFilter = localStorage.getItem('statusFilter');
+            const categoryFilter = localStorage.getItem('categoryFilter');
+
+            // Apply filter values to filter elements
+            if (statusFilter) {
+                document.getElementById('status-filter').value = statusFilter;
+            }
+            if (categoryFilter) {
+                document.getElementById('category-filter').value = categoryFilter;
+            }
+        }
+
+        // Function to fetch reports with saved filter values
+        function fetchReportsWithSavedFilters() {
+            const statusFilter = localStorage.getItem('statusFilter');
+            const categoryFilter = localStorage.getItem('categoryFilter');
+            const operationLine = currentOperationLine; // Assuming currentOperationLine is a global variable
+            const slideEnabled = localStorage.getItem('slideEnabled') === 'true';
+
+            fetchReports(operationLine, statusFilter, categoryFilter);
+            // Set the slideOrNot checkbox state based on the saved value
+            document.getElementById('slideOrNot').checked = slideEnabled;
+        }
+
+        // Event listener to save filter values when filters change
+        document.getElementById('status-filter').addEventListener('change', saveFiltersToLocalStorage);
+        document.getElementById('category-filter').addEventListener('change', saveFiltersToLocalStorage);
+        document.getElementById('slideOrNot').addEventListener('change', saveSlideStateToLocalStorage);
+
+        // Apply saved filters when the page loads
+        window.onload = function() {
+            applyFiltersFromLocalStorage();
+            fetchReportsWithSavedFilters(); // Fetch reports with saved filter values
+        };
+
+        // Reload the page every 10 seconds
+        setInterval(function() {
+            fetchReportsWithSavedFilters(); // Fetch reports with saved filter values
+        }, 60000); // 60 seconds in milliseconds
+
+        // Function to save slideOrNot state to local storage
+        function saveSlideStateToLocalStorage() {
+            localStorage.setItem('slideEnabled', this.checked); // Store the boolean value
+        }
+
 
     </script>
-    <script>
-        function fetchReportsByYear(year) {
-            const url = new URL(`/main/reports_by_year/${year}/`, window.location.origin);
-            fetch(url)
-                .then(response => response.json())
-                .then(data => {
-                    console.log(data)
-                    document.getElementById('totalReportsByYear').textContent = `Total Reports (${data.year})`;
-                    document.getElementById('reportYear').textContent = `${data.total_reports}`;
-                })
-                .catch(error => console.error('Error fetching reports by year:', error));
-        }
-
-        function fetchReportsByYearMonth(year, month) {
-            const url = new URL(`/main/reports_by_year_month/${year}/${month}/`, window.location.origin);
-            fetch(url)
-                .then(response => response.json())
-                .then(data => {
-                    const date = new Date(data.year,data.month-1); // Using day 1 to avoid timezone issues
-
-                    // Define an array of month names
-                    const monthNames = [
-                    'January', 'February', 'March', 'April',
-                    'May', 'June', 'July', 'August',
-                    'September', 'October', 'November', 'December'
-                    ];
-
-                    // Format the date
-                    const formattedDate = `${monthNames[date.getMonth()]}`;
-                    document.getElementById('totalReportsByMonth').textContent = `Total Reports (${formattedDate})`;
-                    document.getElementById('reportMonth').textContent = `${data.total_reports}`;
-                })
-                .catch(error => console.error('Error fetching reports by year and month:', error));
-        }
-
-        function fetchReportsByYearMonthDate(year, month, day) {
-            const url = new URL(`/main/reports_by_year_month_date/${year}/${month}/${day}/`, window.location.origin);
-            fetch(url)
-                .then(response => response.json())
-                .then(data => {
-                    const date = new Date(data.year,data.month-1,data.day,1); // Using day 1 to avoid timezone issues
-
-                    // Define an array of month names
-                    const monthNames = [
-                    'January', 'February', 'March', 'April',
-                    'May', 'June', 'July', 'August',
-                    'September', 'October', 'November', 'December'
-                    ];
-
-                    // Format the date
-                    const formattedDate = `${monthNames[date.getMonth()]} ${date.getDate()}`;
-                    document.getElementById('totalReportsByDay').textContent = `Total Reports (${formattedDate})`;
-                    document.getElementById('reportDay').textContent = `${data.total_reports}`;
-                })
-                .catch(error => console.error('Error fetching reports by year, month, and day:', error));
-        }
-        
-        let myChartMonth = null
-        let myChartDay = null
-        // These are for the line and bar charts
-        function fetchReportsDaily(year='null', month='null') {
-            if(year ==='null' && month == 'null'){
-                    year = new Date().getFullYear();
-                    month = new Date().getMonth() + 1;
+        <script>
+            function fetchReportsByYear(year) {
+                const url = new URL(`/main/reports_by_year/${year}/`, window.location.origin);
+                fetch(url)
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data)
+                        document.getElementById('totalReportsByYear').textContent = `Total Reports (${data.year})`;
+                        document.getElementById('reportYear').textContent = `${data.total_reports}`;
+                    })
+                    .catch(error => console.error('Error fetching reports by year:', error));
+            }
+    
+            function fetchReportsByYearMonth(year, month) {
+                const url = new URL(`/main/reports_by_year_month/${year}/${month}/`, window.location.origin);
+                fetch(url)
+                    .then(response => response.json())
+                    .then(data => {
+                        const date = new Date(data.year,data.month-1); // Using day 1 to avoid timezone issues
+    
+                        // Define an array of month names
+                        const monthNames = [
+                        'January', 'February', 'March', 'April',
+                        'May', 'June', 'July', 'August',
+                        'September', 'October', 'November', 'December'
+                        ];
+    
+                        // Format the date
+                        const formattedDate = `${monthNames[date.getMonth()]}`;
+                        document.getElementById('totalReportsByMonth').textContent = `Total Reports (${formattedDate})`;
+                        document.getElementById('reportMonth').textContent = `${data.total_reports}`;
+                    })
+                    .catch(error => console.error('Error fetching reports by year and month:', error));
+            }
+    
+            function fetchReportsByYearMonthDate(year, month, day) {
+                const url = new URL(`/main/reports_by_year_month_date/${year}/${month}/${day}/`, window.location.origin);
+                fetch(url)
+                    .then(response => response.json())
+                    .then(data => {
+                        const date = new Date(data.year,data.month-1,data.day,1); // Using day 1 to avoid timezone issues
+    
+                        // Define an array of month names
+                        const monthNames = [
+                        'January', 'February', 'March', 'April',
+                        'May', 'June', 'July', 'August',
+                        'September', 'October', 'November', 'December'
+                        ];
+    
+                        // Format the date
+                        const formattedDate = `${monthNames[date.getMonth()]} ${date.getDate()}`;
+                        document.getElementById('totalReportsByDay').textContent = `Total Reports (${formattedDate})`;
+                        document.getElementById('reportDay').textContent = `${data.total_reports}`;
+                    })
+                    .catch(error => console.error('Error fetching reports by year, month, and day:', error));
             }
             
-            const url = new URL(`main/reports_daily/${year}/${month}/`, window.location.origin) 
-            fetch(url)
-                .then(response => response.json())
-                .then(data => {
-                    const ctx = document.getElementById('reportsDaily').getContext('2d');
-                    const labels = data.map(item => item.day);
-                    const counts = data.map(item => item.count);
-                    last = labels.length -1
-                    // after fetching change the pie to first day of month pie
-                    dateData = labels[last].split('-')  
-                    fetchReportsToday(dateData[0],dateData[1],dateData[2])
-
-                    // ALso change the date display on top right corner
-                    fetchReportsByYearMonthDate(dateData[0],dateData[1],dateData[2])
-                    const barData = {
-                        labels: labels,
-                        datasets: [{
-                            label: 'Number of Reports',
-                            data: counts,
-                            backgroundColor: 'rgba(54, 162, 235, 0.6)',
-                            borderColor: 'rgba(54, 162, 235, 1)',
-                            borderWidth: 1
-                        }]
-                    };
-
-                    const lineData = {
-                        labels: labels,
-                        datasets: [{
-                            label: 'Number of Reports (Line)',
-                            data: counts,
-                            borderColor: 'rgba(255, 99, 132, 1)',
-                            backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                            borderWidth: 1,
-                            type: 'line'
-                        }]
-                    };
-
-                    const options = {
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                ticks: {
-                                    precision: 0 // Display whole numbers on y-axis
-                                }
-                            },
-                            x: {
-                                type: 'time',
-                                time: {
-                                    unit: 'day'
-                                }
-                            }
-                        }
-                    };
-
-                    const config = {
-                        type: 'bar',
-                        data: barData,
-                        options: options
-                    };
-
-                    if(myChartDay)
-                    {
-                        myChartDay.destroy()
-                    }
-                    // Create the chart
-                    myChartDay = new Chart(ctx, config);
-
-                    // Add the line dataset
-                    myChartDay.data.datasets.push(...lineData.datasets);
-                    myChartDay.update();
-                });
-        }
-
-        function fetchReportsMonthly() {
-            const year = document.getElementById('yearSelect').value;
-                // If the selected value is "none", set it to the current year
-            let url;
-            if (year === "none") {
-                const currentYear = new Date().getFullYear();
-                url = new URL(`/main/reports_monthly/${currentYear}/`, window.location.origin);
-            } else {
-                url = new URL(`/main/reports_monthly/${year}/`, window.location.origin);
-            }
-            // Get the selected year from the select box
-        
-            fetch(url)
-                .then(response => response.json())
-                .then(data => {
-                    const ctx = document.getElementById('reportsMonthly').getContext('2d');
-                    const labels = data.map(item => item.month);
-                    const counts = data.map(item => item.count);
-                    const barData = {
-                        labels: labels,
-                        datasets: [{
-                            label: 'Number of Reports',
-                            data: counts,
-                            backgroundColor: 'rgba(54, 162, 235, 0.6)',
-                            borderColor: 'rgba(54, 162, 235, 1)',
-                            borderWidth: 1
-                        }]
-                    };
-
-                    const lineData = {
-                        labels: labels,
-                        datasets: [{
-                            label: 'Number of Reports (Line)',
-                            data: counts,
-                            borderColor: 'rgba(255, 99, 132, 1)',
-                            backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                            borderWidth: 1,
-                            type: 'line'
-                        }]
-                    };
-
-                    const options = {
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                ticks: {
-                                    precision: 0 // Display whole numbers on y-axis
-                                }
-                            },
-                            x: {
-                                type: 'time',
-                                time: {
-                                    unit: 'month'
-                                }
-                            }
-                        }
-                    };
-
-                    const config = {
-                        type: 'bar',
-                        data: barData,
-                        options: options
-                    };
-
-                    // Create the charts
-                    myChartMonth = new Chart(ctx, config);
-
-                    // Add the line dataset
-                    myChartMonth.data.datasets.push(...lineData.datasets);
-                    myChartMonth.update();
-                });
+            let myChartMonth = null
+            let myChartDay = null
+            // These are for the line and bar charts
+            function fetchReportsDaily(year='null', month='null') {
+                if(year ==='null' && month == 'null'){
+                     year = new Date().getFullYear();
+                     month = new Date().getMonth() + 1;
+                }
                 
-
-        }
-        
-        let categoriesChartOneDay = null
-        let statusesChartOneDay = null
-        // This is for the pie charts
-        function fetchReportsToday(year, month, day){
-            const url = new URL(`main/reports_today/${year}/${month}/${day}/`, window.location.origin) 
-            // Create a Date object
-            const date = new Date(year,month-1,day, 1); // Using day 1 to avoid timezone issues
-
-            // Define an array of month names
-            const monthNames = [
-            'January', 'February', 'March', 'April',
-            'May', 'June', 'July', 'August',
-            'September', 'October', 'November', 'December'
-            ];
-
-            // Format the date
-            const formattedDate = `${monthNames[date.getMonth()]} ${date.getDate()}`;
-
-            // Assign the formatted date to the innerHTML of an element
-            document.getElementById('date').innerHTML = formattedDate;
-                                // document.getElementById('month').innerHTML = ''
-            fetch(url)
-                .then(response => response.json())
-                .then(data => {
-                        // Destroy the existing charts if they exist
-                        if (categoriesChartOneDay) {
-                            categoriesChartOneDay.destroy();
-                        }
-                        if (statusesChartOneDay) {
-                            statusesChartOneDay.destroy();
-                        }
-                            // Pie chart for categories
-                            categoriesChartOneDay = new Chart(document.getElementById('categoriesChart'), {
-                        type: 'pie',
-                        data: {
-                            labels: data.categories_labels,
+                const url = new URL(`main/reports_daily/${year}/${month}/`, window.location.origin) 
+                fetch(url)
+                    .then(response => response.json())
+                    .then(data => {
+                        const ctx = document.getElementById('reportsDaily').getContext('2d');
+                        const labels = data.map(item => item.day);
+                        const counts = data.map(item => item.count);
+                        last = labels.length -1
+                        // after fetching change the pie to first day of month pie
+                        dateData = labels[last].split('-')  
+                        fetchReportsToday(dateData[0],dateData[1],dateData[2])
+    
+                        // ALso change the date display on top right corner
+                        fetchReportsByYearMonthDate(dateData[0],dateData[1],dateData[2])
+                        const barData = {
+                            labels: labels,
                             datasets: [{
-                                label: 'Reports by Category',
-                                data: data.categories_counts,
-                                backgroundColor: [
-                                    'rgba(255, 99, 132, 0.7)',
-                                    'rgba(54, 162, 235, 0.7)',
-                                    'rgba(255, 206, 86, 0.7)',
-                                    'rgba(75, 192, 192, 0.7)',
-                                    'rgba(153, 102, 255, 0.7)',
-                                    'rgba(255, 159, 64, 0.7)'
-                                ],
-                                borderColor: [
-                                    'rgba(255, 99, 132, 1)',
-                                    'rgba(54, 162, 235, 1)',
-                                    'rgba(255, 206, 86, 1)',
-                                    'rgba(75, 192, 192, 1)',
-                                    'rgba(153, 102, 255, 1)',
-                                    'rgba(255, 159, 64, 1)'
-                                ],
+                                label: 'Number of Reports',
+                                data: counts,
+                                backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                                borderColor: 'rgba(54, 162, 235, 1)',
                                 borderWidth: 1
                             }]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            plugins: {
-                                legend: {
-                                    position: 'right', // Change to 'right' or 'bottom' as needed
-                                    labels: {
-                                        boxWidth: 10, // Adjust the box width
-                                        padding: 10 // Adjust the padding between labels
+                        };
+    
+                        const lineData = {
+                            labels: labels,
+                            datasets: [{
+                                label: 'Number of Reports (Line)',
+                                data: counts,
+                                borderColor: 'rgba(255, 99, 132, 1)',
+                                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                                borderWidth: 1,
+                                type: 'line'
+                            }]
+                        };
+    
+                        const options = {
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    ticks: {
+                                        precision: 0 // Display whole numbers on y-axis
                                     }
                                 },
-                                tooltip: {
-                                    callbacks: {
-                                        label: function(tooltipItem) {
-                                            const label = tooltipItem.label || '';
-                                            const value = tooltipItem.raw;
-                                            const total = tooltipItem.dataset.data.reduce((a, b) => a + b, 0);
-                                            const percentage = ((value / total) * 100).toFixed(2);
-                                            return `${label}: ${value} (${percentage}%)`;
-                                        }
-                                    }
-                            },
-                                datalabels: {
-                                    formatter: (value, ctx) => {
-                                    const total = ctx.dataset.data.reduce((a, b) => a + b, 0);
-                                    return total.toString(); // Display total amount as the label
-                                },
-                                    color: '#fff',
-                                    labels: {
-                                        title: {
-                                            font: {
-                                                weight: 'bold'
-                                            }
-                                        }
+                                x: {
+                                    type: 'time',
+                                    time: {
+                                        unit: 'day'
                                     }
                                 }
-                                
-                        
-                        },
-                        
-                    }
-                        
-                });
-                const statusMapping = {
-                    0: 'Pending',
-                    1: 'Approved',
-                    2: 'Sent Mail',
-                    3: 'Solved',
-                    4: 'Rejected'
-                };
-                // Map status numbers to status texts
-                const statusLabels = data.statuses_labels.map(label => statusMapping[label]);
-                    // Pie chart for statuses
-                    statusesChartOneDay = new Chart(document.getElementById('statusesChart'), {
-                        type: 'pie',
-                        data: {
-                            labels: statusLabels,
+                            }
+                        };
+    
+                        const config = {
+                            type: 'bar',
+                            data: barData,
+                            options: options
+                        };
+    
+                        if(myChartDay)
+                        {
+                            myChartDay.destroy()
+                        }
+                        // Create the chart
+                        myChartDay = new Chart(ctx, config);
+    
+                        // Add the line dataset
+                        myChartDay.data.datasets.push(...lineData.datasets);
+                        myChartDay.update();
+                    });
+            }
+    
+            function fetchReportsMonthly() {
+                const year = document.getElementById('yearSelect').value;
+                 // If the selected value is "none", set it to the current year
+                let url;
+                if (year === "none") {
+                    const currentYear = new Date().getFullYear();
+                    url = new URL(`/main/reports_monthly/${currentYear}/`, window.location.origin);
+                } else {
+                    url = new URL(`/main/reports_monthly/${year}/`, window.location.origin);
+                }
+                // Get the selected year from the select box
+            
+                fetch(url)
+                    .then(response => response.json())
+                    .then(data => {
+                        const ctx = document.getElementById('reportsMonthly').getContext('2d');
+                        const labels = data.map(item => item.month);
+                        const counts = data.map(item => item.count);
+                        const barData = {
+                            labels: labels,
                             datasets: [{
-                                label: 'Reports by Status',
-                                data: data.statuses_counts,
-                                backgroundColor: [
-                                    'rgba(255, 99, 132, 0.7)',
-                                    'rgba(54, 162, 235, 0.7)',
-                                    'rgba(255, 206, 86, 0.7)',
-                                    'rgba(75, 192, 192, 0.7)',
-                                    'rgba(153, 102, 255, 0.7)',
-                                    'rgba(255, 159, 64, 0.7)'
-                                ],
-                                borderColor: [
-                                    'rgba(255, 99, 132, 1)',
-                                    'rgba(54, 162, 235, 1)',
-                                    'rgba(255, 206, 86, 1)',
-                                    'rgba(75, 192, 192, 1)',
-                                    'rgba(153, 102, 255, 1)',
-                                    'rgba(255, 159, 64, 1)'
-                                ],
+                                label: 'Number of Reports',
+                                data: counts,
+                                backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                                borderColor: 'rgba(54, 162, 235, 1)',
                                 borderWidth: 1
                             }]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            plugins: {
-                                legend: {
-                                    position: 'right', // Change to 'right' or 'bottom' as needed
-                                    labels: {
-                                        boxWidth: 10, // Adjust the box width
-                                        padding: 10 // Adjust the padding between labels
+                        };
+    
+                        const lineData = {
+                            labels: labels,
+                            datasets: [{
+                                label: 'Number of Reports (Line)',
+                                data: counts,
+                                borderColor: 'rgba(255, 99, 132, 1)',
+                                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                                borderWidth: 1,
+                                type: 'line'
+                            }]
+                        };
+    
+                        const options = {
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    ticks: {
+                                        precision: 0 // Display whole numbers on y-axis
                                     }
                                 },
-                                tooltip: {
-                                    callbacks: {
-                                        label: function(tooltipItem) {
-                                            const label = tooltipItem.label || '';
-                                            const value = tooltipItem.raw;
-                                            const total = tooltipItem.dataset.data.reduce((a, b) => a + b, 0);
-                                            const percentage = ((value / total) * 100).toFixed(2);
-                                            return `${label}: ${value} (${percentage}%)`;
-                                        }
+                                x: {
+                                    type: 'time',
+                                    time: {
+                                        unit: 'month'
                                     }
+                                }
                             }
-                        }
-                    }
+                        };
+    
+                        const config = {
+                            type: 'bar',
+                            data: barData,
+                            options: options
+                        };
+    
+                        // Create the charts
+                        myChartMonth = new Chart(ctx, config);
+    
+                        // Add the line dataset
+                        myChartMonth.data.datasets.push(...lineData.datasets);
+                        myChartMonth.update();
                     });
-                })
-        }
-        
-        // Keep references to the charts
-        let categoriesChartOneMonth = null;
-        let statusesChartOneMonth = null;
-        function fetchReportsSpecifiedMonth(currentYear, currentMonth) {
-                const url = new URL(`main/reports_currentMonth/${currentYear}/${currentMonth}/`, window.location.origin);
-
+                    
+    
+            }
+            
+            let categoriesChartOneDay = null
+            let statusesChartOneDay = null
+            // This is for the pie charts
+            function fetchReportsToday(year, month, day){
+                const url = new URL(`main/reports_today/${year}/${month}/${day}/`, window.location.origin) 
                 // Create a Date object
-                const date = new Date(currentYear, currentMonth-1, 1); // Using day 1 to avoid timezone issues
-
+                const date = new Date(year,month-1,day, 1); // Using day 1 to avoid timezone issues
+    
                 // Define an array of month names
                 const monthNames = [
                 'January', 'February', 'March', 'April',
                 'May', 'June', 'July', 'August',
                 'September', 'October', 'November', 'December'
                 ];
-
+    
                 // Format the date
-                const formattedDate = `${monthNames[date.getMonth()]} ${date.getFullYear()}`;
-
+                const formattedDate = `${monthNames[date.getMonth()]} ${date.getDate()}`;
+    
                 // Assign the formatted date to the innerHTML of an element
-                document.getElementById('month').innerHTML = formattedDate;
+                document.getElementById('date').innerHTML = formattedDate;
                                     // document.getElementById('month').innerHTML = ''
                 fetch(url)
                     .then(response => response.json())
                     .then(data => {
-                        // Destroy the existing charts if they exist
-                        if (categoriesChartOneMonth) {
-                            categoriesChartOneMonth.destroy();
-                        }
-                        if (statusesChartOneMonth) {
-                            statusesChartOneMonth.destroy();
-                        }
-                        // Pie chart for categories
-                        const colors = [
-                            'rgba(255, 99, 132, 0.7)',
-                            'rgba(54, 162, 235, 0.7)',
-                            'rgba(255, 206, 86, 0.7)',
-                            'rgba(75, 192, 192, 0.7)',
-                            'rgba(153, 102, 255, 0.7)',
-                            'rgba(255, 159, 64, 0.7)',
-                            'rgba(255, 99, 132, 0.5)',
-                            'rgba(54, 162, 235, 0.5)',
-                            'rgba(255, 206, 86, 0.5)',
-                            'rgba(75, 192, 192, 0.5)',
-                            'rgba(153, 102, 255, 0.5)',
-                            'rgba(255, 159, 64, 0.5)'
-                        ];
-                        
-                        categoriesChartOneMonth = new Chart(document.getElementById('categoriesChartOneMonth'), {
+                            // Destroy the existing charts if they exist
+                            if (categoriesChartOneDay) {
+                                categoriesChartOneDay.destroy();
+                            }
+                            if (statusesChartOneDay) {
+                                statusesChartOneDay.destroy();
+                            }
+                             // Pie chart for categories
+                             categoriesChartOneDay = new Chart(document.getElementById('categoriesChart'), {
                             type: 'pie',
                             data: {
                                 labels: data.categories_labels,
                                 datasets: [{
                                     label: 'Reports by Category',
                                     data: data.categories_counts,
-                                    backgroundColor: colors,
+                                    backgroundColor: [
+                                        'rgba(255, 99, 132, 0.7)',
+                                        'rgba(54, 162, 235, 0.7)',
+                                        'rgba(255, 206, 86, 0.7)',
+                                        'rgba(75, 192, 192, 0.7)',
+                                        'rgba(153, 102, 255, 0.7)',
+                                        'rgba(255, 159, 64, 0.7)'
+                                    ],
                                     borderColor: [
                                         'rgba(255, 99, 132, 1)',
                                         'rgba(54, 162, 235, 1)',
@@ -1414,346 +1846,521 @@
                                         'rgba(153, 102, 255, 1)',
                                         'rgba(255, 159, 64, 1)'
                                     ],
-                                    borderColor: colors.map(color => color.replace('0.7', '1').replace('0.5', '1')),
                                     borderWidth: 1
                                 }]
                             },
                             options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            plugins: {
-                                legend: {
-                                    position: 'right', // Change to 'right' or 'bottom' as needed
-                                    labels: {
-                                        boxWidth: 10, // Adjust the box width
-                                        padding: 10 // Adjust the padding between labels
-                                    }
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                plugins: {
+                                    legend: {
+                                        position: 'right', // Change to 'right' or 'bottom' as needed
+                                        labels: {
+                                            boxWidth: 10, // Adjust the box width
+                                            padding: 10 // Adjust the padding between labels
+                                        }
+                                    },
+                                    tooltip: {
+                                        callbacks: {
+                                            label: function(tooltipItem) {
+                                                const label = tooltipItem.label || '';
+                                                const value = tooltipItem.raw;
+                                                const total = tooltipItem.dataset.data.reduce((a, b) => a + b, 0);
+                                                const percentage = ((value / total) * 100).toFixed(2);
+                                                return `${label}: ${value} (${percentage}%)`;
+                                            }
+                                        }
                                 },
-                                tooltip: {
-                                    callbacks: {
-                                        label: function(tooltipItem) {
-                                            const label = tooltipItem.label || '';
-                                            const value = tooltipItem.raw;
-                                            const total = tooltipItem.dataset.data.reduce((a, b) => a + b, 0);
-                                            const percentage = ((value / total) * 100).toFixed(2);
-                                            return `${label}: ${value} (${percentage}%)`;
+                                    datalabels: {
+                                        formatter: (value, ctx) => {
+                                        const total = ctx.dataset.data.reduce((a, b) => a + b, 0);
+                                        return total.toString(); // Display total amount as the label
+                                    },
+                                        color: '#fff',
+                                        labels: {
+                                            title: {
+                                                font: {
+                                                    weight: 'bold'
+                                                }
+                                            }
                                         }
                                     }
-                            }
+                                    
+                            
+                            },
+                            
                         }
-                    }
-                        });
-                        
-                        const statusMapping = {
-                            0: 'Pending',
-                            1: 'Approved',
-                            2: 'Sent Mail',
-                            3: 'Solved',
-                            4: 'Rejected'
-                        };
-                        // Map status numbers to status texts
-                        const statusLabels = data.statuses_labels.map(label => statusMapping[label]);
+                            
+                    });
+                    const statusMapping = {
+                        0: 'Pending',
+                        1: 'Approved',
+                        2: 'Sent Mail',
+                        3: 'Solved',
+                        4: 'Rejected'
+                    };
+                    // Map status numbers to status texts
+                    const statusLabels = data.statuses_labels.map(label => statusMapping[label]);
                         // Pie chart for statuses
-                        statusesChartOneMonth = new Chart(document.getElementById('statusesChartOneMonth'), {
+                        statusesChartOneDay = new Chart(document.getElementById('statusesChart'), {
                             type: 'pie',
                             data: {
                                 labels: statusLabels,
                                 datasets: [{
                                     label: 'Reports by Status',
                                     data: data.statuses_counts,
-                                    backgroundColor: colors,
-                                    borderColor: colors.map(color => color.replace('0.7', '1').replace('0.5', '1')),
+                                    backgroundColor: [
+                                        'rgba(255, 99, 132, 0.7)',
+                                        'rgba(54, 162, 235, 0.7)',
+                                        'rgba(255, 206, 86, 0.7)',
+                                        'rgba(75, 192, 192, 0.7)',
+                                        'rgba(153, 102, 255, 0.7)',
+                                        'rgba(255, 159, 64, 0.7)'
+                                    ],
+                                    borderColor: [
+                                        'rgba(255, 99, 132, 1)',
+                                        'rgba(54, 162, 235, 1)',
+                                        'rgba(255, 206, 86, 1)',
+                                        'rgba(75, 192, 192, 1)',
+                                        'rgba(153, 102, 255, 1)',
+                                        'rgba(255, 159, 64, 1)'
+                                    ],
                                     borderWidth: 1
                                 }]
                             },
                             options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            plugins: {
-                                legend: {
-                                    position: 'right', // Change to 'right' or 'bottom' as needed
-                                    labels: {
-                                        boxWidth: 10, // Adjust the box width
-                                        padding: 10 // Adjust the padding between labels
-                                    }
-                                },
-                                tooltip: {
-                                    callbacks: {
-                                        label: function(tooltipItem) {
-                                            const label = tooltipItem.label || '';
-                                            const value = tooltipItem.raw;
-                                            const total = tooltipItem.dataset.data.reduce((a, b) => a + b, 0);
-                                            const percentage = ((value / total) * 100).toFixed(2);
-                                            return `${label}: ${value} (${percentage}%)`;
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                plugins: {
+                                    legend: {
+                                        position: 'right', // Change to 'right' or 'bottom' as needed
+                                        labels: {
+                                            boxWidth: 10, // Adjust the box width
+                                            padding: 10 // Adjust the padding between labels
                                         }
-                            }
+                                    },
+                                    tooltip: {
+                                        callbacks: {
+                                            label: function(tooltipItem) {
+                                                const label = tooltipItem.label || '';
+                                                const value = tooltipItem.raw;
+                                                const total = tooltipItem.dataset.data.reduce((a, b) => a + b, 0);
+                                                const percentage = ((value / total) * 100).toFixed(2);
+                                                return `${label}: ${value} (${percentage}%)`;
+                                            }
+                                        }
+                                }
                             }
                         }
-                    }
                         });
                     })
-                    .catch(error => {
-                        console.error('Error fetching reports:', error);
-                    });
-        }
-        
-        // This is for the year selection options
-        function fetchYears() {
-            fetch('/main/get_years/')
-                .then(response => response.json())
-                .then(data => {
-                    const yearSelect = document.getElementById('yearSelect');
-                    data.years.forEach(year => {
-                        const option = document.createElement('option');
-                        option.value = year;
-                        option.textContent = year;
-                        yearSelect.appendChild(option);
-                    });
-                });
-        }   
-
-        // Event listener for year selection change
-        document.getElementById('yearSelect').addEventListener('change', function() {
-            // Get the selected year from the select box
-            const year = this.value;
-            if (year === 'none') {
-                window.location.reload()}
-            else {
-                url = new URL(`/main/reports_monthly/${year}/`, window.location.origin);
             }
-            
-            fetch(url)
-                .then(response => response.json())
-                .then(data => {
-                    const ctx = document.getElementById('reportsMonthly').getContext('2d');
-                    const labels = data.map(item => item.month);
-                    const counts = data.map(item => item.count);
-                    
-                    const barData = {
-                        labels: labels,
-                        datasets: [{
-                            label: 'Number of Reports',
-                            data: counts,
-                            backgroundColor: 'rgba(54, 162, 235, 0.6)',
-                            borderColor: 'rgba(54, 162, 235, 1)',
-                            borderWidth: 1
-                        }]
-                    };
-
-                    const lineData = {
-                        labels: labels,
-                        datasets: [{
-                            label: 'Number of Reports (Line)',
-                            data: counts,
-                            borderColor: 'rgba(255, 99, 132, 1)',
-                            backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                            borderWidth: 1,
-                            type: 'line'
-                        }]
-                    };
-
-                    const options = {
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                ticks: {
-                                    precision: 0 // Display whole numbers on y-axis
-                                }
-                            },
-                            x: {
-                                type: 'time',
-                                time: {
-                                    unit: 'month'
+           
+            // Keep references to the charts
+            let categoriesChartOneMonth = null;
+            let statusesChartOneMonth = null;
+            function fetchReportsSpecifiedMonth(currentYear, currentMonth) {
+                    const url = new URL(`main/reports_currentMonth/${currentYear}/${currentMonth}/`, window.location.origin);
+    
+                    // Create a Date object
+                    const date = new Date(currentYear, currentMonth-1, 1); // Using day 1 to avoid timezone issues
+    
+                    // Define an array of month names
+                    const monthNames = [
+                    'January', 'February', 'March', 'April',
+                    'May', 'June', 'July', 'August',
+                    'September', 'October', 'November', 'December'
+                    ];
+    
+                    // Format the date
+                    const formattedDate = `${monthNames[date.getMonth()]} ${date.getFullYear()}`;
+    
+                    // Assign the formatted date to the innerHTML of an element
+                    document.getElementById('month').innerHTML = formattedDate;
+                                        // document.getElementById('month').innerHTML = ''
+                    fetch(url)
+                        .then(response => response.json())
+                        .then(data => {
+                            // Destroy the existing charts if they exist
+                            if (categoriesChartOneMonth) {
+                                categoriesChartOneMonth.destroy();
+                            }
+                            if (statusesChartOneMonth) {
+                                statusesChartOneMonth.destroy();
+                            }
+                            // Pie chart for categories
+                            const colors = [
+                                'rgba(255, 99, 132, 0.7)',
+                                'rgba(54, 162, 235, 0.7)',
+                                'rgba(255, 206, 86, 0.7)',
+                                'rgba(75, 192, 192, 0.7)',
+                                'rgba(153, 102, 255, 0.7)',
+                                'rgba(255, 159, 64, 0.7)',
+                                'rgba(255, 99, 132, 0.5)',
+                                'rgba(54, 162, 235, 0.5)',
+                                'rgba(255, 206, 86, 0.5)',
+                                'rgba(75, 192, 192, 0.5)',
+                                'rgba(153, 102, 255, 0.5)',
+                                'rgba(255, 159, 64, 0.5)'
+                            ];
+                            
+                            categoriesChartOneMonth = new Chart(document.getElementById('categoriesChartOneMonth'), {
+                                type: 'pie',
+                                data: {
+                                    labels: data.categories_labels,
+                                    datasets: [{
+                                        label: 'Reports by Category',
+                                        data: data.categories_counts,
+                                        backgroundColor: colors,
+                                        borderColor: [
+                                            'rgba(255, 99, 132, 1)',
+                                            'rgba(54, 162, 235, 1)',
+                                            'rgba(255, 206, 86, 1)',
+                                            'rgba(75, 192, 192, 1)',
+                                            'rgba(153, 102, 255, 1)',
+                                            'rgba(255, 159, 64, 1)'
+                                        ],
+                                        borderColor: colors.map(color => color.replace('0.7', '1').replace('0.5', '1')),
+                                        borderWidth: 1
+                                    }]
+                                },
+                                options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                plugins: {
+                                    legend: {
+                                        position: 'right', // Change to 'right' or 'bottom' as needed
+                                        labels: {
+                                            boxWidth: 10, // Adjust the box width
+                                            padding: 10 // Adjust the padding between labels
+                                        }
+                                    },
+                                    tooltip: {
+                                        callbacks: {
+                                            label: function(tooltipItem) {
+                                                const label = tooltipItem.label || '';
+                                                const value = tooltipItem.raw;
+                                                const total = tooltipItem.dataset.data.reduce((a, b) => a + b, 0);
+                                                const percentage = ((value / total) * 100).toFixed(2);
+                                                return `${label}: ${value} (${percentage}%)`;
+                                            }
+                                        }
                                 }
                             }
                         }
-                    };
-
-                    const config = {
-                        type: 'bar',
-                        data: barData,
-                        options: options
-                    };
-
-                    // Destroy the existing chart if it exists
-                    if (myChartMonth) {
-                        myChartMonth.destroy();
-                    }
-                    // Create the charts
-                    myChartMonth = new Chart(ctx, config);
-                    // Add the line dataset
-                    myChartMonth.data.datasets.push(...lineData.datasets);
-                    myChartMonth.update();
-                    
-            
-                    // Fetch daily reports based on the first month
-                    const firstMonth = labels[0]; // Assuming labels are sorted
-                    if (firstMonth) {
-                        const [fetchYear, fetchMonth] = firstMonth.split('-');
-                        // Update the Year count view 
-                        fetchReportsByYear(fetchYear)
-                        // Update the Month Count View
-                        fetchReportsByYearMonth(fetchYear,fetchMonth)
-
-                        const dailyUrl = new URL(`/main/reports_daily/${fetchYear}/${fetchMonth}/`, window.location.origin);
-
-                        fetch(dailyUrl)
-                            .then(response => response.json())
-                            .then(data => {
-                                const ctx = document.getElementById('reportsDaily').getContext('2d');
-                                const labels = data.map(item => item.day);
-                                const counts = data.map(item => item.count);
-
-                                const barData = {
-                                    labels: labels,
+                            });
+                            
+                            const statusMapping = {
+                                0: 'Pending',
+                                1: 'Approved',
+                                2: 'Sent Mail',
+                                3: 'Solved',
+                                4: 'Rejected'
+                            };
+                            // Map status numbers to status texts
+                            const statusLabels = data.statuses_labels.map(label => statusMapping[label]);
+                            // Pie chart for statuses
+                            statusesChartOneMonth = new Chart(document.getElementById('statusesChartOneMonth'), {
+                                type: 'pie',
+                                data: {
+                                    labels: statusLabels,
                                     datasets: [{
-                                        label: 'Number of Reports',
-                                        data: counts,
-                                        backgroundColor: 'rgba(54, 162, 235, 0.6)',
-                                        borderColor: 'rgba(54, 162, 235, 1)',
+                                        label: 'Reports by Status',
+                                        data: data.statuses_counts,
+                                        backgroundColor: colors,
+                                        borderColor: colors.map(color => color.replace('0.7', '1').replace('0.5', '1')),
                                         borderWidth: 1
                                     }]
-                                };
-
-                                const lineData = {
-                                    labels: labels,
-                                    datasets: [{
-                                        label: 'Number of Reports (Line)',
-                                        data: counts,
-                                        borderColor: 'rgba(255, 99, 132, 1)',
-                                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                                        borderWidth: 1,
-                                        type: 'line'
-                                    }]
-                                };
-
-                                const options = {
-                                    scales: {
-                                        y: {
-                                            beginAtZero: true,
-                                            ticks: {
-                                                precision: 0 // Display whole numbers on y-axis
+                                },
+                                options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                plugins: {
+                                    legend: {
+                                        position: 'right', // Change to 'right' or 'bottom' as needed
+                                        labels: {
+                                            boxWidth: 10, // Adjust the box width
+                                            padding: 10 // Adjust the padding between labels
+                                        }
+                                    },
+                                    tooltip: {
+                                        callbacks: {
+                                            label: function(tooltipItem) {
+                                                const label = tooltipItem.label || '';
+                                                const value = tooltipItem.raw;
+                                                const total = tooltipItem.dataset.data.reduce((a, b) => a + b, 0);
+                                                const percentage = ((value / total) * 100).toFixed(2);
+                                                return `${label}: ${value} (${percentage}%)`;
                                             }
-                                        },
-                                        x: {
-                                            type: 'time',
-                                            time: {
-                                                unit: 'day'
+                                }
+                                }
+                            }
+                        }
+                            });
+                        })
+                        .catch(error => {
+                            console.error('Error fetching reports:', error);
+                        });
+            }
+           
+            // This is for the year selection options
+            function fetchYears() {
+                fetch('/main/get_years/')
+                    .then(response => response.json())
+                    .then(data => {
+                        const yearSelect = document.getElementById('yearSelect');
+                        data.years.forEach(year => {
+                            const option = document.createElement('option');
+                            option.value = year;
+                            option.textContent = year;
+                            yearSelect.appendChild(option);
+                        });
+                    });
+            }   
+    
+            // Event listener for year selection change
+            document.getElementById('yearSelect').addEventListener('change', function() {
+                // Get the selected year from the select box
+                const year = this.value;
+                if (year === 'none' ) {
+                    localStorage.setItem('selectedContent', 'content2');
+                    window.location.reload()}
+                else {
+                    url = new URL(`/main/reports_monthly/${year}/`, window.location.origin);
+                }
+                
+                fetch(url)
+                    .then(response => response.json())
+                    .then(data => {
+                        const ctx = document.getElementById('reportsMonthly').getContext('2d');
+                        const labels = data.map(item => item.month);
+                        const counts = data.map(item => item.count);
+                        
+                        const barData = {
+                            labels: labels,
+                            datasets: [{
+                                label: 'Number of Reports',
+                                data: counts,
+                                backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                                borderColor: 'rgba(54, 162, 235, 1)',
+                                borderWidth: 1
+                            }]
+                        };
+    
+                        const lineData = {
+                            labels: labels,
+                            datasets: [{
+                                label: 'Number of Reports (Line)',
+                                data: counts,
+                                borderColor: 'rgba(255, 99, 132, 1)',
+                                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                                borderWidth: 1,
+                                type: 'line'
+                            }]
+                        };
+    
+                        const options = {
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    ticks: {
+                                        precision: 0 // Display whole numbers on y-axis
+                                    }
+                                },
+                                x: {
+                                    type: 'time',
+                                    time: {
+                                        unit: 'month'
+                                    }
+                                }
+                            }
+                        };
+    
+                        const config = {
+                            type: 'bar',
+                            data: barData,
+                            options: options
+                        };
+    
+                        // Destroy the existing chart if it exists
+                        if (myChartMonth) {
+                            myChartMonth.destroy();
+                        }
+                        // Create the charts
+                        myChartMonth = new Chart(ctx, config);
+                        // Add the line dataset
+                        myChartMonth.data.datasets.push(...lineData.datasets);
+                        myChartMonth.update();
+                        
+                
+                        // Fetch daily reports based on the first month
+                        const firstMonth = labels[0]; // Assuming labels are sorted
+                        if (firstMonth) {
+                            const [fetchYear, fetchMonth] = firstMonth.split('-');
+                            // Update the Year count view 
+                            fetchReportsByYear(fetchYear)
+                            // Update the Month Count View
+                            fetchReportsByYearMonth(fetchYear,fetchMonth)
+    
+                            const dailyUrl = new URL(`/main/reports_daily/${fetchYear}/${fetchMonth}/`, window.location.origin);
+    
+                            fetch(dailyUrl)
+                                .then(response => response.json())
+                                .then(data => {
+                                    const ctx = document.getElementById('reportsDaily').getContext('2d');
+                                    const labels = data.map(item => item.day);
+                                    const counts = data.map(item => item.count);
+    
+                                    const barData = {
+                                        labels: labels,
+                                        datasets: [{
+                                            label: 'Number of Reports',
+                                            data: counts,
+                                            backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                                            borderColor: 'rgba(54, 162, 235, 1)',
+                                            borderWidth: 1
+                                        }]
+                                    };
+    
+                                    const lineData = {
+                                        labels: labels,
+                                        datasets: [{
+                                            label: 'Number of Reports (Line)',
+                                            data: counts,
+                                            borderColor: 'rgba(255, 99, 132, 1)',
+                                            backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                                            borderWidth: 1,
+                                            type: 'line'
+                                        }]
+                                    };
+    
+                                    const options = {
+                                        scales: {
+                                            y: {
+                                                beginAtZero: true,
+                                                ticks: {
+                                                    precision: 0 // Display whole numbers on y-axis
+                                                }
+                                            },
+                                            x: {
+                                                type: 'time',
+                                                time: {
+                                                    unit: 'day'
+                                                }
                                             }
                                         }
+                                    };
+    
+                                    const config = {
+                                        type: 'bar',
+                                        data: barData,
+                                        options: options
+                                    };
+    
+                                    if (myChartDay) {
+                                        myChartDay.destroy();
                                     }
-                                };
-
-                                const config = {
-                                    type: 'bar',
-                                    data: barData,
-                                    options: options
-                                };
-
-                                if (myChartDay) {
-                                    myChartDay.destroy();
-                                }
-                                // Create the chart
-                                myChartDay = new Chart(ctx, config);
-
-                                // Add the line dataset
-                                myChartDay.data.datasets.push(...lineData.datasets);
-                                myChartDay.update();
-                            })
-                            .catch(error => {
-                                console.error('Error fetching daily reports:', error);
-                            });
-                            // Fetch the pie data for Month
-                        fetchReportsSpecifiedMonth(fetchYear,fetchMonth)
-
-                        // If change year, display the month (text) on the pie chart
-                        const url = new URL(`main/reports_daily/${fetchYear}/${fetchMonth}/`, window.location.origin) 
-                        fetch(url)
-                            .then(response => response.json())
-                            .then(data => {
-                                const ctx = document.getElementById('reportsDaily').getContext('2d');
-                                const labels = data.map(item => item.day);
-                                splitDate = labels[0].split('-')
-                                year1 = splitDate[0]
-                                month = splitDate[1]
-                                day = splitDate[2]
-
-                                //Update the date count view 
-                                fetchReportsByYearMonthDate(year1,month,day)
-                                // Create a Date object
-                                const date = new Date(year1,month-1,day, 1); // Using day 1 to avoid timezone issues
-
-                                // Define an array of month names
-                                const monthNames = [
-                                'January', 'February', 'March', 'April',
-                                'May', 'June', 'July', 'August',
-                                'September', 'October', 'November', 'December'
-                                ];
-
-                                // Format the date
-                                const formattedDate = `${monthNames[date.getMonth()]} ${date.getDate()}`;
-
-                                // Assign the formatted date to the innerHTML of an element
-                                document.getElementById('date').innerHTML = formattedDate;
-
-                                // If change year display the chart on day Pie
-                                fetchReportsToday(year1,month,day)
-                            });
-                    }
+                                    // Create the chart
+                                    myChartDay = new Chart(ctx, config);
+    
+                                    // Add the line dataset
+                                    myChartDay.data.datasets.push(...lineData.datasets);
+                                    myChartDay.update();
+                                })
+                                .catch(error => {
+                                    console.error('Error fetching daily reports:', error);
+                                });
+                                // Fetch the pie data for Month
+                            fetchReportsSpecifiedMonth(fetchYear,fetchMonth)
+    
+                            // If change year, display the month (text) on the pie chart
+                            const url = new URL(`main/reports_daily/${fetchYear}/${fetchMonth}/`, window.location.origin) 
+                            fetch(url)
+                                .then(response => response.json())
+                                .then(data => {
+                                    const ctx = document.getElementById('reportsDaily').getContext('2d');
+                                    const labels = data.map(item => item.day);
+                                    splitDate = labels[0].split('-')
+                                    year1 = splitDate[0]
+                                    month = splitDate[1]
+                                    day = splitDate[2]
+    
+                                    //Update the date count view 
+                                    fetchReportsByYearMonthDate(year1,month,day)
+                                    // Create a Date object
+                                    const date = new Date(year1,month-1,day, 1); // Using day 1 to avoid timezone issues
+    
+                                    // Define an array of month names
+                                    const monthNames = [
+                                    'January', 'February', 'March', 'April',
+                                    'May', 'June', 'July', 'August',
+                                    'September', 'October', 'November', 'December'
+                                    ];
+    
+                                    // Format the date
+                                    const formattedDate = `${monthNames[date.getMonth()]} ${date.getDate()}`;
+    
+                                    // Assign the formatted date to the innerHTML of an element
+                                    document.getElementById('date').innerHTML = formattedDate;
+    
+                                    // If change year display the chart on day Pie
+                                    fetchReportsToday(year1,month,day)
+                                });
+                        }
+                        
+                        
+    
+                    })
+                    .catch(error => {
+                        console.error('Error fetching monthly reports:', error);
+                    });
                     
-                    
-
-                })
-                .catch(error => {
-                    console.error('Error fetching monthly reports:', error);
-                });
                 
-            
-        });
-
-        // Add click event listener to the canvas
-        // Add event listener to the chart's canvas
-        document.getElementById('reportsDaily').addEventListener('click', function(event) {
-            const activePoints = myChartDay.getElementsAtEventForMode(event, 'nearest', { intersect: true }, true);
-            console.log(activePoints)
-            if (activePoints.length > 0) {
-                const firstPoint = activePoints[0];
-                const label = myChartDay.data.labels[firstPoint.index];
-                splitLabel = label.split('-')
-                fetchReportsToday(splitLabel[0],splitLabel[1], splitLabel[2])
-                fetchReportsByYearMonthDate(splitLabel[0],splitLabel[1], splitLabel[2])
-            }
-        });
-
-        // Add click event listener to the canvas
-        // Add event listener to the chart's canvas
-        document.getElementById('reportsMonthly').addEventListener('click', function(event) {
-            const activePoints = myChartMonth.getElementsAtEventForMode(event, 'nearest', { intersect: true }, true);
-            console.log(activePoints)
-            if (activePoints.length > 0) {
-                const firstPoint = activePoints[0];
-                const label = myChartMonth.data.labels[firstPoint.index];
-                splitLabel = label.split('-')
-                fetchReportsSpecifiedMonth(splitLabel[0],splitLabel[1])
-                fetchReportsByYearMonth(splitLabel[0],splitLabel[1])
-                fetchReportsDaily(splitLabel[0],splitLabel[1])
-                console.log('Bar clicked:', label);
-            }
-        });
-        document.addEventListener('DOMContentLoaded', function() {
-            const currentYear = new Date().getFullYear();
-            const currentMonth = new Date().getMonth()+1;
-            const currentDate = new Date().getDate();
-            fetchYears();   
-            fetchReportsDaily();
-            fetchReportsMonthly();
-            fetchReportsToday(currentYear,currentMonth, currentDate);
-            fetchReportsSpecifiedMonth(currentYear,currentMonth);
-            fetchReportsByYear(currentYear)
-            fetchReportsByYearMonth(currentYear,currentMonth)
-            fetchReportsByYearMonthDate(currentYear,currentMonth,currentDate)
-            
-        });
-    </script>
+            });
+    
+            // Add click event listener to the canvas
+            // Add event listener to the chart's canvas
+            document.getElementById('reportsDaily').addEventListener('click', function(event) {
+                const activePoints = myChartDay.getElementsAtEventForMode(event, 'nearest', { intersect: true }, true);
+                console.log(activePoints)
+                if (activePoints.length > 0) {
+                    const firstPoint = activePoints[0];
+                    const label = myChartDay.data.labels[firstPoint.index];
+                    splitLabel = label.split('-')
+                    fetchReportsToday(splitLabel[0],splitLabel[1], splitLabel[2])
+                    fetchReportsByYearMonthDate(splitLabel[0],splitLabel[1], splitLabel[2])
+                }
+            });
+    
+            // Add click event listener to the canvas
+            // Add event listener to the chart's canvas
+            document.getElementById('reportsMonthly').addEventListener('click', function(event) {
+                const activePoints = myChartMonth.getElementsAtEventForMode(event, 'nearest', { intersect: true }, true);
+                console.log(activePoints)
+                if (activePoints.length > 0) {
+                    const firstPoint = activePoints[0];
+                    const label = myChartMonth.data.labels[firstPoint.index];
+                    splitLabel = label.split('-')
+                    fetchReportsSpecifiedMonth(splitLabel[0],splitLabel[1])
+                    fetchReportsByYearMonth(splitLabel[0],splitLabel[1])
+                    fetchReportsDaily(splitLabel[0],splitLabel[1])
+                    console.log('Bar clicked:', label);
+                }
+            });
+            document.addEventListener('DOMContentLoaded', function() {
+                const currentYear = new Date().getFullYear();
+                const currentMonth = new Date().getMonth()+1;
+                const currentDate = new Date().getDate();
+                fetchYears();   
+                fetchReportsDaily();
+                fetchReportsMonthly();
+                fetchReportsToday(currentYear,currentMonth, currentDate);
+                fetchReportsSpecifiedMonth(currentYear,currentMonth);
+                fetchReportsByYear(currentYear)
+                fetchReportsByYearMonth(currentYear,currentMonth)
+                fetchReportsByYearMonthDate(currentYear,currentMonth,currentDate)
+              
+            });
+        </script>
 </body>
 </html>

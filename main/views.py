@@ -9,21 +9,16 @@ from django.conf import settings
 from django.contrib.auth.models import User, Group
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
-from .models import Report, Profile, Image,Profession, OperationLine, Solution, ImageSolution
+from .models import Report, Profile, Image,Profession, OperationLine, Solution, ImageSolution, SubCategory
 from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404, redirect
-from .forms import ReportForm
 import datetime
 import os 
 import mimetypes
-from datetime import timedelta,  date
+from datetime import date
 from datetime import datetime as dateTime
-from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.http import JsonResponse
-from django.db.models.functions import TruncDay, TruncWeek, TruncMonth
-from django.db.models import Count
-from django.utils import timezone
 # Create your views here.
 def handle_login(request):
     if( request.method == 'POST'):
@@ -45,6 +40,8 @@ def handle_login(request):
                     redirect_url = '/main/chief'
                 elif user.groups.filter(name='Officer').exists():
                     redirect_url = '/main/officer'
+                elif user.groups.filter(name='Validate').exists():
+                    redirect_url = '/main/validate'
                 else:
                     messages.error(request, "No group found for the user.")
                     return redirect('/main/accounts/login/')
@@ -70,7 +67,7 @@ def user(request):
     status = request.GET.get('status')
 
     
-    if status in ['0', '1', '2','3']:  # Assuming '0', '1', '2' are your status values
+    if status in ['0', '1', '2','3','4','5','6']:  
         reports = reports.filter(status=status)
         paginator = Paginator(reports, reports_per_page)
     else: 
@@ -95,7 +92,6 @@ def user(request):
     if request.method == 'POST':
         report_id = request.POST.get('report_id')
         report = Report.objects.get(reportID = report_id)
-        print(report)
 
         if request.POST.get('cancel') == 'Cancel':
             context = {
@@ -129,7 +125,7 @@ def chief(request):
     # Filter for status '0', '1', and '4' separately and combine the results
     reportHistorys = Report.objects.filter(status='0', operationLineNumber__in=operation_line_nos) | \
             Report.objects.filter(status='1', operationLineNumber__in=operation_line_nos) | \
-            Report.objects.filter(status='4', operationLineNumber__in=operation_line_nos).order_by('-datetime')
+            Report.objects.filter(status='6', operationLineNumber__in=operation_line_nos).order_by('-datetime')
     # Pagination
     reports_per_page = 1
     paginator = Paginator(reports, reports_per_page)
@@ -144,18 +140,78 @@ def chief(request):
     #     'reports': reports,
     # }
     if request.method == 'POST':
+        senderName= request.user.username
         if 'confirm' in request.POST:
             report_id = request.POST.get('confirm')
             report = Report.objects.get(reportID = report_id)
             report.status = '1'
             report.confirmedBy = request.user.username
             report.save()
-           
+            receiver = User.objects.get(username=report.reporterName).email
+            
+            
+            officer_group = Group.objects.get(name='Officer')
+    
+            # Get users in the Officer group
+            officer_users = User.objects.filter(groups__in=[officer_group])
+
+            # Filter users by profession
+            filtered_users = []
+            for user in officer_users:
+                profile = Profile.objects.get(user=user)
+                if profile.profession.filter(profession_name=report.problemCategory).exists():
+                    filtered_users.append(user)
+            # For normal user
+            message = f'''
+- Issue made By: {report.reporterName}
+- Approved By: {senderName}
+- Forwarded To Officer: {[user.username for user in filtered_users]}
+- Description: {report.problemDescription}
+- Line Number: {report.operationLineNumber}
+- Problem Category: {report.problemCategory}
+- Machine Number: {report.machineNumber}
+- Date & Time : {report.datetime}
+
+Please Log in the system to view.'''
+            
+            send_email_to_user(senderName,[receiver], 'Report Approval', message)
+            
+            # For officer
+            message = f'''
+- Issue made By: {report.reporterName}
+- Approved By: {senderName}
+- Forwarded To Officer: {[user.username for user in filtered_users]}
+- Description: {report.problemDescription}
+- Line Number: {report.operationLineNumber}
+- Problem Category: {report.problemCategory}
+- Machine Number: {report.machineNumber}
+- DateTime : {report.datetime}
+
+Status : "Send Mail Required"
+
+Please Log in the system to send mail to general user to solve.'''
+            
+            send_email_to_user(senderName,[user.email for user in filtered_users], 'Report Approval: ( Send Mail Required )', message )
+
         elif 'cancel' in request.POST:
             report_id = request.POST.get('cancel')
             report = Report.objects.get(reportID = report_id)
-            report.status = '4'
+            report.status = '6'
             report.save()
+            receiver = User.objects.get(username=report.reporterName).email
+            message = f'''
+- Issue made By: {senderName}
+- Description: {report.problemDescription}
+- Line Number: {report.operationLineNumber}
+- Problem Category: {report.problemCategory}
+- Machine Number: {report.machineNumber}
+- DateTime : {report.datetime}
+
+Please Log in the system to view.'''
+            
+            send_email_to_user(senderName,[receiver],'Report Rejection ', message)
+        
+
         return redirect('/main/chief')
     
     context = {
@@ -166,6 +222,59 @@ def chief(request):
     return render(request, 'chief.html', context)
 
 @login_required(login_url='/main/error')
+@group_required('Validate')
+def validate(request):
+    reports = Report.objects.filter(status='1').order_by('-datetime')
+    reportHistorys = Report.objects.all().order_by('-datetime')
+
+    # Get the filter value from the form
+    category = request.GET.get('category', '')
+    status = request.GET.get('status')
+    print("status", status)
+    print("category", category)
+    if status in ['0', '1', '2', '3', '4', '5', '6']:
+        reportHistorys = reportHistorys.filter(status=status)
+
+    if category:
+        print('here')
+        reportHistorys = reportHistorys.filter(problemCategory=category)
+
+    # Pagination
+    reports_per_page = 1
+    paginator = Paginator(reports, reports_per_page)
+    paginatorHistory = Paginator(reportHistorys, reports_per_page)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    page_obj_history = paginatorHistory.get_page(page_number)
+
+
+     # Get all the professions and operations Line number
+    professions = Profession.objects.all()
+
+    context = {
+        'page_obj': page_obj,
+        'page_obj_history': page_obj_history,
+        'professions': professions,
+        'status': status,
+        'category': category
+    }
+    
+    if request.method == 'POST':
+        if 'confirm' in request.POST:
+            report_id = request.POST.get('confirm')
+            report = Report.objects.get(reportID = report_id)
+            report.status = '2'
+            report.save()
+
+        elif 'cancel' in request.POST:
+            report_id = request.POST.get('cancel')
+            report = Report.objects.get(reportID = report_id)
+            report.status = '6'
+            report.save()
+
+    return render(request, 'validate.html', context)
+
+@login_required(login_url='/main/error')
 @group_required('Officer')
 def officer(request):
 
@@ -174,15 +283,27 @@ def officer(request):
     profile = Profile.objects.get(user=user)
     professions = profile.profession.all()
     profession = [profession.profession_name for profession in professions]
+    subCategories = SubCategory.objects.all()
+    # Creating a list of subcategory names
+    subCategory_names = [category.subCategory for category in subCategories]
+    # print("SubCategories", subCategories)
     # print("Profession", profession)
-
+   
     # For user group General and retriving their emails 
     general_group = Group.objects.get(name='General')
     users_in_general = User.objects.filter(groups=general_group)
     emails = [user.email for user in users_in_general if user.email]
 
-    reports = Report.objects.filter(status ='1',problemCategory__in = profession ).order_by('-datetime')
-    print(reports)
+    # For user group CC and retriving their emails 
+    cc_group = Group.objects.get(name='CC')
+    users_in_cc = User.objects.filter(groups=cc_group)
+    ccEmails = [user.email for user in users_in_cc]
+
+    reports = Report.objects.filter(status ='2',problemCategory__in = profession ).order_by('-datetime')
+    for report in reports:
+        subcategories = report.get_subcategories()
+        print(subcategories)
+
     # Pagination
     reports_per_page = 1
     paginator = Paginator(reports, reports_per_page)
@@ -192,17 +313,23 @@ def officer(request):
     context = {
         'page_obj': page_obj,
         'emails' : emails,
+        'ccEmails': ccEmails,
+        # 'subCategories': subCategory_names,
+
     }
 
     # For send email
     if request.method == 'POST':
         # print("After sending", request.POST)
         selected_email = request.POST.get('selected_email')
+        cc_email = request.POST.get('selected_CCemail')
+        subCategory = request.POST.get('selected_subCategory')
         report_ID = request.POST.get('report_id')
         report = Report.objects.get(reportID = report_ID)
-        report.status = '2'
+        report.status = '3'
         report.sentBy = request.user.username
         report.sentTo = selected_email
+        report.subCategory = subCategory
         report.emailNotifyDate = datetime.datetime.now()
         report.dueDate = datetime.datetime.now() + datetime.timedelta(days=3)
         report.save()
@@ -216,7 +343,7 @@ def officer(request):
         recipient_list = [selected_email,]
 
         # Create email
-        email = EmailMultiAlternatives(subject, text_content, email_from, recipient_list)
+        email = EmailMultiAlternatives(subject, text_content, email_from, recipient_list,  cc=cc_email if cc_email else None) 
         email.attach_alternative(html_content, "text/html")
 
         # Prepare attachments
@@ -238,6 +365,50 @@ def officer(request):
 
         # Send email
         email.send()
+
+        # Send email to chief and users
+        officer_group = Group.objects.get(name='Officer')
+    
+        # Get users in the Officer group
+        officer_users = User.objects.filter(groups__in=[officer_group])
+
+        # Filter users by profession
+        filtered_users = []
+        for user in officer_users:
+            profile = Profile.objects.get(user=user)
+            if profile.profession.filter(profession_name=report.problemCategory).exists():
+                filtered_users.append(user)
+
+        # email sending
+        # First, filter operation line by line number
+        operation_line = OperationLine.objects.get(line_no=report.operationLineNumber)
+        
+        # Then, get all profiles that have this operation line
+        profiles = Profile.objects.filter(operation_line_no=operation_line)
+        
+        # Finally, get chief associated with these profiles
+        chiefs = [profile.user for profile in profiles]
+
+        # Send mail to chief
+        message = f'''
+- Issue made By: {report.reporterName}
+- Approved By: {report.confirmedBy}
+- Forwarded To Officer : {[user.username for user in filtered_users]}
+- Sent mail to General: {selected_email}
+- Sent By (To General): {request.user.username}
+- Description: {report.problemDescription}
+- Line Number: {report.operationLineNumber}
+- Problem Category: {report.problemCategory}
+- Machine Number: {report.machineNumber}
+- DateTime : {report.datetime}
+
+Please Log in the system to view.
+'''
+        receiver = User.objects.get(username=report.reporterName).email
+        send_email_to_user(request.user.username,[chief.email for chief in chiefs], 'Issue Sent to General User To Solve', message )
+        send_email_to_user(request.user.username,[receiver], 'Issue Sent to General User To Solve ', message )
+
+
 
     return render(request, 'officer.html', context)
 
@@ -268,14 +439,34 @@ def upload_report(request):
             problemCategory=problemCategory,
             machineNumber=machineNumber,
         )
-        report.save()
+        report.save()   
 
         for image in images:
             print(image)
             Image.objects.create(report=report, imageData=image)
         
-        # Send SSE update to notify chief about new report
-        send_sse_update_to_chief()
+        # email sending
+        # First, filter operation line by line number
+        operation_line = OperationLine.objects.get(line_no=line_number)
+        
+        # Then, get all profiles that have this operation line
+        profiles = Profile.objects.filter(operation_line_no=operation_line)
+        
+        # Finally, get chief associated with these profiles
+        chiefs = [profile.user for profile in profiles]
+        message = f'''
+- Issue made By: {reporter_name}
+- Description: {description}
+- Line Number: {line_number}
+- Problem Category: {problemCategory}
+- Machine Number: {machineNumber}
+- DateTime : {dt_now}
+
+Status : Approve or Declined Required
+
+Please Log in the system to approve or decline.'''
+        
+        send_email_to_user(reporter_name, [chief.email for chief in chiefs], 'Report Submission', message )
 
         return redirect('/main/user')
 
@@ -366,10 +557,56 @@ def upload_solution(request, report_id):
 
         # Updating Report Status 
 
-        report.status = '3'
+        report.status = '4'
         report.solvedBy = solver_name
 
         report.save()
+
+
+
+        # Send email to officer, chief and users
+        officer_group = Group.objects.get(name='Officer')
+    
+        # Get users in the Officer group
+        officer_users = User.objects.filter(groups__in=[officer_group])
+
+        # Filter users by profession
+        filtered_users = []
+        for user in officer_users:
+            profile = Profile.objects.get(user=user)
+            if profile.profession.filter(profession_name=report.problemCategory).exists():
+                filtered_users.append(user)
+
+        # email sending
+        # First, filter operation line by line number
+        operation_line = OperationLine.objects.get(line_no=report.operationLineNumber)
+        
+        # Then, get all profiles that have this operation line
+        profiles = Profile.objects.filter(operation_line_no=operation_line)
+        
+        # Finally, get chief associated with these profiles
+        chiefs = [profile.user for profile in profiles]
+
+        # Send mail to chief
+        message = f'''
+- Issue made By: {report.reporterName}
+- Approved By: {report.confirmedBy}
+- Forwarded To Officer : {[user.username for user in filtered_users]}
+- Mail Sent to General: {report.sentTo}
+- Sent By (To General): {report.sentBy}
+- Description: {report.problemDescription}
+- Line Number: {report.operationLineNumber}
+- Problem Category: {report.problemCategory}
+- Machine Number: {report.machineNumber}
+- DateTime : {report.datetime}
+
+Please Log in the system to view.'''
+        receiver = User.objects.get(username=report.reporterName).email
+        send_email_to_user(request.user.username, [chief.email for chief in chiefs], 'Report Solved By ', message )
+        send_email_to_user(request.user.username, [receiver], 'Report Solved By ', message )
+        send_email_to_user(request.user.username,[user.email for user in filtered_users], 'Report Solved By ', message )
+        # Send mail to user 
+
 
         return redirect('/main/success')
 
@@ -384,21 +621,121 @@ def dashboard(request):
 def get_reports_by_status_and_profession(request, operation_line):
     status = request.GET.get('status')
     profession = request.GET.get('profession')
-    
+
     if operation_line == 'recent':
-        reports = Report.objects.all().order_by('-datetime')[:10]  # Adjust the number of recent reports as needed
+        reports = Report.objects.all()
     else:
         reports = Report.objects.filter(operationLineNumber=operation_line)
 
-    if status in ['0', '1', '2', '3', '4']:
+    if status in ['0', '1', '2', '3', '4','5','6']:
         reports = reports.filter(status=status)
 
     if profession:
         reports = reports.filter(problemCategory=profession)
 
+    # Define the custom order for the status
+    status_order = {
+        '0': 0,
+        '1': 1,  
+        '2': 2, 
+        '3': 3, 
+        '4': 4,  
+        '5' : 5,
+        '6' : 6,
+    }
+    # Apply slicing after filtering
+    if operation_line == 'recent':
+        reports = reports.order_by('-datetime') # Adjust the number of recent reports as needed
+        reports = reports.extra(
+        select={'status_order': 'FIELD(status, "0", "1", "2", "3", "4","5","6")'}
+    ).order_by('status_order')
+
     report_list = list(reports.values('reportID', 'reporterName', 'operationLineNumber', 'problemCategory', 'problemDescription', 'status', 'datetime'))
 
+    # Add status tags
+    status_tags = {
+        '0': 'Pending',
+        '1': 'Approved',
+        '2': 'Validated',
+        '3': 'Email Sent',
+        '4': 'Solved',
+        '5': 'Finished',
+        '6': 'Rejected',
+    }
+
+    for report in report_list:
+        report['status_tag'] = status_tags.get(report['status'], 'Unknown')
+
+    
+
     return JsonResponse(report_list, safe=False)
+
+'''from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+
+def get_reports_by_status_and_profession(request, operation_line):
+    status = request.GET.get('status')
+    profession = request.GET.get('profession')
+    page = request.GET.get('page', 1)  # Get the page number from the request, default to 1
+
+    if operation_line == 'recent':
+        reports = Report.objects.all()
+    else:
+        reports = Report.objects.filter(operationLineNumber=operation_line)
+
+    if status in ['0', '1', '2', '3', '4', '5', '6']:
+        reports = reports.filter(status=status)
+
+    if profession:
+        reports = reports.filter(problemCategory=profession)
+
+    # Define the custom order for the status
+    status_order = {
+        '0': 0,
+        '1': 1,
+        '2': 2,
+        '3': 3,
+        '4': 4,
+        '5': 5,
+        '6': 6,
+    }
+
+    if operation_line == 'recent':
+        reports = reports.order_by('-datetime')
+        reports = reports.extra(select={'status_order': 'FIELD(status, "0", "1", "2", "3", "4", "5", "6")'}).order_by('status_order')
+
+    # Paginate the reports
+    paginator = Paginator(reports,10)
+    try:
+        paginated_reports = paginator.page(page)
+    except PageNotAnInteger:
+        paginated_reports = paginator.page(1)
+    except EmptyPage:
+        paginated_reports = paginator.page(paginator.num_pages)
+
+    report_list = list(paginated_reports.object_list.values('reportID', 'reporterName', 'operationLineNumber', 'problemCategory', 'problemDescription', 'status', 'datetime'))
+
+    # Add status tags
+    status_tags = {
+        '0': 'Pending',
+        '1': 'Approved',
+        '2': 'Validated',
+        '3': 'Email Sent',
+        '4': 'Solved',
+        '5': 'Finished',
+        '6': 'Rejected',
+    }
+
+    for report in report_list:
+        report['status_tag'] = status_tags.get(report['status'], 'Unknown')
+
+    response_data = {
+        'reports': report_list,
+        'page': paginated_reports.number,
+        'num_pages': paginated_reports.paginator.num_pages,
+    }
+
+    return JsonResponse(response_data, safe=False)'''
+
 
 
 # For analysis dashboard
@@ -495,96 +832,6 @@ def reports_monthly(request, year=None):
     
     return JsonResponse(sorted_data, safe=False)
 
-
-# def reports_today(request):
-#     # Get current date
-#     current_date = date.today()
-    
-#     # Fetch all reports (assuming datetime is a char field)
-#     reports = Report.objects.all()
-    
-#     # Filter reports for the current day
-#     reports_today = [report for report in reports if report.datetime.startswith(str(current_date))]
-    
-#     # Group and count reports by problem category
-#     categories_data = {}
-#     for report in reports_today:
-#         if report.problemCategory in categories_data:
-#             categories_data[report.problemCategory] += 1
-#         else:
-#             categories_data[report.problemCategory] = 1
-    
-#     # Convert categories_data into the format required by Chart.js
-#     categories_labels = list(categories_data.keys())
-#     categories_counts = list(categories_data.values())
-    
-#     # Group and count reports by status
-#     statuses_data = {}
-#     for report in reports_today:
-#         if report.status in statuses_data:
-#             statuses_data[report.status] += 1
-#         else:
-#             statuses_data[report.status] = 1
-    
-#     # Convert statuses_data into the format required by Chart.js
-#     statuses_labels = list(statuses_data.keys())
-#     statuses_counts = list(statuses_data.values())
-    
-#     data = {
-#         'categories_labels': categories_labels,
-#         'categories_counts': categories_counts,
-#         'statuses_labels': statuses_labels,
-#         'statuses_counts': statuses_counts,
-#     }
-    
-#     return JsonResponse(data)
-
-# def reports_currentMonth(request):
-#     today = date.today()
-#     first_day_of_month = today.replace(day=1)
-#     last_day_of_month = today.replace(day=1, month=today.month % 12 + 1) - datetime.timedelta(days= 1)
-    
-#     # Fetch all reports (assuming datetime is a char field)
-#     reports = Report.objects.all()
-    
-#     # Fetch reports for the current month
-#     reports_currentMonth = Report.objects.filter(
-#         datetime__gte=first_day_of_month,
-#         datetime__lte=last_day_of_month
-#     )
-    
-#     # Group and count reports by problem category
-#     categories_data = {}
-#     for report in reports_currentMonth:
-#         if report.problemCategory in categories_data:
-#             categories_data[report.problemCategory] += 1
-#         else:
-#             categories_data[report.problemCategory] = 1
-    
-#     # Convert categories_data into the format required by Chart.js
-#     categories_labels = list(categories_data.keys())
-#     categories_counts = list(categories_data.values())
-    
-#     # Group and count reports by status
-#     statuses_data = {}
-#     for report in reports_currentMonth:
-#         if report.status in statuses_data:
-#             statuses_data[report.status] += 1
-#         else:
-#             statuses_data[report.status] = 1
-    
-#     # Convert statuses_data into the format required by Chart.js
-#     statuses_labels = list(statuses_data.keys())
-#     statuses_counts = list(statuses_data.values())
-    
-#     data = {
-#         'categories_labels': categories_labels,
-#         'categories_counts': categories_counts,
-#         'statuses_labels': statuses_labels,
-#         'statuses_counts': statuses_counts,
-#     }
-    
-#     return JsonResponse(data)
 
 
 def reports_currentMonth(request, year, month):
@@ -753,3 +1000,17 @@ def success(request):
     return render(request, 'success.html')
 
 
+from django.core.mail import send_mail
+
+def send_email_to_user(sender_name, receiver_mail, subject, message):
+    
+    subject += f' : By {sender_name}'  # Append sender's name to the message
+    # Send the email
+    send_mail(
+        subject,
+        message,
+        settings.EMAIL_HOST_USER,  # Change this to your email address
+        receiver_mail,
+        fail_silently=False,
+    )
+    

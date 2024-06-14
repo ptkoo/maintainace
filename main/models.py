@@ -9,9 +9,11 @@ class Report(models.Model):
     STATUS_CHOICES = [
         ('0', 'Pending'),
         ('1', 'Approved'),
-        ('2', 'Sent'),
-        ('3', 'Solved'),
-        ('4', 'Rejected')
+        ('2', 'Validated'),
+        ('3', 'Sent'),
+        ('4', 'Solved'),
+        ('5', 'Finished'),
+        ('6', 'Rejected'),
     ]
     reportID = models.AutoField(primary_key=True)
     reporterName = models.CharField(max_length=255)
@@ -25,8 +27,14 @@ class Report(models.Model):
     sentTo = models.CharField(max_length=255, blank=True, null=True)
     solvedBy = models.CharField(max_length=255, blank=True, null=True)
     problemCategory = models.CharField(max_length=255, null=True)
+    subCategory = models.CharField(max_length=255, null=True)
     emailNotifyDate = models.CharField(max_length=255, blank=True, null=True)
     dueDate = models.CharField(max_length=255, blank=True, null=True)
+
+    def get_subcategories(self):
+        profession = Profession.objects.filter(profession_name=self.problemCategory).distinct()
+        subcategories = SubCategory.objects.filter(profession__in=profession).distinct()
+        return subcategories
    
     class Meta:
         db_table = "report"   
@@ -39,13 +47,23 @@ class OperationLine(models.Model):
 
     def __str__(self):
         return self.line_no
+    
+class SubCategory(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    subCategory = models.CharField(max_length=50, unique=True)
 
+    def __str__(self):
+        return self.subCategory
+    
 class Profession(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     profession_name = models.CharField(max_length=50, unique=True)
+    subCategory = models.ManyToManyField(SubCategory, blank=True)
 
     def __str__(self):
         return self.profession_name
+
+
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)

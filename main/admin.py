@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from .models import User
-from .models import Profile, Report, Image, OperationLine, Profession, Solution
+from .models import Profile, Report, Image, OperationLine, Profession, Solution, SubCategory
 from django import forms
 from django.contrib.auth.models import Group
 # Register your models here.
@@ -157,9 +157,22 @@ class CustomUserAdmin(UserAdmin):
     get_profession.short_description = 'Profession'
 
 
+# Define an inline admin descriptor for SubCategory model
+class SubCategoryInline(admin.TabularInline):
+    model = Profession.subCategory.through
+    extra = 1
+
+# Define a custom admin class for Profession model
+class ProfessionAdmin(admin.ModelAdmin):
+    list_display = ('profession_name',)
+    inlines = [SubCategoryInline]
+    exclude = ('subCategory',)
+
 admin.site.unregister(User)
 admin.site.register(User, CustomUserAdmin)
 admin.site.register(OperationLine)
-admin.site.register(Profession)
+# Register the custom admin class with the admin site
+admin.site.register(Profession, ProfessionAdmin)
+admin.site.register(SubCategory)
 
 

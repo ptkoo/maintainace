@@ -61,6 +61,11 @@
             font-weight: bold;
             color: #555;
         }
+        .admin-login-label, .dashboard-label{
+            margin:auto; 
+            color: #555; 
+            font-size: 15px;
+        }
         @media only screen and (max-width: 370px){
             .container {
                 max-width: 200px;
@@ -71,6 +76,9 @@
             }
             .sub-header{
                 font-size: 16px;
+            }
+            .admin-login-label, .dashboard-label{
+                font-size: 12px;
             }
         }
     </style>
@@ -87,7 +95,7 @@
         {% endif %}
 
         <form method="post" action="{% url 'login' %}">
-            <h2 class="sub-header">Maintainance Report System</h2>
+            <h2 class="sub-header">Maintenance Report System</h2>
             {% csrf_token %}
             <div class="input-group">
             <label for="id_username">Username:</label>
@@ -99,8 +107,9 @@
             </div><br>
             <input type="submit" value="Login" class="submit-button">
             <input type="hidden" name="next" value="{{ next }}">
-            <div style="text-align: center; margin: 10px;">
-                <a href="/admin/" style="margin:auto; color: #555; font-size: 15px;">Admin Login</a>
+            <div class="external-links" style="text-align: center; margin: 10px; display: flex;">
+                <a href="/admin/" class="admin-login-label">Admin Login</a>
+                <a href="/main/dashboard" class="dashboard-label">Go to Dashboard</a>
             </div>
             
         </form>
