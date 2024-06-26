@@ -66,6 +66,10 @@
             color: #555; 
             font-size: 15px;
         }
+        .alert{
+            color: red;
+            font-size: 14px;
+        }
         @media only screen and (max-width: 370px){
             .container {
                 max-width: 200px;
@@ -86,33 +90,38 @@
 <body>
     <h1 class="header">SNSS</h1>  
     <div class="container">
-        {% if messages %}
-            {% for message in messages %}
-                <div class="alert {{ message.tags }}">
-                    {{ message }}
+            <form method="post" action="{% url 'login' %}">
+                <h2 class="sub-header">Maintenance Report System</h2>
+                {% csrf_token %}
+                <div class="input-group">
+                <label for="id_username">Username:</label>
+                <input type="text" name="username" id="id_username">
+                </div><br>
+                <div class="input-group">
+                    <label for="id_password">Password:</label>
+                    <input type="password" name="password" id="id_password">
+                </div><br>
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert {{ message.tags }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+                <br>
+                <input type="submit" value="Login" class="submit-button">
+                <input type="hidden" name="next" value="{{ request.GET.next }}"/>
+                <!-- <input type="hidden" name="next" value="{{ next }}"> -->
+                <div class="external-links" style="text-align: center; margin: 10px; display: flex;">
+                    <a href="/admin/" class="admin-login-label">Admin Login</a>
+                    <a href="/inform/dashboard" class="dashboard-label">Go to Dashboard</a>
                 </div>
-            {% endfor %}
-        {% endif %}
-
-        <form method="post" action="{% url 'login' %}">
-            <h2 class="sub-header">Maintenance Report System</h2>
-            {% csrf_token %}
-            <div class="input-group">
-            <label for="id_username">Username:</label>
-            <input type="text" name="username" id="id_username">
-            </div><br>
-            <div class="input-group">
-                <label for="id_password">Password:</label>
-                <input type="password" name="password" id="id_password">
-            </div><br>
-            <input type="submit" value="Login" class="submit-button">
-            <input type="hidden" name="next" value="{{ next }}">
-            <div class="external-links" style="text-align: center; margin: 10px; display: flex;">
-                <a href="/admin/" class="admin-login-label">Admin Login</a>
-                <a href="/main/dashboard" class="dashboard-label">Go to Dashboard</a>
-            </div>
-            
-        </form>
+<!--                 
+                {% if request.GET.next %}
+                    <input type="hidden" name="next" value="{{request.GET.next}}"/>
+                {% endif %} -->
+                
+            </form>
     </div>
 </body>
 </html>

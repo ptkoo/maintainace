@@ -14,6 +14,10 @@ from pathlib import Path
 import os # needed by code below
 import environ
 
+import certifi, os
+
+os.environ['SSL_CERT_FILE'] = certifi.where()
+           
 # Initialize environ
 env = environ.Env(
     # set casting, default value
@@ -31,13 +35,22 @@ environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 # Email settings
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.office365.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
+# EMAIL_BACKEND = 'inform.backend.email.EmailBackend'
+# EMAIL_HOST = 'smtp.office365.com'
+EMAIL_HOST = 'mail.nsk.com'
+EMAIL_PORT = 25
+# EMAIL_PORT = 465 # For tls
+EMAIL_USE_TLS = False
 EMAIL_USE_SSL = False
 
-EMAIL_HOST_USER = env('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
+# EMAIL_HOST_USER = env('EMAIL_HOST_USER')
+# EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
+# EMAIL_HOST_USER = 'snssnotification@gmail.com'
+# EMAIL_HOST_PASSWORD = 'Sn55#@dmin'
+# EMAIL_HOST_USER = 'poonnarat@nsk.com'
+# EMAIL_HOST_PASSWORD = ''
+EMAIL_HOST_USER = 'AS-FA-it-support@nsk.com'
+EMAIL_HOST_PASSWORD = ''
 
 
 # Media 
@@ -54,8 +67,9 @@ SECRET_KEY = 'django-insecure-a44jt%=3(6-)r5^xb@0n_y%&eek%$4bh5&)u)p#(6tkx%a1fac
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['133.122.60.155','localhost','snss-djwa.asia.ad.nsk.com']
 
+#ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -67,7 +81,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
       # Add our new application
-    'main.apps.MainConfig', # This object was created for us in /catalog/apps.py
+    'inform.apps.InformConfig', # This object was created for us in /catalog/apps.py
 ]
 
 MIDDLEWARE = [
@@ -93,6 +107,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'inform.context_processors.base_url', 
+                'django.template.context_processors.request',
             ],
         },
     },
@@ -112,9 +128,9 @@ DATABASES = {
         'OPTIONS': {
             'init_command': 'SET default_storage_engine=INNODB',
         },
-        'NAME': 'maintainance',
+        'NAME': 'maintenancedb2',
         'USER': 'root',
-        'PASSWORD': 'snss2024',
+        'PASSWORD': 'snss',
         'HOST': 'localhost',
         'PORT': '3306',
     }
@@ -157,8 +173,15 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'inform', 'static'),
+]
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+BASE_URL = 'http://snss-djwa.asia.ad.nsk.com/'
 

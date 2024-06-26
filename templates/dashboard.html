@@ -4,9 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+    {% load static %}
+    <script src="{% static 'admin/js/chart.js' %}"></script>
+    <script src="{% static 'admin/js/chartjs-adapter-date-fns.bundle.min.js' %}"></script>
+    <!-- <script src="{% static 'admin/js/chartjs-plugin-datalabels@2.0.0' %}"></script> -->
+
     <style>
         body{
             margin: 0;
@@ -16,27 +18,26 @@
 
         .container {
             display: flex;
-            gap: 20px;
         }
         .factory-container{
             width: 75%;
             display: flex;
-            height: 100%;
-
-            
+            height: 90vh;
         }
         
         .details{
             width:25%;
             border-left: 2px solid rgba(0, 0, 0, 0.37);
             padding: 10px;
+            height: 90vh;
         }
         .factories-wrapper {
             display: flex;
             flex-direction: column;
             gap: 20px;
             flex: 1;
-            height: 100%;
+            align-items: center;
+            padding: 0px 5px;
         }
 
         .factories {
@@ -51,13 +52,10 @@
         }
         .factory-1{
             flex: 6;
-            padding-left: 10px;
             max-width: max-content;
-
         }
         .factory-2{
             flex: 6;
-            padding-right: 10px;
             max-width: max-content;
 
         }
@@ -74,7 +72,7 @@
             align-items: center;
             justify-content: center;
             box-shadow: 4px 10px 14px 0px rgba(0,0,0,0.1);
-            font-size: 12px;
+            font-size: 11px;
             font-weight: bold;
         }
         .PA-1 {
@@ -93,14 +91,12 @@
         .MC-18 {
             grid-row: span 4;
         }
-        .MC-3{
-            grid-row : span 2;
-        }
+
         .BA-1-2{
             grid-row: span 3;
         }
         .JA-2-Upper{
-            grid-row: span 2;
+            grid-row: span 3;
         }
         .dojos{
             grid-row: span 5;
@@ -120,8 +116,13 @@
         .MC-1-Upper{
             grid-row: span 3;
         }
-        .MC-7, .MC-19, .MC-2, .MC-1-Column, .CA-6, .CA-1, .center-board, .CA-3-4{
+        .MC-7, .MC-19, .MC-1-Column, .CA-6, .CA-1, .center-board, .CA-3-4{
             grid-row: span 2;
+        }
+        .MC-2{
+            grid-column: 1;
+            grid-column: span 2; 
+            grid-row: span 2; 
         }
         .CA-5{
             grid-row: span 3;
@@ -169,7 +170,7 @@
             grid-column: 7;
             grid-column: span 2; 
         }
-        .APTC, .compressor, .electric{
+        .APTC, .electric{
             grid-row: span 2;
         }
         .general-1{
@@ -189,8 +190,11 @@
         .general-2{
             grid-column: span 7; 
         }
-        .general-4,.general-6{
+        .general-6{
             grid-column: span 7; 
+        }
+        .general-area{
+            grid-column: span 5; 
         }
         .general-5{
             grid-row: span 13;
@@ -199,11 +203,7 @@
             grid-column: 3;
             grid-column: span 2; 
         }
-        .Adm{
-            grid-column: 7;
-            grid-column: span 2; 
-        }
-        .entrance-2{
+        .entrance-2, .entrance-1{
             grid-column: span 2; 
         }
         .car-park-1{
@@ -232,17 +232,10 @@
             grid-column: 2;
             grid-column: span 2;  
         }
-        .guest-3{
-            grid-column: 4;
-            grid-column: span 2;  
-        }
-        .first-aid{
-            grid-column: 2;
-            grid-column: span 2;  
-        }
+
         .training{
             grid-column: 4;
-            grid-column: span 3;  
+            grid-column: span 2;  
         }
         .waste-water-treatment{
             grid-column: span 2;  
@@ -358,14 +351,18 @@
             color: #fff;
             border-radius: 4px;
         }
-        .legend {
+        .legend{
+            display: flex;
+        }
+        .legend1 {
             display: flex;
             flex-direction: row;
             gap: 20px;
             padding: 15px;
             border-radius: 8px;
             width: fit-content;
-            margin-top: -45px;
+            margin-top: -20px;
+            
         }
 
         .legend-item {
@@ -373,11 +370,31 @@
             align-items: center;
             gap: 10px;
         }
+        .legend2 {
+            display: flex;
+            flex-direction: row;
+            gap: 15px;
+            padding: 15px;
+            border-radius: 8px;
+            width: fit-content;
+            margin-top: -20px;
+        }
+
+        .legend2-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
 
         .color-box {
             width: 18px;
             height: 18px;
             border: 1px solid #000;
+        }
+        .color-box2 {
+            width: 12px;
+            height: 12px;
+
         }
 
         .color1 {
@@ -390,6 +407,34 @@
 
         .color3 {
             background-color: rgba(250, 250, 113, 0.233);
+        }
+        
+        .color4 {
+            background-color: yellow;
+        }
+        
+        .color5 {
+            background-color: orange;
+        }
+        
+        .color6 {
+            background-color: #E74133;
+        }
+        
+        .color7 {
+            background-color: #4470b1;
+        }
+        
+        .color8 {
+            background-color: #17BF0B;
+        }
+        
+        .color9 {
+            background-color: #2A9D8F;
+        }
+        
+        .color10 { 
+            background-color: #7C7C7C;
         }
 
         .description {
@@ -412,7 +457,6 @@
             align-items: center;
             justify-content: center;
             border-radius: 3px;
-
             font-weight: bold;
         }
         #reports-container {
@@ -447,16 +491,16 @@
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             display: none;
             box-sizing: border-box;
-            height: 100px;
+            height: 90px;
         }
         .report h4{
-            margin-top: 0px;
-            margin-bottom: 5px;
+            margin-top: -5px;
+            margin-bottom: 0px;
             color: #555;
         }
         .report p{
-            margin: 3px;
-            font-size: 14px;
+            margin: 2px;
+            font-size: 13px;
         }
         .report.active {
             display: block;
@@ -469,29 +513,30 @@
         }
 
         .pending-tag {
-            width: 100px; 
-            height: 25px; 
+            width: 80px; 
+            height: 20px; 
             font-size: 14px;
-            background-color: orange ;
+            background-color: yellow;
             align-content: center;
             text-align: center;
             border-radius: 5px;
             font-weight: bold;
         }
         .approved-tag {
-            width: 100px; 
-            height: 25px; 
-            background-color: yellow;
+            width: 80px; 
+            height: 20px; 
+            background-color: orange;
             align-content: center;
             text-align: center;
             border-radius: 5px;
             font-weight: bold;
             font-size: 14px;
+            color: white;
         }
         .validated {
-            width: 100px; 
-            height: 25px; 
-            background-color: #2A9D8F;
+            width: 80px; 
+            height: 20px; 
+            background-color: #E74133;
             align-content: center;
             text-align: center;
             border-radius: 5px;
@@ -500,8 +545,8 @@
             font-size: 14px;
         }
         .email_sent {
-            width: 100px; 
-            height: 25px; 
+            width: 80px; 
+            height: 20px; 
             background-color: #4470b1;
             align-content: center;
             text-align: center;
@@ -511,8 +556,8 @@
             font-size: 14px;
         }
         .solved {
-            width: 100px; 
-            height: 25px; 
+            width: 80px; 
+            height: 20px; 
             font-size: 14px;
             background-color: #17BF0B;
             align-content: center;
@@ -523,9 +568,9 @@
             font-size: 14px;
         }
         .finished {
-            width: 100px; 
-            height: 25px; 
-            background-color: #F7007C;
+            width: 80px; 
+            height: 20px; 
+            background-color: #2A9D8F;
             align-content: center;
             text-align: center;
             border-radius: 5px;
@@ -534,10 +579,10 @@
             font-size: 14px;
         }
         .rejected {
-            width: 100px; 
-            height: 25px; 
+            width: 80px; 
+            height: 20px; 
             font-size: 14px;
-            background-color: #E74133;
+            background-color:  #7C7C7C;
             align-content: center;
             text-align: center;
             border-radius: 5px;
@@ -612,12 +657,13 @@
 
         .modal-content {
             background-color: #fefefe;
-            margin: 10% auto;
+            margin: 5% auto;
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             width: 80%;
             max-width: 800px;
+            font-size: 14px;
         }
 
         .close {
@@ -800,6 +846,37 @@
         .year-container{
             position: absolute;
         }
+        .overdue{
+            background-color: #E74133;
+            padding: 1px;
+            border-radius: 5px;
+            font-size: 10px;
+        }
+        .on-time{
+            background-color: #17BF0B;
+            padding: 1px;
+            border-radius: 5px;
+            font-size: 10px;
+        }
+        .overdue-finished{
+            background-color: orange;
+            padding: 1px;
+            border-radius: 5px;  
+            font-size: 10px;
+        }
+        .rank-style{
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            position: relative;
+            margin-left: auto;
+
+        }
+        .rank-style-p{
+            position: absolute;
+            padding-left: 0.3em;
+            font-weight: bold;
+        }
 
 
 
@@ -815,6 +892,7 @@
                 width: 100%;
                 display: block;
                 margin-right: 0px;
+                height: auto;
             }
             .factories-wrapper {
                 width: 100%;
@@ -852,10 +930,10 @@
             }
 
             .navbar .title {
-                font-size: 16px;
+                font-size: 14px;
             }
             .snss-title{
-                font-size: 16px;
+                font-size: 14px;
             }
             .back{
                 font-size: 12px;
@@ -868,14 +946,26 @@
                 display: none;
 
             }
+            .legend{
+                display: none;
+            }
             #reports-container {
                 height: 85vh;
 
             }
+            .custom-input{
+                margin-right: 0px;
+            }
             .custom-input label {
-                padding: 2px 4px;
+                padding: 2px 2px;
             }
 
+        }
+        @media (min-width: 1440px) { 
+            /* hi-res laptops and desktops */ 
+            #reports-container {
+                height: 80vh;
+            }
         }
 
     </style>
@@ -885,7 +975,7 @@
         <a href="{% url 'login' %}" style="color: white;" class="back">Login</a>
         <div style="display: flex;">
             <div class="snss-title">SNSS</div>
-            <div class="title">Dashboard</div>
+            <div class="title">Notifying Dashboard</div>
         </div>
         <div class="wrapper">
             <div class="custom-input">
@@ -904,130 +994,136 @@
                 <div class="factories-wrapper">
                     <h3 class="factory-title">Factory 2</h3>
                     <div class="factories factory-2">
-                        <div class="grid-item entrance-2 general" id="entrance-2">Entrance 2</div>
-                        <div class="grid-item guard-house-2 general" id="guard-house-2">Guard House 2</div>
-                        <div class="grid-item car-park-1 general" id="car-park-1">Car Park</div>
+                        <div class="grid-item entrance-2 general" id="Entrance_2">Entrance 2</div>
+                        <div class="grid-item guard-house-2 general" id="Guard_House_2">Guard House 2</div>
+                        <div class="grid-item car-park-1 general" id="Car_Park_F2_1">Car Park / 1</div>
                         <div class="grid-item general" id="general"></div>
-                        <div class="grid-item meeting-1 office" id="meeting-1">Meeting Room 1</div>
-                        <div class="grid-item meeting-2 office" id="meeting-2">Meeting Room 2</div>
-                        <div class="grid-item meeting-3 office" id="meeting-3">Meeting Room 3</div>
-                        <div class="grid-item meeting-4 office" id="meeting-4">Meeting Room 4</div>
-                        <div class="grid-item meeting-5 office" id="meeting-5">Meeting Room 5</div>
-                        <div class="grid-item meeting-6 office" id="meeting-6">Meeting Room 6</div>
-                        <div class="grid-item cctv office" id="cctv">CCTV Room</div>
-                        <div class="grid-item motorcycle-park general" id="motorcycle-park">Motorcycle Park</div>
-                        <div class="grid-item office" id="office"></div>
-                        <div class="grid-item factory-hall office" id="factory-hall">Factory Hall</div>
-                        <div class="grid-item meeting-7 office" id="meeting-7">Meeting Room 7</div>
+                        <div class="grid-item meeting-1 office" id="Meeting_Room_1">Meeting Room 1</div>
+                        <div class="grid-item meeting-2 office" id="Meeting_Room_2">Meeting Room 2</div>
+                        <div class="grid-item meeting-3 office" id="Meeting_Room_3">Meeting Room 3</div>
+                        <div class="grid-item meeting-4 office" id="Meeting_Room_4">Meeting Room 4</div>
+                        <div class="grid-item meeting-5 office" id="Meeting_Room_5">Meeting Room 5</div>
+                        <div class="grid-item meeting-6 office" id="Meeting_Room_6">Meeting Room 6</div>
+                        <div class="grid-item cctv office" id="CCTV_Room">CCTV Room</div>
+                        <div class="grid-item motorcycle-park general" id="Motorcycle_Park">Motorcycle Park</div>
+                        <div class="grid-item office" id="Toilets_OF2_2">Toilets/2</div>
+                        <div class="grid-item factory-hall office" id="Factory_Hall">Factory Hall</div>
+                        <div class="grid-item meeting-7 office" id="Meeting_Room_7">Meeting Room 7</div>
                         <div class="grid-item AC office" id="AC">AC</div>
                         <div class="grid-item Adm office" id="Adm">Adm</div>
-                        <div class="grid-item factory" id="factory"></div>
-                        <div class="grid-item crane factory" id="crane">Crane</div>
-                        <div class="grid-item end-mode factory" id="end-mode">End Mode</div>
-                        <div class="grid-item rest-area factory" id="rest-area">Rest Area</div>
-                        <div class="grid-item MC-12 factory" id="MC-12">MC-12</div>
-                        <div class="grid-item car-park-2 general" id="car-park-2">Car Park</div>
+                        <div class="grid-item office" id="Toilets_OF2_1">Toilets/1</div>
+                        <div class="grid-item factory" id="Toilets_F2_1">Toilets/1</div>
+                        <div class="grid-item crane factory" id="Crane">Crane</div>
+                        <div class="grid-item end-mode factory" id="End_Mode">End Mode</div>
+                        <div class="grid-item rest-area factory" id="Rest_Area_F2">Rest Area</div>
+                        <div class="grid-item MC-12 factory" id="MC-12-1">MC-12 / 1</div>
+                        <div class="grid-item car-park-2 general" id="Car_Park_F2_2">Car Park / 2</div>
                         <div class="grid-item APTC factory" id="APTC">APTC</div>
                         <div class="grid-item MC-17 factory" id="MC-17">MC-17</div>
-                        <div class="grid-item MC-12-2 factory" id="MC-12">MC-12</div>
+                        <div class="grid-item MC-12-2 factory" id="MC-12-2">MC-12 / 2</div>
                         <div class="grid-item MC-11 factory" id="MC-11">MC-11</div>
                         <div class="grid-item CA-7 factory" id="CA-7">CA-7</div>
                         <div class="grid-item MC-15 factory" id="MC-15">MC-15</div>
-                        <div class="grid-item electric factory" id="electric">Electric</div>
+                        <div class="grid-item electric factory" id="Electric">Electric</div>
                         <div class="grid-item empty factory" id="empty"></div>
-                        <div class="grid-item JA-7-2 factory" id="JA-7-2">JA-7</div>
+                        <div class="grid-item JA-7-2 factory" id="JA-7">JA-7</div>
                         <div class="grid-item MC-10 factory" id="MC-10">MC-10</div>
                         <div class="grid-item EAs factory" id="EAs">
-                            <div class="portion portion-1" id="EAs-portion-1">EA-7</div>
-                            <div class="portion portion-2" id="EAs-portion-2">EA-2, EA-6</div>
-                            <div class="portion portion-3" id="EAs-portion-3">EA-3</div>
+                            <div class="portion portion-1" id="EA-7">EA-7</div>
+                            <div class="portion portion-2" id="EA-2-6">EA-2, EA-6</div>
+                            <div class="portion portion-3" id="EA-3">EA-3</div>
                         </div>
                         <div class="grid-item EA-5 factory" id="EA-5">EA-5</div>
-                        <div class="grid-item MC-5 factory" id="MC-5">MC-5</div>
-                        <div class="grid-item compressor factory" id="compressor">Compressor</div>
+                        <div class="grid-item MC-5 factory" id="MC-5-1">MC-5 / 1</div>
+                        <div class="grid-item compressor factory" id="Compressor_1">Compress 1</div>
                         <div class="grid-item EA-1 factory" id="EA-1">EA-1</div>
-                        <div class="grid-item MC-5-2 factory" id="MC-5-2">MC-5</div>
+                        <div class="grid-item MC-5-2 factory" id="MC-5-2">MC-5 / 2</div>
                         <div class="grid-item football-field general" id="football-field">Football Field</div>
+                        <div class="grid-item factory" id="Toilets_F2_2">Toilets/2</div>
                         <div class="grid-item MC-22 factory" id="MC-22">MC-22</div>
                         <div class="grid-item MC-16 factory" id="MC-16">MC-16</div>
-                        <div class="grid-item compressor factory" id="compressor">Compressor</div>
-                        <div class="grid-item warehouse factory" id="warehouse">Warehouse</div>
-                        <div class="grid-item store factory" id="store">Store</div>
-                        <div class="grid-item fire-pump-2 general" id="fire-pump-2">Fire Pump 2</div>
-                        <div class="grid-item oil-store general" id="oil-store">Oil Store</div>
-                        <div class="grid-item chemical factory" id="chemical">Chemical</div>
-                        <div class="grid-item wh-office factory" id="wh-office">WH Office</div>
+                        <div class="grid-item compressor factory" id="Compressor_2">Compress 2</div>
+                        <div class="grid-item warehouse factory" id="Warehouse">Warehouse</div>
+                        <div class="grid-item store factory" id="Store">Store</div>
+                        <div class="grid-item fire-pump-2 general" id="Fire_Pump_2">Fire Pump 2</div>
+                        <div class="grid-item chemical factory" id="Chemical">Chemical</div>
+                        <div class="grid-item oil-store general" id="Oil_Store">Oil Store</div>
+                        <div class="grid-item factory" id="Toilets_F2_3">Toilets/3</div>
+                        <div class="grid-item wh-office factory" id="WH_Office">WH Office</div>
                         <div class="grid-item general-3" id="general-3"></div>
                     </div>
                 </div>
                 <div class="factories-wrapper">
                     <h3 class="factory-title">Factory 1</h3>
                     <div class="factories factory-1">
-                        <div class="grid-item general-4 general" id="general-4">General Area</div>
-                        <div class="grid-item guar-house-1 general" id="guard-house-1">Guard House 1</div>
-                        <div class="grid-item calibrate-room office" id="calibrate-room">Calibrate Room</div>
-                        <div class="grid-item guest-4 office" id="guest-4">Guest Room 4</div>
-                        <div class="grid-item guest-3 office" id="guest-3">Guest Room 3</div>
-                        <div class="grid-item guest-2 office" id="guest-2">Guest Room 2</div>
-                        <div class="grid-item buddha office" id="buddha">Buddha</div>
-                        <div class="grid-item locker general" id="locker">Locker</div>
-                        <div class="grid-item first-aid office" id="first-aid">First Aid Room</div>
-                        <div class="grid-item training office" id="training">Training Room</div>
-                        <div class="grid-item guest-1 office" id="guest-1">Guest Room 1</div>
+                        <div class="grid-item general-area general" id="General_Area">General Area</div>
+                        <div class="grid-item entrance-1 general" id="Entrance_1">Entrance 1</div>
+                        <div class="grid-item guar-house-1 general" id="Guard_House_1">Guard House 1</div>
+                        <div class="grid-item calibrate-room office" id="Calibrate_Room">Calibrate Room</div>
+                        <div class="grid-item guest-4 office" id="Guest_Room_4">Guest Room 4</div>
+                        <div class="grid-item guest-3 office" id="Guest_Room_3">Guest Room 3</div>
+                        <div class="grid-item guest-2 office" id="Guest_Room_2">Guest Room 2</div>
+                        <div class="grid-item office" id="Business_Talk">Business Talk</div>
+                        <div class="grid-item buddha office" id="Buddha">Buddha</div>
+                        <div class="grid-item locker general" id="Locker">Locker</div>
+                        <div class="grid-item office" id="Toilets_OF1_2">Toilets/2</div>
+                        <div class="grid-item first-aid office" id="First_Aid_Room">First Aid Room</div>
+                        <div class="grid-item training office" id="Training_Room">Training Room</div>
+                        <div class="grid-item office" id="Toilets_OF1_1">Toilets/1</div>
+                        <div class="grid-item guest-1 office" id="Guest_Room_1">Guest Room 1</div>
                         <div class="grid-item CA-5 factory" id="CA-5">CA-5</div>
-                        <div class="grid-item CA-3-4 factory" id="CA-3-4">CA-3,4</div>
-                        <div class="grid-item center-board factory" id="center-board">Center Board</div>
+                        <div class="grid-item CA-3-4 factory" id="CA-3">CA-3</div>
+                        <div class="grid-item center-board factory" id="Center_Board">Center Board</div>
                         <div class="grid-item CA-1 factory" id="CA-1">CA-1</div>
                         <div class="grid-item CA-6 factory" id="CA-6">CA-6</div>
-                        <div class="grid-item dojos factory" id="dojos-1">
-                            <div class="portion portion-1" id="dojos-portion-1">Rest Area</div>
-                            <div class="portion portion-2" id="dojos-portion-2">Safety Dojo</div>
-                            <div class="portion portion-3" id="dojos-portion-3">QA Dojo</div>
-                            <div class="portion portion-4" id="dojos-portion-4">5S Dojo</div>
-                            <div class="portion portion-5" id="dojos-portion-5">Electric</div>
-                            <div class="portion portion-6" id="dojos-portion-6">RO</div>
+                        <div class="grid-item dojos factory" id="dojos">
+                            <div class="portion portion-1" id="Rest_Area_F1">Rest Area</div>
+                            <div class="portion portion-2" id="Safety_Dojo">Safety Dojo</div>
+                            <div class="portion portion-3" id="QA_Dojo">QA Dojo</div>
+                            <div class="portion portion-4" id="5S_Dojo">5S Dojo</div>
+                            <div class="portion portion-5" id="Electric_Dojo">Electric</div>
+                            <div class="portion portion-6" id="RO_Dojo">RO</div>
                         </div>
-                        <div class="grid-item canteen general" id="canteen">Canteen</div>
-                        <div class="grid-item car-park-3 general" id="car-park-3">Car Park</div>
-                        <div class="grid-item CW-1 factory" id="CW-1">CW-1,2</div>
-                        <div class="grid-item CW-2 factory" id="CW-2">CW-1,2</div>
-                        <div class="grid-item CW-3 factory" id="CW-3">CW-1,2</div>
-                        <div class="grid-item CW-4 factory" id="CW-4">CW-1,2</div>
-                        <div class="grid-item MC-1-Column factory" id="MC-1-Column">MC-1 Column</div>
+                        <div class="grid-item canteen general" id="Canteen">Canteen</div>
+                        <div class="grid-item car-park-3 general" id="Car_Park_F1">Car Park</div>
+                        <div class="grid-item CW-1 factory" id="CW-1-2-1">CW-1,2/1</div>
+                        <div class="grid-item CW-2 factory" id="CW-1-2-2">CW-1,2/2</div>
+                        <div class="grid-item CW-3 factory" id="CW-1-2-3">CW-1,2/3</div>
+                        <div class="grid-item CW-4 factory" id="CW-1-2-4">CW-1,2/4</div>
+
                         <div class="grid-item MC-2 factory" id="MC-2">MC-2</div>
                         <div class="grid-item MC-21 factory" id="MC-21">MC-21</div>
                         <div class="grid-item MC-1-Upper factory" id="MC-1-Upper">MC-1 Upper</div>
                         <div class="grid-item MC-19 factory" id="MC-19">MC-19</div>
-                        <div class="grid-item transformers general" id="transformers">Transformers</div>
+                        <div class="grid-item transformers general" id="Transformers">Transformers</div>
                         <div class="grid-item MC-7 factory" id="MC-7">MC-7</div>
-                        <div class="grid-item inverter factory" id="inverter">Inverter Room</div>
-                        <div class="grid-item CA-2 factory" id="CA-2-1">CA-2</div>
+                        <div class="grid-item inverter factory" id="Inverter_Room">Inverter Room</div>
+                        <div class="grid-item CA-2 factory" id="CA-2">CA-2</div>
                         <div class="grid-item MC-4 factory" id="MC-4">MC-4</div>
-                        <div class="grid-item factory" id="factory-2"></div>
-                        <div class="grid-item steel-scrap factory" id="steel-scrap">Steel Scrap</div>
+                        <div class="grid-item factory" id="Toilets_F1_1">Toilets/1</div>
+                        <div class="grid-item steel-scrap factory" id="Steel_Scrap">Steel Scrap</div>
                         <div class="grid-item PA-1 factory" id="PA-1">PA-1</div>
-                        <div class="grid-item JA-7-1 factory" id="JA-7-1">JA-7</div>
+                        <div class="grid-item JA-2-Upper factory" id="JA-2-Upper">JA-2 Upper</div>
                         <div class="grid-item BA-1-2 factory" id="BA-1-2">BA-1,2</div>
                         <div class="grid-item MC-18 factory" id="MC-18">MC-18</div>
                         <div class="grid-item MC-3 factory" id="MC-3">MC-3</div>
-                        <div class="grid-item disposal-room general" id="disposal-room">Disposal Room</div>
-                        <div class="grid-item JA-2-Upper factory" id="JA-2-Upper">JA-2 Upper</div>
+                        <div class="grid-item disposal-room general" id="Disposal_Room">Disposal Room</div>
                         <div class="grid-item MC-9 factory" id="MC-9">MC-9</div>
-                        <div class="grid-item chemical-room general" id="chemical-room">Chemical Room</div>
+                        <div class="grid-item chemical-room general" id="Chemical_Room">Chemical Room</div>
                         <div class="grid-item JA-2-Lower factory" id="JA-2-Lower">JA-2 Lower</div>
                         <div class="grid-item BA-3 factory" id="BA-3">BA-3</div>
                         <div class="grid-item MC-8 factory" id="MC-8">MC-8</div>
                         <div class="grid-item JA-6 factory" id="JA-6">JA-6</div>
+                        <div class="grid-item JA-3 factory" id="JA-3">JA-3</div>
                         <div class="grid-item JA-5 factory" id="JA-5">JA-5</div>
-                        <div class="grid-item CA-2 factory" id="CA-2-2">CA-2</div>
                         <div class="grid-item MC-13 factory" id="MC-13">MC-13</div>
-                        <div class="grid-item fire-pump-1 general" id="fire-pump-1">Fire Pump 1</div>
-                        <div class="grid-item waste-water-treatment factory" id="waste-water-treatment">Waste Water Treatment</div>
-                        <div class="grid-item MT-Dojo factory" id="MT-Dojo">MT Dojo</div>
-                        <div class="grid-item work-shop factory" id="work-shop">Work Shop</div>
-                        <div class="grid-item MT-Office factory" id="MT-Office">MT Office</div>
+                        <div class="grid-item fire-pump-1 general" id="Fire_Pump_1">Fire Pump 1</div>
+                        <div class="grid-item waste-water-treatment factory" id="WasteWater_Treatment">Waste Water Treatment</div>
+                        <div class="grid-item MT-Dojo factory" id="MT_Dojo">MT Dojo</div>
+                        <div class="grid-item work-shop factory" id="Work_Shop">Work Shop</div>
+                        <div class="grid-item MT-Office factory" id="MT_Office">MT Office</div>
                         <div class="grid-item blank-factory-1 factory" id="blank-factory-1"></div>
-                        <div class="grid-item LPG-Bulk general" id="LPG-Bulk">LPG Bulk</div>
+                        <div class="grid-item LPG-Bulk general" id="LPG_Bulk">LPG Bulk</div>
                     </div>
                 </div>
             </div>
@@ -1038,7 +1134,7 @@
                 </div>
                 <form id="filter-form" method="get" action="#">
                     <div class="filters" style="display: flex; margin: 10px 0px;">
-                        <div class="filter-item" style="flex: 6;  margin: 0 auto;">
+                        <div class="filter-item" style="  margin: 0 auto;">
                             <label for="category-filter" style=" font-size:14px; font-weight: bold; color: #555;">Category:</label>
                             <select id="category-filter" name="profession" onchange="fetchReports(currentOperationLine)" style="width: 80px;">
                                 <option value="">All</option>
@@ -1047,7 +1143,7 @@
                                 {% endfor %}
                             </select>
                         </div>
-                        <div class="filter-item" style="flex: 6;  margin: 0 auto;">
+                        <div class="filter-item" style="  margin: 0 auto;">
                             <label for="status-filter" style=" font-size:14px; font-weight: bold; color: #555;">Status:</label>
                             <select id="status-filter" name="status" onchange="fetchReports(currentOperationLine)" style="width: 80px;">
                                 <option value="">All</option>
@@ -1063,7 +1159,7 @@
                     </div>
                         <label style=" font-size:14px;  color: #555;" >
                             <input type="checkbox" name="slideOrNot" id="slideOrNot" checked onchange="onSlideToggle()">
-                            Show all problem categories automatically
+                            Slide all problem categories automatically
                         </label>
                 </form>
                 <hr>
@@ -1076,19 +1172,52 @@
             </div>
         </div>
         
-        <div class="legend" id="legend">
-            <div class="legend-item">
-                <div class="color-box color1"></div>
-                <span class="description">General</span>
+        <div class="legend">
+            <div class="legend1" id="legend">
+                <div class="legend-item">
+                    <div class="color-box color1"></div>
+                    <span class="description">General</span>
+                </div>
+                <div class="legend-item">
+                    <div class="color-box color2"></div>
+                    <span class="description">Office</span>
+                </div>
+                <div class="legend-item">
+                    <div class="color-box color3"></div>
+                    <span class="description">Factory</span>
+                </div>
             </div>
-            <div class="legend-item">
-                <div class="color-box color2"></div>
-                <span class="description">Office</span>
+            <div class="legend2">
+                <div class="legend2-item">
+                    <div class="color-box2 color4"></div>
+                    <span class="description">Pending</span>
+                </div>
+                <div class="legend2-item">
+                    <div class="color-box2 color5"></div>
+                    <span class="description">Approved</span>
+                </div>
+                <div class="legend2-item">
+                    <div class="color-box2 color6"></div>
+                    <span class="description">Validated</span>
+                </div>
+                <div class="legend2-item">
+                    <div class="color-box2 color7"></div>
+                    <span class="description">Sent Mail</span>
+                </div>
+                <div class="legend2-item">
+                    <div class="color-box2 color8"></div>
+                    <span class="description">Solved</span>
+                </div>
+                <div class="legend2-item">
+                    <div class="color-box2 color9"></div>
+                    <span class="description">Finished</span>
+                </div>
+                <div class="legend2-item">
+                    <div class="color-box2 color10"></div>
+                    <span class="description">Rejected</span>
+                </div>
             </div>
-            <div class="legend-item">
-                <div class="color-box color3"></div>
-                <span class="description">Factory</span>
-            </div>
+
         </div>
 
         <!-- The Modal -->
@@ -1200,11 +1329,29 @@
         let currentOperationLine = '';
         let currentCategoryIndex = 0;
         let currentReportIndex = 0;
-        const reportsPerPage = 4;
+        let reportsPerPage = 4;
         let reportsData = {};
         let autoSlideInterval;
         let slideEnabled;
         let previousCategory = null;
+        // Define the media query
+        const mediaQueryLargeScreen = window.matchMedia('(min-width: 1440px)');
+
+        // Function to set reportsPerPage based on media query state
+        function handleMediaQueryChange(event) {
+            if (event.matches) {
+                reportsPerPage = 7;  // If screen width is 1920px or more
+            } else {
+                reportsPerPage = 4;  // Default value
+            }
+            console.log('reportsPerPage:', reportsPerPage);
+        }
+
+        // Check the initial state
+        handleMediaQueryChange(mediaQueryLargeScreen);
+
+        // Listen for changes in the media query state
+        mediaQueryLargeScreen.addEventListener('change', handleMediaQueryChange);
 
         document.addEventListener('DOMContentLoaded', function() {
             fetchReports('recent');
@@ -1223,8 +1370,8 @@
             //     clearInterval(autoSlideInterval);
             // }
             slideEnabled = this.checked;
-    clearInterval(autoSlideInterval);
-    startAutoSlide();  // Ensure interval is reset and start auto-slide for current category
+            clearInterval(autoSlideInterval);
+            startAutoSlide();  // Ensure interval is reset and start auto-slide for current category
         });
 
         function fetchReports(operationLine) {
@@ -1232,7 +1379,7 @@
             const status = document.getElementById('status-filter').value;
             const profession = document.getElementById('category-filter').value;
 
-            const url = new URL(`main/reports/${operationLine}/`, window.location.origin);
+            const url = new URL(`inform/reports/${operationLine}/`, window.location.origin);
             const params = { status, profession };
             Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
 
@@ -1251,6 +1398,12 @@
                         acc[report.problemCategory].push(report);
                         return acc;
                     }, {});
+                    
+                    if (data.length == 0){
+                        const reportsContainer = document.getElementById('reports-container');
+                        reportsContainer.innerHTML = `<h3>${document.getElementById('category-filter').value}</h3>`;
+                    }
+
 
                     currentCategoryIndex = 0;
                     currentReportIndex = 0;
@@ -1288,6 +1441,7 @@
             const currentCategory = categories[currentCategoryIndex];
             const reportsContainer = document.getElementById('reports-container');
             reportsContainer.innerHTML = `<h3>${currentCategory}</h3>`;
+            console.log("report per page to show ",reportsPerPage);
 
             let reportsToShow = reportsData[currentCategory].slice(currentReportIndex, currentReportIndex + reportsPerPage);
 
@@ -1295,6 +1449,15 @@
             if (currentCategory !== previousCategory) {
                 clearAllCircles();
             }
+
+
+            let today = new Date();
+            let dd = String(today.getDate()).padStart(2, '0');
+            let mm = String(today.getMonth() + 1).padStart(2, '0'); // January is 0!
+            let yyyy = today.getFullYear();
+
+            today = yyyy + '-' + mm + '-' + dd;
+            console.log("Today's date:", today);
 
             reportsToShow.forEach(report => {
                 const reportElement = document.createElement('div');
@@ -1306,8 +1469,68 @@
                     </div>
                     <p><strong style="color:#828181;">Reporter Name:</strong> ${report.reporterName}</p>
                     <p><strong style="color:#828181;">Problem Category:</strong> ${report.problemCategory}</p>
-                    <p><strong style="color:#828181;">Reported At:</strong> ${report.datetime}</p
                 `;
+                let dueDate = report.dueDate;
+                let finishDate = report.finishDate;
+                let rank_bg = "";
+                let rank_txt_color = "";
+                if (report.rank == "A"){
+                    rank_bg = "red";
+                    rank_txt_color = "white";
+                }
+                else if (report.rank == "B"){
+                    rank_bg = "yellow";
+                    rank_txt_color = "black";
+                }
+                else if (report.rank == "C"){
+                    rank_bg = "gray";
+                    rank_txt_color = "white";
+
+                }
+                else{
+                    rank_txt_color = "white";
+                }
+
+                console.log("finishDate and dueDate ",finishDate,dueDate);
+                
+                // If finishDate is not null, finishDate is less than or equal to dueDate, the report is finished on time
+                if (finishDate && finishDate <= dueDate) {
+                    reportElement.innerHTML += `
+                        <div style="display:flex;">
+                            <p><strong style="color:#828181;">Due date:</strong><strong class="on-time" style="color: white; font-size: 10px;"> ${dueDate || 'N/A'}</strong></p>
+                            <div class="rank-style" style="background-color:${rank_bg}; color:${rank_txt_color}"><p class="rank-style-p">${report.rank || 'N/A'}</p></div>
+                        </div> 
+                    `;
+                } 
+                // If finishDate is null, today is greater than dueDate, the report is overdue
+                else if (!finishDate && today > dueDate) {
+                    reportElement.innerHTML += `
+                        <div style="display:flex;">
+                            <p><strong style="color:#828181;">Due date:</strong><strong class="overdue" style="color: white; font-size: 10px;"> ${dueDate || 'N/A'}</strong></p>
+                            <div class="rank-style" style="background-color:${rank_bg}; color:${rank_txt_color}"><p class="rank-style-p">${report.rank || 'N/A'}</p></div>
+                        </div> 
+                    
+                    `;
+                } 
+                // If finishDate is not null, today is greater than dueDate, the report is overdue but finished
+                else if (finishDate && today > dueDate && finishDate > dueDate) {
+                    reportElement.innerHTML += `
+                        <div style="display:flex;">
+                            <p><strong style="color:#828181;">Due date:</strong><strong class="overdue-finished" style="color: white; font-size: 10px;"> ${dueDate || 'N/A'}</strong></p>
+                            <div class="rank-style" style="background-color:${rank_bg}; color:${rank_txt_color}"><p class="rank-style-p">${report.rank || 'N/A'}</p></div>
+                        </div>    
+                    
+                    `;
+                } 
+                // Else, the report is in process
+                else {
+                    reportElement.innerHTML += `
+                        <div style="display:flex;">
+                            <p><strong style="color:#828181;">Due date:</strong><strong style="font-size: 10px;"> ${dueDate || 'N/A'}</strong></p>    
+                            <div class="rank-style" style="background-color:${rank_bg}; color:${rank_txt_color}"><p class="rank-style-p">${report.rank || 'N/A'}</p></div>
+                        </div>
+                    `;
+                }
 
                 reportElement.addEventListener("click", function() {
                     openModal(report);
@@ -1353,6 +1576,9 @@
             const statusColor = getStatusColor(status);
             const circle = document.createElement('div');
             circle.className = `status-circle report-${reportID}`;
+            if (status == '0'){
+                circle.style.color="black";
+            }
             circle.style.backgroundColor = statusColor;
 
             // Add the initial letter of the problem category inside the circle
@@ -1369,18 +1595,18 @@
 
             setInterval(() => {
                 circle.classList.toggle('blink');
-            }, 700);
+            }, 800);
         }
 
         function getStatusColor(status) {
             switch(status) {
-                case '0': return 'orange'; // pending
-                case '1': return 'yellow'; // approved
-                case '2': return '#2A9D8F'; // validated              
+                case '0': return 'yellow'; // pending
+                case '1': return 'orange'; // approved
+                case '2': return '#E74133'; // validated              
                 case '3': return '#4470b1'; // email_sent
                 case '4': return '#17BF0B'; // solved
-                case '5': return '#F7007C'; // finished
-                case '6': return '#E74133'; // rejected
+                case '5': return '#2A9D8F'; // finished
+                case '6': return '#7C7C7C'; // rejected
                 default: return 'black';
             }
         }
@@ -1450,6 +1676,7 @@
             const modal = document.getElementById('myModal');
             const modalProblem = document.querySelector('.modal-problem');
             const modalSolution = document.querySelector('.modal-solution');
+            console.log("report obj is ",report)
 
    
             if (!modal || !modalProblem || !modalSolution) {
@@ -1464,29 +1691,104 @@
             <h3>Issue to be resolved</h3>
         </div>
         <ul>
-            <li><strong>Reporter Name:</strong> ${report.reporterName || 'N/A'}</li>
+            <div style="display:flex">
+                <li><strong>Reporter Name:</strong> ${report.reporterName || 'N/A'}</li>
+                <div style="margin-left: auto;" class="status-tag ${getStatusTagClass(report.status)}">${report.status_tag || 'N/A'}</div>
+            </div>
             <li><strong>Operation Line:</strong> ${report.operationLineNumber || 'N/A'}</li>
             <li><strong>Machine Number:</strong> ${report.machineNumber || 'N/A'}</li>
             <li><strong>Problem Category:</strong> ${report.problemCategory || 'N/A'}</li>
+            <li><strong>Sub Category:</strong> ${report.subCategory || 'N/A'}</li>
+            <li><strong>Sub Category Defined by User:</strong> ${report.subCategoryForUser || 'N/A'}</li>
+            <li><strong>Rank:</strong> ${report.rank || 'N/A'}</li>
             <li><strong>Description:</strong> ${report.problemDescription || 'N/A'}</li>
-            <li><strong>Created At:</strong> ${report.datetime || 'N/A'}</li>
-            <div class="status-tag ${getStatusTagClass(report.status)}">${report.status_tag || 'N/A'}</div>
+            <li><strong>Date Created:</strong> ${report.datetime || 'N/A'}</li>
+            <li><strong>Finished Date:</strong> ${report.finishDate || 'N/A'}</li>
+            <li><strong>Images:</strong>
+                <ul>
+                    ${report.images.map(image => `
+                        <li>
+                            <img src="/${image.imageData}" alt="Report Image" style="max-width: 250px; max-height: 250px;">
+                        </li>
+                    `).join('')}
+                </ul>
+            </li>
+        </li>
+            
         </ul>
     `;
+            let today = new Date();
+            let dd = String(today.getDate()).padStart(2, '0');
+            let mm = String(today.getMonth() + 1).padStart(2, '0'); // January is 0!
+            let yyyy = today.getFullYear();
+
+            today = yyyy + '-' + mm + '-' + dd;
+            console.log("Today's date:", today);
+
+            let dueDate = report.dueDate;
+            let finishDate = report.finishDate;
+
+            console.log("Due date:", dueDate);
+            console.log("Finish date:", finishDate);
+
+            // If finishDate is not null, today is greater than or equal to finishDate, the report is finished on time
+            if (finishDate && finishDate <= dueDate) {
+                modalProblem.innerHTML += `
+                    <ul>
+                        <li><strong>Due date:</strong><strong class="on-time" style="color: white;"> ${dueDate || 'N/A'}</strong></li>
+                    </ul>
+                `;
+            } 
+            // If finishDate is null, today is greater than dueDate, the report is overdue
+            else if (!finishDate && today > dueDate) {
+                modalProblem.innerHTML += `
+                    <ul>
+                        <li><strong>Due date:</strong><strong class="overdue" style="color: white;"> ${dueDate || 'N/A'}</strong></li>
+                    </ul>
+                `;
+            } 
+            // If finishDate is not null, today is greater than dueDate, the report is overdue but finished
+            else if (finishDate && today > dueDate && finishDate > dueDate) {
+                modalProblem.innerHTML += `
+                    <ul>
+                        <li><strong>Due date:</strong><strong class="overdue-finished" style="color: white;"> ${dueDate || 'N/A'}</strong></li>
+                    </ul>
+                `;
+            } 
+            // Else, the report is in process
+            else {
+                modalProblem.innerHTML += `
+                    <ul>
+                        <li><strong>Due date:</strong><strong> ${dueDate || 'N/A'}</strong></li>
+                    </ul>
+                `;
+            }
+
+
 
             // Display solution details if available, otherwise display "Solution in process"
-            if (report.status === '3') {
+            if (report.status === '4' || report.status === '5') {
                 modalSolution.innerHTML = `
                 <div style="border-left: 5px solid #17BF0B; padding-left: 5px;">
                     <h3 style="color: #17BF0B;">Solution of the issue</h3>
                 </div>
                     <ul>
-                        <li><strong>Issue Resolved By:</strong> ${report.solverName}</li>
-                        <li><strong>Description:</strong> ${report.solutionDescription}</li>
-                        <li><strong>Issue Resolved Time:</strong> ${report.solutionDatetime}</li>
+                        <li><strong>Issue Resolved By:</strong> ${report.solution.solverName}</li>
+                        <li><strong>Description:</strong> ${report.solution.description}</li>
+                        <li><strong>Issue Resolved Time:</strong> ${report.solution.datetime}</li>
+                        <li><strong>Images:</strong>
+                            <ul>
+                                ${report.solution.images.map(image => `
+                                    <li>
+                                        <img src="/${image.imageData}" alt="Solution Image" style="max-width: 250px; max-height: 250px;">
+                                    </li>
+                                `).join('')}
+                            </ul>
+                        </li>
+
                     </ul>
                 `;
-            } else if (report.status === '4') {
+            } else if (report.status === '6') {
                 modalSolution.innerHTML = `
                     <div style="border-left: 5px solid red; padding-left: 5px;">
                         <h3 style="color: red;">No solution</h3>
@@ -1579,7 +1881,7 @@
     </script>
         <script>
             function fetchReportsByYear(year) {
-                const url = new URL(`/main/reports_by_year/${year}/`, window.location.origin);
+                const url = new URL(`/inform/reports_by_year/${year}/`, window.location.origin);
                 fetch(url)
                     .then(response => response.json())
                     .then(data => {
@@ -1591,7 +1893,7 @@
             }
     
             function fetchReportsByYearMonth(year, month) {
-                const url = new URL(`/main/reports_by_year_month/${year}/${month}/`, window.location.origin);
+                const url = new URL(`/inform/reports_by_year_month/${year}/${month}/`, window.location.origin);
                 fetch(url)
                     .then(response => response.json())
                     .then(data => {
@@ -1613,7 +1915,7 @@
             }
     
             function fetchReportsByYearMonthDate(year, month, day) {
-                const url = new URL(`/main/reports_by_year_month_date/${year}/${month}/${day}/`, window.location.origin);
+                const url = new URL(`/inform/reports_by_year_month_date/${year}/${month}/${day}/`, window.location.origin);
                 fetch(url)
                     .then(response => response.json())
                     .then(data => {
@@ -1643,7 +1945,7 @@
                      month = new Date().getMonth() + 1;
                 }
                 
-                const url = new URL(`main/reports_daily/${year}/${month}/`, window.location.origin) 
+                const url = new URL(`inform/reports_daily/${year}/${month}/`, window.location.origin) 
                 fetch(url)
                     .then(response => response.json())
                     .then(data => {
@@ -1722,9 +2024,9 @@
                 let url;
                 if (year === "none") {
                     const currentYear = new Date().getFullYear();
-                    url = new URL(`/main/reports_monthly/${currentYear}/`, window.location.origin);
+                    url = new URL(`/inform/reports_monthly/${currentYear}/`, window.location.origin);
                 } else {
-                    url = new URL(`/main/reports_monthly/${year}/`, window.location.origin);
+                    url = new URL(`/inform/reports_monthly/${year}/`, window.location.origin);
                 }
                 // Get the selected year from the select box
             
@@ -1795,7 +2097,7 @@
             let statusesChartOneDay = null
             // This is for the pie charts
             function fetchReportsToday(year, month, day){
-                const url = new URL(`main/reports_today/${year}/${month}/${day}/`, window.location.origin) 
+                const url = new URL(`inform/reports_today/${year}/${month}/${day}/`, window.location.origin) 
                 // Create a Date object
                 const date = new Date(year,month-1,day, 1); // Using day 1 to avoid timezone issues
     
@@ -1836,7 +2138,8 @@
                                         'rgba(255, 206, 86, 0.7)',
                                         'rgba(75, 192, 192, 0.7)',
                                         'rgba(153, 102, 255, 0.7)',
-                                        'rgba(255, 159, 64, 0.7)'
+                                        'rgba(255, 159, 64, 0.7)',
+                                        'rgba(255, 159, 64, 0.7)',
                                     ],
                                     borderColor: [
                                         'rgba(255, 99, 132, 1)',
@@ -1844,7 +2147,8 @@
                                         'rgba(255, 206, 86, 1)',
                                         'rgba(75, 192, 192, 1)',
                                         'rgba(153, 102, 255, 1)',
-                                        'rgba(255, 159, 64, 1)'
+                                        'rgba(255, 159, 64, 1)',
+                                        'rgba(255, 159, 64, 1)',
                                     ],
                                     borderWidth: 1
                                 }]
@@ -1895,9 +2199,11 @@
                     const statusMapping = {
                         0: 'Pending',
                         1: 'Approved',
-                        2: 'Sent Mail',
-                        3: 'Solved',
-                        4: 'Rejected'
+                        2: 'Validated',
+                        3: 'Sent Mail',
+                        4: 'Solved',
+                        5: 'Finished',
+                        6: 'Rejected'
                     };
                     // Map status numbers to status texts
                     const statusLabels = data.statuses_labels.map(label => statusMapping[label]);
@@ -1925,6 +2231,7 @@
                                         'rgba(153, 102, 255, 1)',
                                         'rgba(255, 159, 64, 1)'
                                     ],
+
                                     borderWidth: 1
                                 }]
                             },
@@ -1960,7 +2267,7 @@
             let categoriesChartOneMonth = null;
             let statusesChartOneMonth = null;
             function fetchReportsSpecifiedMonth(currentYear, currentMonth) {
-                    const url = new URL(`main/reports_currentMonth/${currentYear}/${currentMonth}/`, window.location.origin);
+                    const url = new URL(`inform/reports_currentMonth/${currentYear}/${currentMonth}/`, window.location.origin);
     
                     // Create a Date object
                     const date = new Date(currentYear, currentMonth-1, 1); // Using day 1 to avoid timezone issues
@@ -2013,12 +2320,12 @@
                                         data: data.categories_counts,
                                         backgroundColor: colors,
                                         borderColor: [
-                                            'rgba(255, 99, 132, 1)',
-                                            'rgba(54, 162, 235, 1)',
-                                            'rgba(255, 206, 86, 1)',
-                                            'rgba(75, 192, 192, 1)',
-                                            'rgba(153, 102, 255, 1)',
-                                            'rgba(255, 159, 64, 1)'
+                                        'rgba(255, 99, 132, 1)',
+                                        'rgba(54, 162, 235, 1)',
+                                        'rgba(255,206, 86, 1)',
+                                        'rgba(75, 192, 192, 1)',
+                                        'rgba(153, 102, 255, 1)',
+                                        'rgba(255, 159, 64, 1)'
                                         ],
                                         borderColor: colors.map(color => color.replace('0.7', '1').replace('0.5', '1')),
                                         borderWidth: 1
@@ -2053,9 +2360,12 @@
                             const statusMapping = {
                                 0: 'Pending',
                                 1: 'Approved',
-                                2: 'Sent Mail',
-                                3: 'Solved',
-                                4: 'Rejected'
+                                2: 'Validated',
+                                3: 'Sent Mail',
+                                4: 'Solved',
+                                5: 'Finished',
+                                6: 'Rejected'
+                            
                             };
                             // Map status numbers to status texts
                             const statusLabels = data.statuses_labels.map(label => statusMapping[label]);
@@ -2105,7 +2415,7 @@
            
             // This is for the year selection options
             function fetchYears() {
-                fetch('/main/get_years/')
+                fetch('/inform/get_years/')
                     .then(response => response.json())
                     .then(data => {
                         const yearSelect = document.getElementById('yearSelect');
@@ -2126,7 +2436,7 @@
                     localStorage.setItem('selectedContent', 'content2');
                     window.location.reload()}
                 else {
-                    url = new URL(`/main/reports_monthly/${year}/`, window.location.origin);
+                    url = new URL(`/inform/reports_monthly/${year}/`, window.location.origin);
                 }
                 
                 fetch(url)
@@ -2202,7 +2512,7 @@
                             // Update the Month Count View
                             fetchReportsByYearMonth(fetchYear,fetchMonth)
     
-                            const dailyUrl = new URL(`/main/reports_daily/${fetchYear}/${fetchMonth}/`, window.location.origin);
+                            const dailyUrl = new URL(`/inform/reports_daily/${fetchYear}/${fetchMonth}/`, window.location.origin);
     
                             fetch(dailyUrl)
                                 .then(response => response.json())
@@ -2274,7 +2584,7 @@
                             fetchReportsSpecifiedMonth(fetchYear,fetchMonth)
     
                             // If change year, display the month (text) on the pie chart
-                            const url = new URL(`main/reports_daily/${fetchYear}/${fetchMonth}/`, window.location.origin) 
+                            const url = new URL(`inform/reports_daily/${fetchYear}/${fetchMonth}/`, window.location.origin) 
                             fetch(url)
                                 .then(response => response.json())
                                 .then(data => {

@@ -149,7 +149,7 @@
     
     <script>
         function fetchReportsByYear(year) {
-            const url = new URL(`/main/reports_by_year/${year}/`, window.location.origin);
+            const url = new URL(`/inform/reports_by_year/${year}/`, window.location.origin);
             fetch(url)
                 .then(response => response.json())
                 .then(data => {
@@ -161,7 +161,7 @@
         }
 
         function fetchReportsByYearMonth(year, month) {
-            const url = new URL(`/main/reports_by_year_month/${year}/${month}/`, window.location.origin);
+            const url = new URL(`/inform/reports_by_year_month/${year}/${month}/`, window.location.origin);
             fetch(url)
                 .then(response => response.json())
                 .then(data => {
@@ -183,7 +183,7 @@
         }
 
         function fetchReportsByYearMonthDate(year, month, day) {
-            const url = new URL(`/main/reports_by_year_month_date/${year}/${month}/${day}/`, window.location.origin);
+            const url = new URL(`/inform/reports_by_year_month_date/${year}/${month}/${day}/`, window.location.origin);
             fetch(url)
                 .then(response => response.json())
                 .then(data => {
@@ -213,7 +213,7 @@
                  month = new Date().getMonth() + 1;
             }
             
-            const url = new URL(`main/reports_daily/${year}/${month}/`, window.location.origin) 
+            const url = new URL(`inform/reports_daily/${year}/${month}/`, window.location.origin) 
             fetch(url)
                 .then(response => response.json())
                 .then(data => {
@@ -292,9 +292,9 @@
             let url;
             if (year === "none") {
                 const currentYear = new Date().getFullYear();
-                url = new URL(`/main/reports_monthly/${currentYear}/`, window.location.origin);
+                url = new URL(`/inform/reports_monthly/${currentYear}/`, window.location.origin);
             } else {
-                url = new URL(`/main/reports_monthly/${year}/`, window.location.origin);
+                url = new URL(`/inform/reports_monthly/${year}/`, window.location.origin);
             }
             // Get the selected year from the select box
         
@@ -365,7 +365,7 @@
         let statusesChartOneDay = null
         // This is for the pie charts
         function fetchReportsToday(year, month, day){
-            const url = new URL(`main/reports_today/${year}/${month}/${day}/`, window.location.origin) 
+            const url = new URL(`inform/reports_today/${year}/${month}/${day}/`, window.location.origin) 
             // Create a Date object
             const date = new Date(year,month-1,day, 1); // Using day 1 to avoid timezone issues
 
@@ -530,7 +530,7 @@
         let categoriesChartOneMonth = null;
         let statusesChartOneMonth = null;
         function fetchReportsSpecifiedMonth(currentYear, currentMonth) {
-                const url = new URL(`main/reports_currentMonth/${currentYear}/${currentMonth}/`, window.location.origin);
+                const url = new URL(`inform/reports_currentMonth/${currentYear}/${currentMonth}/`, window.location.origin);
 
                 // Create a Date object
                 const date = new Date(currentYear, currentMonth-1, 1); // Using day 1 to avoid timezone issues
@@ -675,7 +675,7 @@
        
         // This is for the year selection options
         function fetchYears() {
-            fetch('/main/get_years/')
+            fetch('/inform/get_years/')
                 .then(response => response.json())
                 .then(data => {
                     const yearSelect = document.getElementById('yearSelect');
@@ -695,7 +695,7 @@
             if (year === 'none' || year === new Date().getFullYear().toString()) {
                 window.location.reload()}
             else {
-                url = new URL(`/main/reports_monthly/${year}/`, window.location.origin);
+                url = new URL(`/inform/reports_monthly/${year}/`, window.location.origin);
             }
             
             fetch(url)
@@ -771,7 +771,7 @@
                         // Update the Month Count View
                         fetchReportsByYearMonth(fetchYear,fetchMonth)
 
-                        const dailyUrl = new URL(`/main/reports_daily/${fetchYear}/${fetchMonth}/`, window.location.origin);
+                        const dailyUrl = new URL(`/inform/reports_daily/${fetchYear}/${fetchMonth}/`, window.location.origin);
 
                         fetch(dailyUrl)
                             .then(response => response.json())
@@ -843,7 +843,7 @@
                         fetchReportsSpecifiedMonth(fetchYear,fetchMonth)
 
                         // If change year, display the month (text) on the pie chart
-                        const url = new URL(`main/reports_daily/${fetchYear}/${fetchMonth}/`, window.location.origin) 
+                        const url = new URL(`inform/reports_daily/${fetchYear}/${fetchMonth}/`, window.location.origin) 
                         fetch(url)
                             .then(response => response.json())
                             .then(data => {
