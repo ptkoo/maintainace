@@ -154,7 +154,7 @@
         <p><strong>Operation Line:</strong> {{ report.operationLineNumber }}</p>
         <p><strong>Problem Category:</strong> {{ report.problemCategory }}</p>
         <p><strong>Problem Sub Category:</strong> {{ report.subCategoryForUser }}</p>
-        {% if report.subCategory %} <p><strong>Problem Sub Category Defined By Officer:</strong> {{ report.subCategory }}</p> {% endif %}
+        {% if report.subCategory %} <p><strong>Problem Type:</strong> {{ report.subCategory }}</p> {% endif %}
         <p><strong>Rank:</strong> {{ report.rank }}</p>
         <p><strong>Description:</strong> {{ report.problemDescription }}</p>
         <p><a href="http://snss-djwa.asia.ad.nsk.com{% url 'login' %}?next={% url 'solution' report.reportID %}" class="btn">Click here to report back the details of issues</a></p>

@@ -1344,7 +1344,7 @@
             } else {
                 reportsPerPage = 4;  // Default value
             }
-            console.log('reportsPerPage:', reportsPerPage);
+            // console.log('reportsPerPage:', reportsPerPage);
         }
 
         // Check the initial state
@@ -1357,7 +1357,7 @@
             fetchReports('recent');
             // Initialize slideEnabled based on the checkbox state
             slideEnabled = document.getElementById('slideOrNot').checked;
-            console.log("slideEnable or not ", slideEnabled); 
+            // console.log("slideEnable or not ", slideEnabled); 
         });
 
         // Add an event listener to the checkbox to toggle auto-slide
@@ -1386,7 +1386,7 @@
             fetch(url)
                 .then(response => response.json())
                 .then(data => {
-                    console.log("data ",data)
+                    // console.log("data ",data)
                     // Clear all existing circles before processing new data
                     clearAllCircles();
 
@@ -1399,6 +1399,7 @@
                         return acc;
                     }, {});
                     
+                    console.log("Report Data", reportsData)
                     if (data.length == 0){
                         const reportsContainer = document.getElementById('reports-container');
                         reportsContainer.innerHTML = `<h3>${document.getElementById('category-filter').value}</h3>`;
@@ -1423,7 +1424,7 @@
 
         function onSlideToggle() {
             slideEnabled = document.getElementById('slideOrNot').checked;
-            console.log("Slide toggle triggered. slideEnabled:", slideEnabled);
+            // console.log("Slide toggle triggered. slideEnabled:", slideEnabled);
             if (slideEnabled) {
                 startAutoSlide();
             } else {
@@ -1444,7 +1445,7 @@
             console.log("report per page to show ",reportsPerPage);
 
             let reportsToShow = reportsData[currentCategory].slice(currentReportIndex, currentReportIndex + reportsPerPage);
-
+            console.log("Report To Show",reportsToShow)
             // Clear all circles when the category changes
             if (currentCategory !== previousCategory) {
                 clearAllCircles();
@@ -1457,17 +1458,18 @@
             let yyyy = today.getFullYear();
 
             today = yyyy + '-' + mm + '-' + dd;
-            console.log("Today's date:", today);
+            // console.log("Today's date:", today);
 
             reportsToShow.forEach(report => {
                 const reportElement = document.createElement('div');
                 reportElement.className = `report active status-${report.status}`;
+                // console.log("reportname", report)
                 reportElement.innerHTML = `
                     <div class="report-header">
                         <h4>Line: ${report.operationLineNumber}</h4>
                         <div class="${getStatusTagClass(report.status)}">${report.status_tag}</div>
                     </div>
-                    <p><strong style="color:#828181;">Reporter Name:</strong> ${report.reporterName}</p>
+                    <p><strong style="color:#828181;">Reporter Name:</strong> ${report.reporterNameReal}</p>
                     <p><strong style="color:#828181;">Problem Category:</strong> ${report.problemCategory}</p>
                 `;
                 let dueDate = report.dueDate;
@@ -1491,7 +1493,7 @@
                     rank_txt_color = "white";
                 }
 
-                console.log("finishDate and dueDate ",finishDate,dueDate);
+                // console.log("finishDate and dueDate ",finishDate,dueDate);
                 
                 // If finishDate is not null, finishDate is less than or equal to dueDate, the report is finished on time
                 if (finishDate && finishDate <= dueDate) {
@@ -1646,6 +1648,7 @@
 
             const currentCategory = categories[currentCategoryIndex];
             const reportsToShow = reportsData[currentCategory];
+            
 
             if (currentReportIndex + reportsPerPage < reportsToShow.length) {
                 currentReportIndex += reportsPerPage;
@@ -1676,7 +1679,7 @@
             const modal = document.getElementById('myModal');
             const modalProblem = document.querySelector('.modal-problem');
             const modalSolution = document.querySelector('.modal-solution');
-            console.log("report obj is ",report)
+            // console.log("report obj is ",report)
 
    
             if (!modal || !modalProblem || !modalSolution) {
@@ -1692,14 +1695,14 @@
         </div>
         <ul>
             <div style="display:flex">
-                <li><strong>Reporter Name:</strong> ${report.reporterName || 'N/A'}</li>
+                <li><strong>Reporter Name:</strong> ${report.reporterNameReal || 'N/A'}</li>
                 <div style="margin-left: auto;" class="status-tag ${getStatusTagClass(report.status)}">${report.status_tag || 'N/A'}</div>
             </div>
             <li><strong>Operation Line:</strong> ${report.operationLineNumber || 'N/A'}</li>
             <li><strong>Machine Number:</strong> ${report.machineNumber || 'N/A'}</li>
             <li><strong>Problem Category:</strong> ${report.problemCategory || 'N/A'}</li>
-            <li><strong>Sub Category:</strong> ${report.subCategory || 'N/A'}</li>
-            <li><strong>Sub Category Defined by User:</strong> ${report.subCategoryForUser || 'N/A'}</li>
+            <li><strong>Problem Type:</strong> ${report.subCategory || 'N/A'}</li>
+            <li><strong>Sub Category: ${report.subCategoryForUser || 'N/A'}</li>
             <li><strong>Rank:</strong> ${report.rank || 'N/A'}</li>
             <li><strong>Description:</strong> ${report.problemDescription || 'N/A'}</li>
             <li><strong>Date Created:</strong> ${report.datetime || 'N/A'}</li>
@@ -1723,13 +1726,13 @@
             let yyyy = today.getFullYear();
 
             today = yyyy + '-' + mm + '-' + dd;
-            console.log("Today's date:", today);
+            // console.log("Today's date:", today);
 
             let dueDate = report.dueDate;
             let finishDate = report.finishDate;
 
-            console.log("Due date:", dueDate);
-            console.log("Finish date:", finishDate);
+            // console.log("Due date:", dueDate);
+            // console.log("Finish date:", finishDate);
 
             // If finishDate is not null, today is greater than or equal to finishDate, the report is finished on time
             if (finishDate && finishDate <= dueDate) {
@@ -1885,7 +1888,7 @@
                 fetch(url)
                     .then(response => response.json())
                     .then(data => {
-                        console.log(data)
+                        // console.log(data)
                         document.getElementById('totalReportsByYear').textContent = `Total Reports (${data.year})`;
                         document.getElementById('reportYear').textContent = `${data.total_reports}`;
                     })
@@ -2632,7 +2635,7 @@
             // Add event listener to the chart's canvas
             document.getElementById('reportsDaily').addEventListener('click', function(event) {
                 const activePoints = myChartDay.getElementsAtEventForMode(event, 'nearest', { intersect: true }, true);
-                console.log(activePoints)
+                // console.log(activePoints)
                 if (activePoints.length > 0) {
                     const firstPoint = activePoints[0];
                     const label = myChartDay.data.labels[firstPoint.index];
@@ -2646,7 +2649,7 @@
             // Add event listener to the chart's canvas
             document.getElementById('reportsMonthly').addEventListener('click', function(event) {
                 const activePoints = myChartMonth.getElementsAtEventForMode(event, 'nearest', { intersect: true }, true);
-                console.log(activePoints)
+                // console.log(activePoints)
                 if (activePoints.length > 0) {
                     const firstPoint = activePoints[0];
                     const label = myChartMonth.data.labels[firstPoint.index];
@@ -2654,7 +2657,7 @@
                     fetchReportsSpecifiedMonth(splitLabel[0],splitLabel[1])
                     fetchReportsByYearMonth(splitLabel[0],splitLabel[1])
                     fetchReportsDaily(splitLabel[0],splitLabel[1])
-                    console.log('Bar clicked:', label);
+                    // console.log('Bar clicked:', label);
                 }
             });
             document.addEventListener('DOMContentLoaded', function() {

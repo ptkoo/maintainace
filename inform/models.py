@@ -17,6 +17,7 @@ class Report(models.Model):
     ]
     reportID = models.AutoField(primary_key=True)
     reporterName = models.CharField(max_length=255)
+    reporterNameReal = models.CharField(max_length=255)
     datetime = models.CharField(max_length=255,null=True)
     operationLineNumber = models.CharField(max_length=255)
     machineNumber = models.CharField(max_length=255, blank=True, null=True)

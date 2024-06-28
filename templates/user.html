@@ -518,6 +518,11 @@
                         {% endfor %}
                     </select><br>
 
+                    <label for="subCategoryForOfficer">Choose Problem Type:</label>
+                    <select id="subCategoryForOfficer" name="subCategoryForOfficer" required>
+                        <!-- Options will be populated dynamically -->
+                    </select><br>
+
                     <label for="subCategoryForUser">Choose sub-category:</label>
                     <select id="subCategoryForUser" name="subCategoryForUser" required>
                         <!-- Options will be populated dynamically -->
@@ -573,7 +578,7 @@
                         {% endfor %}
                     </select>
 
-                    <label for="subCategoryForOfficer">Choose sub-category(Officer):</label>
+                    <label for="subCategoryForOfficer">Choose problem type:</label>
                     <select id="subCategoryForOfficer" name="subCategoryForOfficer" required>
                         <!-- Options will be populated dynamically -->
                     </select><br>
@@ -644,11 +649,12 @@
                     <div class="report-card" style="border-top: 4px solid #6A64F1;">
                         <div class="reportData-status">
                             <div style="flex: 10;">
-                                <li><span style="font-weight: bold; color: #555;">Reporter Name: </span>{{ report.reporterName }}</li>
+                                <li><span style="font-weight: bold; color: #555;">Reporter Name: </span>{{ report.reporterNameReal }}</li>
                                 <li><span style="font-weight: bold; color: #555;">Operation Line: </span>{{ report.operationLineNumber }}</li>
                                 <li><span style="font-weight: bold; color: #555;">Machine Number: </span>{{ report.machineNumber }}</li>
                                 <li><span style="font-weight: bold; color: #555;">Problem Category: </span>{{ report.problemCategory }}</li>
-                                <li><span style="font-weight: bold; color: #555;">Sub Category Defined by User: </span>{{ report.subCategoryForUser }}</li>
+                                <li><span style="font-weight: bold; color: #555;">Problem Type: </span>{{ report.subCategory}}</li>
+                                <li><span style="font-weight: bold; color: #555;">Sub Category: </span>{{ report.subCategoryForUser }}</li>
                                 <li><span style="font-weight: bold; color: #555;">Rank: </span>{{ report.rank }}</li>
                                 <li><span style="font-weight: bold; color: #555;">Description: </span>{{ report.problemDescription }}</li>
                                 <li><span style="font-weight: bold; color: #555;">Created At: </span>{{ report.datetime }}</li>
@@ -755,11 +761,12 @@
                     <div class="report-card" style="border-top: 4px solid #6A64F1;">
                         <div class="reportData-status">
                             <div style="flex: 10;">
-                                <li><span style="font-weight: bold; color: #555;">Reporter Name: </span>{{ report.reporterName }}</li>
+                                <li><span style="font-weight: bold; color: #555;">Reporter Name: </span>{{ report.reporterNameReal }}</li>
                                 <li><span style="font-weight: bold; color: #555;">Operation Line: </span>{{ report.operationLineNumber }}</li>
                                 <li><span style="font-weight: bold; color: #555;">Machine Number: </span>{{ report.machineNumber }}</li>
                                 <li><span style="font-weight: bold; color: #555;">Problem Category: </span>{{ report.problemCategory }}</li>
-                                <li><span style="font-weight: bold; color: #555;">Sub Category Defined by User: </span>{{ report.subCategoryForUser }}</li>
+                                <li><span style="font-weight: bold; color: #555;">Problem Type: </span>{{ report.subCategory }}</li>
+                                <li><span style="font-weight: bold; color: #555;">Sub Category: </span>{{ report.subCategoryForUser }}</li>
                                 <li><span style="font-weight: bold; color: #555;">Rank: </span>{{ report.rank }}</li>
                                 <li><span style="font-weight: bold; color: #555;">Description: </span>{{ report.problemDescription }}</li>
                                 <li><span style="font-weight: bold; color: #555;">Created At: </span>{{ report.datetime }}</li>
@@ -962,11 +969,12 @@
 
         // Function to fetch and update subcategories based on the selected category
         function fetchSubCategories(selectedCategory) {
+            console.log("Problem Category(User)", selectedCategory)
             const url = new URL(`inform/get_subcategories_for_user/?problemCategory=${selectedCategory}`, window.location.origin);
             fetch(url)
                 .then(response => response.json())
                 .then(data => {
-                    console.log(data)
+                    console.log("SubCategory User",data)
                     const subCategorySelect = document.getElementById('subCategoryForUser');
                     subCategorySelect.innerHTML = '';  // Clear previous options
                     data.subCategoriesForUser.forEach(subCategory => {
@@ -980,6 +988,7 @@
         }
 
         function fetchSubCategoriesForOfficer(selectedCategory) {
+            console.log("Problem Category For Officer", selectedCategory)
             const url = new URL(`inform/get_subcategories_for_officer/?problemCategory=${selectedCategory}`, window.location.origin);
             fetch(url)
                 .then(response => response.json())

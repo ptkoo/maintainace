@@ -476,11 +476,12 @@
                     <div class="report-card" style="border-top: 4px solid #6A64F1;">
                         <div class="reportData-status">
                             <div style="flex: 10;">
-                                <li><span style="font-weight: bold; color: #555;">Reporter Name: </span>{{ report.reporterName }}</li>
+                                <li><span style="font-weight: bold; color: #555;">Reporter Name: </span>{{ report.reporterNameReal }}</li>
                                 <li><span style="font-weight: bold; color: #555;">Operation Line: </span>{{ report.operationLineNumber }}</li>
                                 <li><span style="font-weight: bold; color: #555;">Machine Number: </span>{{ report.machineNumber }}</li>
                                 <li><span style="font-weight: bold; color: #555;">Problem Category: </span>{{ report.problemCategory }}</li>
-                                <li><span style="font-weight: bold; color: #555;">Sub Category Defined by User: </span>{{ report.subCategoryForUser }}</li>
+                                <li><span style="font-weight: bold; color: #555;">Problem Type: </span>{{ report.subCategory }}</li>
+                                <li><span style="font-weight: bold; color: #555;">Sub Category: </span>{{ report.subCategoryForUser }}</li>
                                 <li><span style="font-weight: bold; color: #555;">Rank: </span>{{ report.rank }}</li>
                                 <li><span style="font-weight: bold; color: #555;">Description: </span>{{ report.problemDescription }}</li>
                                 <li><span style="font-weight: bold; color: #555;">Created At: </span>{{ report.datetime }}</li>
@@ -614,11 +615,12 @@
                     <div class="report-card" style="border-top: 4px solid #6A64F1;">
                         <div class="reportData-status">
                             <div style="flex: 10;">
-                                <li><span style="font-weight: bold; color: #555;">Reporter Name: </span>{{ report.reporterName }}</li>
+                                <li><span style="font-weight: bold; color: #555;">Reporter Name: </span>{{ report.reporterNameReal }}</li>
                                 <li><span style="font-weight: bold; color: #555;">Operation Line: </span>{{ report.operationLineNumber }}</li>
                                 <li><span style="font-weight: bold; color: #555;">Machine Number: </span>{{ report.machineNumber }}</li>
                                 <li><span style="font-weight: bold; color: #555;">Problem Category: </span>{{ report.problemCategory }}</li>
-                                <li><span style="font-weight: bold; color: #555;">Sub Category Defined by User: </span>{{ report.subCategoryForUser }}</li>
+                                <li><span style="font-weight: bold; color: #555;">Problem Type: </span>{{ report.subCategory }}</li>
+                                <li><span style="font-weight: bold; color: #555;">Sub Category: </span>{{ report.subCategoryForUser }}</li>
                                 <li><span style="font-weight: bold; color: #555;">Rank: </span>{{ report.rank }}</li>
                                 <li><span style="font-weight: bold; color: #555;">Description: </span>{{ report.problemDescription }}</li>
                                 <li><span style="font-weight: bold; color: #555;">Created At: </span>{{ report.datetime }}</li>

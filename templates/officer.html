@@ -38,6 +38,16 @@
             background-color: #FFFFFF;
         }
 
+        .export {
+            display: none;
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            }
+
         .report-card {
             background-color: #F5F8FF;
             padding: 5px 50px;
@@ -158,7 +168,7 @@
             color: white;
             cursor: pointer;
         }
-        .nav-bar button:first-child{
+        .nav-bar button:first-child,.nav-bar button:nth-child(2){
             border-right: 1px solid #333;
         }
         .nav-bar button.active {
@@ -414,6 +424,48 @@
             overflow-x: auto;
             white-space: nowrap;
         }
+        h1 {
+                color: #333333;
+            }
+        .filter-item {
+                margin-bottom: 15px;
+            }
+        .filter-item label {
+                display: block;
+                margin-bottom: 5px;
+                font-weight: bold;
+            }
+        .filter-item input,
+        .filter-item select,
+        .filter-item button {
+                width: 100%;
+                padding: 8px;
+                margin-bottom: 10px;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+                box-sizing: border-box;
+            }
+        .filter-item button {
+                background-color: #007bff;
+                color: white;
+                border: none;
+                cursor: pointer;
+            }
+        .filter-item button:hover {
+                background-color: #0056b3;
+            }
+        fieldset {
+                margin-bottom: 20px;
+                border: 1px solid #ddd;
+                border-radius: 5px;
+                padding: 10px 15px;
+            }
+        legend {
+                font-size: 18px;
+                font-weight: bold;
+                color: #333333;
+                padding: 0 10px;
+            }
         @media only screen and (min-width: 250px) and (max-width: 768px) {
             /* Add styles for phones */
             .container{
@@ -475,6 +527,8 @@
             }
             }
 
+            
+
     </style>
 </head>
 <body>
@@ -504,6 +558,7 @@
         <div class="nav-bar">
             <button class="active" data-section="reports-container" onclick="showSection('reports-container')" style="font-weight: bold;">Manage Reports</button>
             <button data-section="history" onclick="showSection('history')" style="font-weight: bold;">History</button>
+            <button data-section="export" onclick="showSection('export')" style="font-weight: bold;">Export Excel</button>
         </div>
         <script>
             // // Function to initialize the section based on local storage
@@ -532,6 +587,7 @@
             // Hide all sections
             document.querySelector('.reports-container').classList.remove('active');
             document.querySelector('.history').classList.remove('active');
+            document.querySelector('.export').classList.remove('active');
 
             // Show the selected section
             document.querySelector(`.${section}`).classList.add('active');
@@ -567,11 +623,12 @@
                     <div class="report-card" style="border-top: 4px solid #6A64F1;">
                         <div class="reportData-status">
                             <div style="flex: 10;">
-                                <li><span style="font-weight: bold; color: #555;">Reporter Name: </span>{{ report.reporterName }}</li>
+                                <li><span style="font-weight: bold; color: #555;">Reporter Name: </span>{{ report.reporterNameReal }}</li>
                                 <li><span style="font-weight: bold; color: #555;">Operation Line: </span>{{ report.operationLineNumber }}</li>
                                 <li><span style="font-weight: bold; color: #555;">Machine Number: </span>{{ report.machineNumber }}</li>
-                                <li><span style="font-weight: bold; color: #555;">Problem Category: </span>{{ report.problemCategory }}</li>
-                                <li><span style="font-weight: bold; color: #555;">Sub Category Defined by User: </span>{{ report.subCategoryForUser }}</li>
+                                <li><span style="font-weight: bold; color: #555;">Problem Category : </span>{{ report.problemCategory }}</li>
+                                <li><span style="font-weight: bold; color: #555;">Problem Type: </span>{{ report.subCategory }}</li>
+                                <li><span style="font-weight: bold; color: #555;">Sub Category: </span>{{ report.subCategoryForUser }}</li>
                                 <li><span style="font-weight: bold; color: #555;">Rank: </span>{{ report.rank }}</li>
                                 <li><span style="font-weight: bold; color: #555;">Description: </span>{{ report.problemDescription }}</li>
                                 <li><span style="font-weight: bold; color: #555;">Created At: </span>{{ report.datetime }}</li>
@@ -653,9 +710,16 @@
                                     <label for="subCategory-dropdown-{{ report.reportID }}">Subcategory: </label>
                                     <select id="subCategory-dropdown-{{ report.reportID }}" name="selected_subCategory">
 
+                                        <!-- {% for subCategory in report.get_subcategories %}
+                                            <option value="{{ subCategory.subCategory }} {%if subCategory.subCategory== report.subCategory selected}">{{ subCategory.subCategory }}</option>
+                                        {% endfor %} -->
                                         {% for subCategory in report.get_subcategories %}
-                                            <option value="{{ subCategory.subCategory }}">{{ subCategory.subCategory }}</option>
+                                            <option value="{{ subCategory.subCategory }}" 
+                                                {% if subCategory.subCategory == report.subCategory %} selected {% endif %}>
+                                                {{ subCategory.subCategory }}
+                                            </option>
                                         {% endfor %}
+
                                     </select>
                                 </div style="flex: 3; display: flex;">
                                 <input type="hidden" name="report_id" value="{{ report.reportID }}">
@@ -735,11 +799,12 @@
                     <div class="report-card" style="border-top: 4px solid #6A64F1;">
                         <div class="reportData-status">
                             <div style="flex: 10;">
-                                <li><span style="font-weight: bold; color: #555;">Reporter Name: </span>{{ report.reporterName }}</li>
+                                <li><span style="font-weight: bold; color: #555;">Reporter Name: </span>{{ report.reporterNameReal }}</li>
                                 <li><span style="font-weight: bold; color: #555;">Operation Line: </span>{{ report.operationLineNumber }}</li>
                                 <li><span style="font-weight: bold; color: #555;">Machine Number: </span>{{ report.machineNumber }}</li>
                                 <li><span style="font-weight: bold; color: #555;">Problem Category: </span>{{ report.problemCategory }}</li>
-                                <li><span style="font-weight: bold; color: #555;">Sub Category Defined by User: </span>{{ report.subCategoryForUser }}</li>
+                                <li><span style="font-weight: bold; color: #555;">Problem Type: </span>{{ report.subCategory }}</li>
+                                <li><span style="font-weight: bold; color: #555;">Sub Category: </span>{{ report.subCategoryForUser }}</li>
                                 <li><span style="font-weight: bold; color: #555;">Rank: </span>{{ report.rank }}</li>
                                 <li><span style="font-weight: bold; color: #555;">Description: </span>{{ report.problemDescription }}</li>
                                 <li><span style="font-weight: bold; color: #555;">Created At: </span>{{ report.datetime }}</li>
@@ -823,6 +888,40 @@
                     <a href="?page_history={{ page_obj_history.paginator.num_pages }}&category={{ category }}&status={{ status }}">&raquo;</a>
                 {% endif %}
             </div>
+        </div>
+        <div class="export">
+            <h1>Export Reports</h1>
+            <form method="post" action="{% url 'export_reports' %}">
+                {% csrf_token %}
+                <fieldset>
+                    <legend>Date Range</legend>
+                    <div class="filter-item">
+                        <label for="start_date">Start Date:</label>
+                        <input type="date" id="start_date" name="start_date" required>
+                    </div>
+                    <div class="filter-item">
+                        <label for="end_date">End Date:</label>
+                        <input type="date" id="end_date" name="end_date" required>
+                    </div>
+                </fieldset>
+                <fieldset>
+                    <legend>Filters</legend>
+                    <div class="filter-item">
+                        <label for="category">Category:</label>
+                        <select id="category" name="category">
+                            <option value="">All</option>
+                            {% for p in professions %}
+                                <option value="{{ p.profession_name }}">
+                                    {{ p.profession_name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </fieldset>
+                <div class="filter-item">
+                    <button type="submit">Export</button>
+                </div>
+            </form>
         </div>
     </div>
     <!-- The Modal -->

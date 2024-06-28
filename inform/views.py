@@ -35,8 +35,10 @@ def handle_login(request):
             # print(user)
             if user is not None:
                 login(request, user)  # Log the user in
-                if user.groups.filter(name='General').exists() :
+                if user.groups.filter(name='General').exists() and next_param:
                     redirect_url = next_param
+                elif user.groups.filter(name='General').exists():
+                    redirect_url = '/inform/general'
                 elif user.groups.filter(name='User').exists():
                     redirect_url = '/inform/user'
                 elif user.groups.filter(name='Chief').exists():
@@ -568,10 +570,12 @@ def officer(request):
 def upload_report(request):
     if request.method == 'POST':
         reporter_name = request.POST.get('reporterName')
+        reporter_nameReal = request.POST.get('reporterNameReal')
         description = request.POST.get('description')
         line_number = request.POST.get('lineNumber')
         problemCategory = request.POST.get('problemCategory')
         machineNumber = request.POST.get('machineNumber')
+        subCategoryForOfficer= request.POST.get('subCategoryForOfficer')
         subCategoryForUser= request.POST.get('subCategoryForUser')
         rank= request.POST.get('rank')
         dueDate = request.POST.get('dueDate')
@@ -595,11 +599,13 @@ def upload_report(request):
         report = Report(
             reportID=next_reportID,
             reporterName=reporter_name,
+            reporterNameReal= reporter_nameReal,
             operationLineNumber=line_number,
             problemDescription=description,
             datetime=dt_now,
             problemCategory=problemCategory,
             subCategoryForUser = subCategoryForUser,
+            subCategory = subCategoryForOfficer,
             rank=rank,
             machineNumber=machineNumber,
             status=status,
@@ -691,9 +697,16 @@ def update_report(request, report_id):
         report.save()
         # Clear existing images associated with the report
         # report.images.all().delete()
+        # for image in images:
+        #     print(image)
+        #     Image.objects.create(report=report, imageData=image)
         for image in images:
-            print(image)
-            Image.objects.create(report=report, imageData=image)
+            # Generate a random filename using uuid
+            ext = image.name.split('.')[-1]  # Get the file extension
+            random_filename = f"{uuid.uuid4().hex}.{ext}"
+            # Create an image object and set the new filename
+            image_obj = Image(report=report, imageData=ContentFile(image.read(), random_filename))
+            image_obj.save()
 
         return redirect('user')
     else:
@@ -748,7 +761,7 @@ def upload_solution(request, report_id):
             ext = image.name.split('.')[-1]  # Get the file extension
             random_filename = f"{uuid.uuid4().hex}.{ext}"
             # Create an image object and set the new filename
-            image_obj = Image(report=report, imageData=ContentFile(image.read(), random_filename))
+            image_obj = Image(solution=solution, imageData=ContentFile(image.read(), random_filename))
             image_obj.save()
         # Updating Report Status 
 
@@ -939,6 +952,7 @@ def get_reports_by_status_and_profession(request, operation_line):
         report_data = {
             'reportID': report.reportID,
             'reporterName': report.reporterName,
+            'reporterNameReal': report.reporterNameReal,
             'operationLineNumber': report.operationLineNumber,
             'problemCategory': report.problemCategory,
             'problemDescription': report.problemDescription,
@@ -1309,7 +1323,7 @@ def export_reports(request):
         for report in reports:
             row = [
                 report.reportID,
-                report.reporterName,
+                report.reporterNameReal,
                 report.machineNumber,
                 report.operationLineNumber,
                 report.problemCategory,
