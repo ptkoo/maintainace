@@ -566,6 +566,64 @@ def officer(request):
     return render(request, 'officer.html', context)
 
 @login_required(login_url='/inform/error')
+@group_required('General')
+def general(request):
+    # Get the current user's email
+    user_email = request.user.email
+
+    # Filter reports with status '4' and sent to the user's email
+    reports = Report.objects.filter(
+        status='3',
+        sentTo=user_email
+    ).order_by('-datetime')
+    print("reprots", reports)
+    # Filter report history with status '4' and sent to the user's email
+    # Filter report history with statuses '4', '5', '6', and '7' and sent to the user's email
+    reportHistorys = Report.objects.filter(
+        status__in=['3', '4', '5', '6'],
+        sentTo=user_email
+    ).order_by('-datetime')
+
+    # This is the filtering process
+
+    # Get all the professions and operations Line number
+    professions = Profession.objects.all()
+    # Get the filter value from the form
+    category = request.GET.get('category', '')
+    status = request.GET.get('status')
+    print("status", status)
+    print("category", category)
+
+    if status in ['4', '5', '6', '7']:
+        reportHistorys = reportHistorys.filter(status=status)
+
+    if category:
+        # print('here')
+        reportHistorys = reportHistorys.filter(problemCategory=category)
+
+    # Pagination
+    reports_per_page = 1
+    reports= reports[:500]
+    paginator = Paginator(reports, reports_per_page)
+    reportHistorys = reportHistorys[:500]
+    paginatorHistory = Paginator(reportHistorys, reports_per_page)
+    page_number = request.GET.get('page')
+    page_number_history = request.GET.get('page_history')
+    page_obj = paginator.get_page(page_number)
+    page_obj_history = paginatorHistory.get_page(page_number_history)
+
+    
+    context = {
+        'page_obj': page_obj,
+        'page_obj_history': page_obj_history,
+        'professions' : professions,
+        'status': status,
+        'category': category
+    }
+
+    return render(request, 'general.html', context)
+
+@login_required(login_url='/inform/error')
 @group_required('User')
 def upload_report(request):
     if request.method == 'POST':
@@ -761,7 +819,7 @@ def upload_solution(request, report_id):
             ext = image.name.split('.')[-1]  # Get the file extension
             random_filename = f"{uuid.uuid4().hex}.{ext}"
             # Create an image object and set the new filename
-            image_obj = Image(solution=solution, imageData=ContentFile(image.read(), random_filename))
+            image_obj = ImageSolution(solution=solution, imageData=ContentFile(image.read(), random_filename))
             image_obj.save()
         # Updating Report Status 
 
@@ -1290,25 +1348,32 @@ from django.db.models import Q
 import openpyxl
 
 def export_reports(request):
+
+    STATUS_MAP = {
+            '0': 'Pending',
+            '1': 'Approved',
+            '2': 'Validated',
+            '3': 'Email Sent',
+            '4': 'Solved',
+            '5': 'Finished',
+            '6': 'Rejected',
+    }
     if request.method == 'POST':
         start_date = request.POST.get('start_date')
         end_date = request.POST.get('end_date')
-        categories = []
+        categories = request.POST.get('category')
 
-        # Loop through each category select box
-        for key, value in request.POST.items():
-            if key.startswith('category') and value:
-                categories.append(value)
 
         filters = Q()
         if start_date and end_date:
             filters &= Q(datetime__range=[start_date, end_date])
-        
-        # Check if categories list is not empty
-        if categories:
-            filters &= Q(problemCategory__in=categories)
 
         reports = Report.objects.filter(filters).order_by('-datetime')
+
+        print(categories)
+        # Apply category filter if specified
+        if categories:
+            reports = reports.filter(problemCategory=categories)
 
         # Create the Excel workbook and worksheet
         workbook = openpyxl.Workbook()
@@ -1316,25 +1381,31 @@ def export_reports(request):
         worksheet.title = 'Filtered Reports'
 
         # Define headers
-        headers = ['Report ID', 'Reporter Name', 'Machine Number', 'Operation Line', 'Problem Main Category',  'SubCategory1', 'SubCategory2','Rank', 'Status', 'Problem Description', 'Due Date', 'Finish Date', 'Created Date']
+        headers = ['Report ID', 'Reporter Name', 'Machine Number', 'Operation Line', 'Problem Main Category',  'SubCategory1', 'SubCategory2','Rank', 'Status', 'Problem Description', 'Due Date', 'Finish Date', 'Created Date', 'Confirmed By', 'Sent By', 'Sent To', 'Solved By', 'Rejected By' ]
         worksheet.append(headers)
 
         # Add data rows
         for report in reports:
             row = [
                 report.reportID,
-                report.reporterNameReal,
+                report.reporterName,
                 report.machineNumber,
                 report.operationLineNumber,
                 report.problemCategory,
                 report.subCategory,
                 report.subCategoryForUser,
                 report.rank,
-                report.status,
+                STATUS_MAP.get(report.status),
                 report.problemDescription,
                 report.dueDate,
                 report.finishDate if report.finishDate else '',
-                report.datetime if report.datetime else ''
+                report.datetime if report.datetime else '',
+                report.confirmedBy if report.confirmedBy else '',
+                report.sentBy if report.sentBy else '',
+                report.sentTo if report.sentTo else '',
+                report.solvedBy if report.solvedBy else '',
+                report.rejectedBy if report.rejectedBy else ''
+
             ]
             worksheet.append(row)
 

@@ -1334,7 +1334,7 @@
         let autoSlideInterval;
         let slideEnabled;
         let previousCategory = null;
-        // Define the media query
+        // // Define the media query
         const mediaQueryLargeScreen = window.matchMedia('(min-width: 1440px)');
 
         // Function to set reportsPerPage based on media query state
@@ -1362,13 +1362,6 @@
 
         // Add an event listener to the checkbox to toggle auto-slide
         document.getElementById('slideOrNot').addEventListener('change', function() {
-            slideEnabled = this.checked;
-            // if (slideEnabled) {
-            //     startAutoSlide();
-            // } else {
-            //     console.log("not checkoeeee")
-            //     clearInterval(autoSlideInterval);
-            // }
             slideEnabled = this.checked;
             clearInterval(autoSlideInterval);
             startAutoSlide();  // Ensure interval is reset and start auto-slide for current category
@@ -1399,7 +1392,7 @@
                         return acc;
                     }, {});
                     
-                    console.log("Report Data", reportsData)
+                    // console.log("Report Data", reportsData)
                     if (data.length == 0){
                         const reportsContainer = document.getElementById('reports-container');
                         reportsContainer.innerHTML = `<h3>${document.getElementById('category-filter').value}</h3>`;
@@ -1437,19 +1430,25 @@
 
         function displayCategoryReports() {
             const categories = Object.keys(reportsData);
+            console.log("reportsData ",reportsData);
+
+
             if (categories.length === 0) return;
 
             const currentCategory = categories[currentCategoryIndex];
+            const totalReportsCurrentCategory = reportsData[currentCategory ];
+            console.log("total reports ",totalReportsCurrentCategory.length);
             const reportsContainer = document.getElementById('reports-container');
-            reportsContainer.innerHTML = `<h3>${currentCategory}</h3>`;
-            console.log("report per page to show ",reportsPerPage);
-
+            reportsContainer.innerHTML = `<h3>${currentCategory} (${totalReportsCurrentCategory.length})</h3>`;
+            // console.log("report per page to show ",reportsPerPage);
+            console.log("Current Report Index Real", currentReportIndex)
             let reportsToShow = reportsData[currentCategory].slice(currentReportIndex, currentReportIndex + reportsPerPage);
-            console.log("Report To Show",reportsToShow)
+            // console.log("Report To Show",reportsToShow)
             // Clear all circles when the category changes
-            if (currentCategory !== previousCategory) {
-                clearAllCircles();
-            }
+            // if (currentCategory !== previousCategory) {
+            //     clearAllCircles();
+            // }
+            clearAllCircles();
 
 
             let today = new Date();
@@ -1459,7 +1458,6 @@
 
             today = yyyy + '-' + mm + '-' + dd;
             // console.log("Today's date:", today);
-
             reportsToShow.forEach(report => {
                 const reportElement = document.createElement('div');
                 reportElement.className = `report active status-${report.status}`;
@@ -1630,14 +1628,15 @@
             clearInterval(autoSlideInterval);
             autoSlideInterval = setInterval(() => {
                 nextSlide();
-            }, 6000);
+            }, 60000);
         }
 
         function nextCategory() {
             const categories = Object.keys(reportsData);
             if (categories.length === 0) return;
 
-            currentCategoryIndex = (currentCategoryIndex + 1) % categories.length;
+            // currentCategoryIndex = (currentCategoryIndex + 1) % categories.length;
+            currentCategoryIndex = 0;
             currentReportIndex = 0;
             displayCategoryReports();
         }
@@ -1646,19 +1645,34 @@
             const categories = Object.keys(reportsData);
             if (categories.length === 0) return;
 
+            console.log("Categories", categories)
+
             const currentCategory = categories[currentCategoryIndex];
             const reportsToShow = reportsData[currentCategory];
-            
-
-            if (currentReportIndex + reportsPerPage < reportsToShow.length) {
+            console.log("Current Category",currentCategory)
+            console.log("Reports To Show For Current Category" , reportsToShow)
+            console.log("Slide Enabled", slideEnabled)
+            console.log("Category Value", document.getElementById('category-filter').value)
+            if( slideEnabled && document.getElementById('category-filter').value === ''){
+                reportsMaxToShow = Math.min(reportsToShow.length, 28)
+            }
+            else{
+                console.log("I am in else")
+                reportsMaxToShow = reportsToShow.length
+            }
+            console.log("Reprot Max ( Counter / Limit)", reportsMaxToShow)
+            if (currentReportIndex + reportsPerPage < reportsMaxToShow) {
                 currentReportIndex += reportsPerPage;
+                console.log("Current Report Index", currentReportIndex)
             } else {
                 currentReportIndex = 0;
                 if (slideEnabled) {
                     if (currentCategoryIndex + 1 < categories.length) {
                         currentCategoryIndex += 1;
+                        console.log("current Category Index moved to next", currentCategoryIndex)
                     } else {
                         currentCategoryIndex = 0; // Wrap back to the first category
+                        console.log("Current CategoryIndex returned to 0", currentCategoryIndex)
                     }
                 }
             }
@@ -1873,7 +1887,7 @@
         // Reload the page every 10 seconds
         setInterval(function() {
             fetchReportsWithSavedFilters(); // Fetch reports with saved filter values
-        }, 60000); // 60 seconds in milliseconds
+        }, 60000 * 5); // 60 seconds in milliseconds
 
         // Function to save slideOrNot state to local storage
         function saveSlideStateToLocalStorage() {
